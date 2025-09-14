@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.5rem; /* Réduction de l'épaisseur du header */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajout d'un espace entre le header et la barre de recherche */
+main {
+    margin-top: 20px;
+    text-align: center; /* Centrer la barre de recherche */
+}
+
+/* 🔎 Barre de recherche sous le header */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 20px 0;
+}
+
+.search-container input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* 📌 Carte bien positionnée */
+#map {
+    height: 500px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #4CAF50;
+    color: white;
+    margin-top: 2rem;
+}

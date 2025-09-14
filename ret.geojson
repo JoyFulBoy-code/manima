@@ -1,0 +1,1249 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.060974, 50.628267]
+      },
+      "properties": {
+        "name": "Restaurant Suzanne",
+        "type": "restaurant",
+        "address": "4 Pl. Philippe Lebon, 59000 Lille",
+        "phone": "0320008121",
+        "website": "http://www.suzannelille.fr/",
+        "opening_hours": "Lundi: Fermé\nMardi: 12:00–13:30, 19:15–21:30\nMercredi: 12:00–13:30, 19:15–21:30\nJeudi: 12:00–13:30, 19:15–21:30\nVendredi: 12:00–13:30, 19:15–21:30\nSamedi: Fermé\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.061431, 50.629696]
+      },
+      "properties": {
+        "name": "Aux éphérites",
+        "type": "restaurant",
+        "address": "17 Rue Nicolas Leblanc, 59000 Lille",
+        "phone": "0956277005",
+        "website": "http://www.auxepherites.com/",
+        "opening_hours": "Lundi: Fermé\nMardi: 12:00–14:00\nMercredi: 12:00–14:00\nJeudi: 12:00–14:00, 19:30–23:00\nVendredi: 12:00–14:00, 19:30–23:00\nSamedi: 12:00–14:00, 19:30–23:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.058931, 50.628866]
+      },
+      "properties": {
+        "name": "Restaurant Sébastopol",
+        "type": "restaurant",
+        "address": "1 Pl. Sébastopol, 59000 Lille",
+        "phone": "0320131338",
+        "website": "http://www.restaurantsebastopol.com/",
+        "opening_hours": "Lundi: 12:00–13:00, 19:00–21:00\nMardi: 12:00–13:00, 19:00–21:00\nMercredi: 12:00–13:00, 19:00–21:00\nJeudi: 12:00–13:00, 19:00–21:00\nVendredi: 12:00–13:00, 19:00–21:00\nSamedi: 12:00–13:00, 19:00–21:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.065465, 50.629498]
+      },
+      "properties": {
+        "name": "Come Prima Lille",
+        "type": "restaurant",
+        "address": "108 bis Bd de la Liberté, 59000 Lille",
+        "phone": "0320562390",
+        "website": "https://www.comeprimalille.com/",
+        "opening_hours": "Lundi: 12:00–14:00, 19:00–22:30\nMardi: 12:00–14:00, 19:00–22:30\nMercredi: 12:00–14:00, 19:00–22:30\nJeudi: 12:00–14:00, 19:00–22:30\nVendredi: 12:00–14:30, 19:00–23:00\nSamedi: 12:00–14:30, 19:00–23:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.060154, 50.630583]
+      },
+      "properties": {
+        "name": "Les Oiseaux",
+        "type": "restaurant",
+        "address": "7 Rue d'Inkermann, 59000 Lille",
+        "phone": "0766159579",
+        "website": "https://bookings.zenchef.com/results?rid=354457&pid=1001",
+        "opening_hours": "Lundi: Fermé\nMardi: 19:00–23:00\nMercredi: 12:00–14:30, 19:00–23:00\nJeudi: 12:00–14:30, 19:00–23:00\nVendredi: 12:00–14:30, 19:00–23:00\nSamedi: 12:00–14:30, 19:00–23:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.047910, 50.615283]
+      },
+      "properties": {
+        "name": "B&B HOTEL Lille Lillenium Eurasanté",
+        "type": "hotel",
+        "address": "306 Rue Geneviève Anthonioz de Gaulle, 59000 Lille",
+        "phone": "0892233452",
+        "website": "https://www.hotel-bb.com/fr/hotel/lille-lillenium-eurasante?utm_source=googlemaps&utm_medium=fichehotel&utm_campaign=yext",
+        "opening_hours": "Arrivée: 14h00\nDépart: 12h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.046803, 50.632330]
+      },
+      "properties": {
+        "name": "Residhotel Lille Vauban",
+        "type": "hotel",
+        "address": "69-71 Bd Vauban, 59000 Lille",
+        "phone": "0328822424",
+        "website": "https://www.residhotel.com/residence/lille-vauban/",
+        "opening_hours": "Arrivée: 15h00\nDépart: 11h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.051965, 50.628949]
+      },
+      "properties": {
+        "name": "JOST Lille",
+        "type": "hotel",
+        "address": "10 Rue Meurein, 59800 Lille",
+        "phone": "0339490050",
+        "website": "https://www.jostlille.com/",
+        "opening_hours": "Arrivée: 16h00\nDépart: 11h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.081810, 50.627710]
+      },
+      "properties": {
+        "name": "B&B HOTEL Lille Centre Grand Palais",
+        "type": "hotel",
+        "address": "169 Rue Berthe Morisot, 59000 Lille",
+        "phone": "0892702206",
+        "website": "https://www.hotel-bb.com/fr/hotel/lille-centre-grand-palais?utm_source=googlemaps&utm_medium=fichehotel&utm_campaign=yext",
+        "opening_hours": "Arrivée: 14h00\nDépart: 12h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0838327, 50.6200931]
+      },
+      "properties": {
+        "name": "Eklo Hôtel restaurant Lille",
+        "type": "hotel",
+        "address": "6 Rue Professeur Langevin, 59000 Lille",
+        "phone": "0374090006",
+        "website": "https://www.eklohotels.com/fr/lille",
+        "opening_hours": "Arrivée: 15h00\nDépart: 11h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0631959, 50.6335620]
+      },
+      "properties": {
+        "name": "Lille City Hotel",
+        "type": "hotel",
+        "address": "57 Rue de Béthune, 59800 Lille",
+        "phone": "0320129696",
+        "website": "http://www.lillecityhotel.com/",
+        "opening_hours": "Arrivée: 14h00\nDépart: 11h00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0629968643188477, 50.6303596496582]
+      },
+      "properties": {
+        "name": "Palais des Beaux-Arts de Lille",
+        "type": "musee",
+        "address": "Pl. de la République, 59000 Lille",
+        "phone": "0320067828",
+        "website": "https://pba.lille.fr/",
+        "opening_hours": "Lundi: 14:00–18:00\nMardi: Fermé\nMercredi: 10:00–18:00\nJeudi: 10:00–18:00\nVendredi: 10:00–18:00\nSamedi: 10:00–18:00\nDimanche: 10:00–18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0742924213409424, 50.62870788574219]
+      },
+      "properties": {
+        "name": "Musée de l'Institut Pasteur de Lille",
+        "type": "musee",
+        "address": "18 Bd Louis XIV, 59800 Lille",
+        "phone": "0320877242",
+        "website": "https://www.pasteur-lille.fr/musee/",
+        "opening_hours": "Lundi: Fermé\nMardi: Fermé\nMercredi: Fermé\nJeudi: Fermé\nVendredi: Fermé\nSamedi: 10:00–12:00, 14:00–17:00\nDimanche: 10:00–12:00, 14:00–17:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0770, 50.6389]
+      },
+      "properties": {
+        "name": "Musée de l'illusion LILLE",
+        "type": "musee",
+        "address": "101 Av. Le Corbusier, 59800 Lille",
+        "phone": "0328820463",
+        "website": "https://www.museedelillusion.fr/",
+        "opening_hours": "Lundi: 10:00–20:00\nMardi: 10:00–20:00\nMercredi: 10:00–20:00\nJeudi: 10:00–22:00\nVendredi: 10:00–22:00\nSamedi: 10:00–22:00\nDimanche: 10:00–20:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0538, 50.6301]
+      },
+      "properties": {
+        "name": "Le Palais Rameau",
+        "type": "musee",
+        "address": "39 Bd Vauban, 59800 Lille",
+        "phone": "0320495000",
+        "opening_hours": "Lundi: 08:00–21:00\nMardi: 08:00–21:00\nMercredi: 08:00–21:00\nJeudi: 08:00–21:00\nVendredi: 08:00–21:00\nSamedi: 08:00–21:00\nDimanche: 08:00–21:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0663, 50.6274]
+      },
+      "properties": {
+        "name": "Musée des Écoles de Lille",
+        "type": "musee",
+        "address": "2 Rue Frédéric Mottez, 59800 Lille",
+        "phone": "0766900329",
+        "website": "https://www.facebook.com/profile.php?id=100087790940243"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0705, 50.6362]
+      },
+      "properties": {
+        "name": "Lille Flandres",
+        "type": "transport",
+        "address": "Pl. de la Gare, 59800 Lille",
+        "website": "http://www.gares-sncf.com/fr/gare/fradj/lille-flandres"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0700, 50.6300]
+      },
+      "properties": {
+        "name": "Port de Lille",
+        "type": "transport",
+        "phone": "0890177633"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0390, 50.6080]
+      },
+      "properties": {
+        "name": "Chu-Eurasante",
+        "type": "transport"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0402, 50.6262]
+      },
+      "properties": {
+        "name": "Cormontaigne",
+        "type": "transport"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.07474, 50.63878]
+      },
+      "properties": {
+        "name": "Lille Europe",
+        "type": "transport",
+        "address": "1 Place François Mitterrand, 59777 Euralille"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.05613, 50.63053]
+      },
+      "properties": {
+        "name": "Grande Pharmacie des Halles",
+        "type": "pharmacie",
+        "address": "99 Rue Solférino, 59800 Lille",
+        "phone": "0320540274",
+        "website": "http://www.pharmacie2424.fr/",
+        "opening_hours": "Ouvert 24h/24, 7j/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.033259, 50.625862]
+      },
+      "properties": {
+        "name": "Pharmacie du Port Fluvial",
+        "type": "pharmacie",
+        "address": "56 Rue Bonte Pollet, 59000 Lille",
+        "phone": "0320931385",
+        "website": "https://pharmacie-du-port-fluvial.pharmaciereference.fr/",
+        "opening_hours": "Lundi: 09:00–13:00, 13:30–19:30\nMardi: 09:00–13:00, 13:30–19:30\nMercredi: 09:00–13:00, 13:30–19:30\nJeudi: 09:00–13:00, 13:30–19:30\nVendredi: 09:00–13:00, 13:30–19:30\nSamedi: 09:00–13:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0424286, 50.6329925]
+      },
+      "properties": {
+        "name": "Pharmacie Vauban",
+        "type": "pharmacie",
+        "address": "167 Rue Colbert, 59800 Lille",
+        "phone": "0320572806",
+        "opening_hours": "Lundi: 08:30–12:30, 13:30–19:30\nMardi: 08:30–12:30, 13:30–19:30\nMercredi: 08:30–12:30, 13:30–19:30\nJeudi: 08:30–12:30, 13:30–19:30\nVendredi: 08:30–12:30, 13:30–19:30\nSamedi: 09:00–12:30\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.052759, 50.63284]
+      },
+      "properties": {
+        "name": "Grande Pharmacie Colbert",
+        "type": "pharmacie",
+        "address": "269 Rue Nationale, 59800 Lille",
+        "phone": "0320540900",
+        "website": "http://www.pharmaciecolbert-lille.fr/",
+        "opening_hours": "Lundi: 09:00–12:30, 14:00–19:00\nMardi: 09:00–12:30, 14:00–19:00\nMercredi: 09:00–12:30, 14:00–19:00\nJeudi: 09:00–12:30, 14:00–19:00\nVendredi: 09:00–12:30, 14:00–19:00\nSamedi: Fermé\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.04020, 50.62620]
+      },
+      "properties": {
+        "name": "Pharmacie Cormontaigne",
+        "type": "pharmacie",
+        "address": "15 Rue d'Isly, 59000 Lille",
+        "phone": "0320935716",
+        "website": "https://www.pharmaciecormontaigne.fr/",
+        "opening_hours": "Lundi: 08:30–19:30\nMardi: 08:30–19:30\nMercredi: 08:30–19:30\nJeudi: 08:30–19:30\nVendredi: 08:30–19:30\nSamedi: 08:30–12:30\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0590393, 50.6176799]
+      },
+      "properties": {
+        "name": "Porte D'Arras",
+        "type": "transport",
+        "address": "Bd d'Alsace, 59000 Lille"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.052213889, 50.62637778]
+      },
+      "properties": {
+        "name": "Gambetta",
+        "type": "transport"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0535775, 50.622548]
+      },
+      "properties": {
+        "name": "Snack Tetouan",
+        "type": "snack",
+        "address": "149 Rue des Postes, 59000 Lille",
+        "phone": "0983287453",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 11:00–00:00\nMardi: 11:00–00:00\nMercredi: 11:00–00:00\nJeudi: 11:00–00:00\nVendredi: 11:00–01:00\nSamedi: 11:30–02:00\nDimanche: 11:30–01:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0522224, 50.6208664]
+      },
+      "properties": {
+        "name": "Agadir Snack",
+        "type": "snack",
+        "address": "207 Rue des Postes, 59000 Lille",
+        "phone": "0320543475",
+        "website": "http://agadir-snack.fr/",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 11:30–00:00\nMardi: 11:30–00:00\nMercredi: 09:00–17:00\nJeudi: 11:00–00:00\nVendredi: 11:30–00:00\nSamedi: 11:30–01:00\nDimanche: 11:30–00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0515544, 50.6200435]
+      },
+      "properties": {
+        "name": "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE",
+        "type": "snack",
+        "address": "239 Rue des Postes, 59000 Lille",
+        "phone": "0698223906",
+        "website": "https://www.chickenstreet.fr/",
+        "price": "10–20 € (majoritairement)",
+        "opening_hours": "Lundi: 11:30–01:00\nMardi: 11:30–01:00\nMercredi: 11:30–01:00\nJeudi: 11:30–01:00\nVendredi: 11:30–02:00\nSamedi: 11:30–02:00\nDimanche: 11:30–01:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0535438, 50.6225063]
+      },
+      "properties": {
+        "name": "Snack Mounir",
+        "type": "snack",
+        "address": "151 Rue des Postes, 59000 Lille",
+        "phone": "0980913605",
+        "website": "https://www.snackmounir.fr/",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 11:30–00:00\nMardi: 11:30–00:00\nMercredi: 11:30–00:00\nJeudi: 11:30–00:00\nVendredi: 11:30–01:00\nSamedi: 11:30–01:00\nDimanche: 11:30–00:30"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0615399, 50.6355905]
+      },
+      "properties": {
+        "name": "Palais Rihour",
+        "type": "attraction",
+        "address": "42 Pl. Rihour, 59800 Lille",
+        "phone": "0359579400",
+        "website": "https://www.lilletourism.com/site-et-monument-historiques-lille/le-palais-rihour.html",
+        "opening_hours": "Lundi: 10:00–12:30, 13:30–17:30\nMardi: 10:00–12:30, 13:30–17:30\nMercredi: 10:00–12:30, 13:30–17:30\nJeudi: 10:00–12:30, 13:30–17:30\nVendredi: 10:00–12:30, 13:30–17:30\nSamedi: 10:00–12:30, 13:30–17:30\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0633844, 50.640846]
+      },
+      "properties": {
+        "name": "Ilôt Comtesse",
+        "type": "attraction",
+        "address": "Rue de la Monnaie, 59800 Lille",
+        "website": "https://www.lille.fr/Nos-equipements/Ilot-Comtesse",
+        "opening_hours": "Ouvert 24h/24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0493173, 50.6382528]
+      },
+      "properties": {
+        "name": "Zoo de Lille",
+        "type": "attraction",
+        "address": "All. Arlette Gruss, 59000 Lille",
+        "phone": "0328520700",
+        "website": "https://www.lille.fr/Zoo-de-Lille",
+        "opening_hours": "Lundi: 10:00–18:00\nMardi: Fermé\nMercredi: 10:00–18:00\nJeudi: 10:00–18:00\nVendredi: 10:00–18:00\nSamedi: 10:00–19:00\nDimanche: 10:00–19:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0668779, 50.6341025]
+      },
+      "properties": {
+        "name": "Boulangerie Mathieu",
+        "type": "boulangerie",
+        "address": "82 Rue du Molinel, 59000 Lille",
+        "phone": "0320556657",
+        "website": "https://laboulangeriemathieu.com/",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: Fermé\nMardi: 06:00–20:00\nMercredi: 06:00–20:00\nJeudi: 06:00–20:00\nVendredi: 06:00–20:00\nSamedi: 06:00–20:00\nDimanche: 06:00–18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0692206, 50.6284418]
+      },
+      "properties": {
+        "name": "Boulangerie Au p'tit Louis",
+        "type": "boulangerie",
+        "address": "1 Bd Jean-Baptiste Lebas, 59000 Lille",
+        "phone": "0320810438",
+        "website": "https://boulangerieauptitlouis.fr/",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 07:00–19:30\nMardi: 07:00–19:30\nMercredi: 07:00–19:30\nJeudi: 07:00–19:30\nVendredi: 07:00–19:30\nSamedi: 07:30–15:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.058744, 50.6312079]
+      },
+      "properties": {
+        "name": "Aux Pains Dorés",
+        "type": "boulangerie",
+        "address": "30 Rue Léon Gambetta, 59800 Lille",
+        "phone": "0663774746",
+        "website": "https://auxpainsdores.eatbu.com/?lang=fr",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 06:00–16:00\nMardi: 06:00–16:00\nMercredi: 06:00–16:00\nJeudi: 06:00–16:00\nVendredi: 06:00–16:00\nSamedi: 07:00–14:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0490814, 50.6259688]
+      },
+      "properties": {
+        "name": "L'Aziza",
+        "type": "boulangerie",
+        "address": "32 Pl. Nouvelle Aventure, 59000 Lille",
+        "phone": "0320140750",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: 07:00–20:00\nMardi: 07:00–20:00\nMercredi: 07:00–20:00\nJeudi: 07:00–20:00\nVendredi: 07:00–20:00\nSamedi: 07:00–20:00\nDimanche: 07:00–20:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0502052, 50.6238527]
+      },
+      "properties": {
+        "name": "L'Aziza (Rue Jules Guesde)",
+        "type": "boulangerie",
+        "address": "61 Rue Jules Guesde, 59000 Lille",
+        "phone": "0359513567",
+        "opening_hours": "Lundi: 06:00–20:00\nMardi: 06:00–20:00\nMercredi: 06:00–20:00\nJeudi: 06:00–20:00\nVendredi: 06:00–20:00\nSamedi: 06:00–20:00\nDimanche: 06:00–19:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0586, 50.633]
+      },
+      "properties": {
+        "name": "Lacoste Euralille",
+        "type": "magasin",
+        "address": "C.Cial Westfield, 100 Av. Willy Brandt, 59777 Lille",
+        "phone": "0320002451",
+        "website": "https://www.lacoste.com/fr/stores/france/lille/lacosteeuralille-5494",
+        "opening_hours": "Lundi: 09:30–20:00\nMardi: 09:30–20:00\nMercredi: 09:30–20:00\nJeudi: 09:30–20:00\nVendredi: 09:30–20:00\nSamedi: 09:30–20:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0625433, 50.6370201]
+      },
+      "properties": {
+        "name": "Printemps Lille",
+        "type": "magasin",
+        "address": "39-45 Rue Nationale, 59000 Lille",
+        "phone": "0171252601",
+        "website": "https://www.printemps.com/fr/fr/printemps-lille?utm_source=google&utm_medium=organic&utm_campaign=yext_google_my_business",
+        "opening_hours": "Lundi: 10:00–20:00\nMardi: 10:00–20:00\nMercredi: 10:00–20:00\nJeudi: 10:00–20:00\nVendredi: 10:00–20:00\nSamedi: 10:00–20:00\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0633253, 50.6337051]
+      },
+      "properties": {
+        "name": "HEMA",
+        "type": "magasin",
+        "address": "53 Rue de Béthune, 59000 Lille",
+        "phone": "0320740287",
+        "website": "https://magasins.hema.com/fr/lille/hema-lille-bethune?y_source=1_MTU0NTcyMDMtNzE1LWxvY2F0aW9uLndlYnNpdGU%3D",
+        "opening_hours": "Lundi: 09:30–19:30\nMardi: 09:30–19:30\nMercredi: 09:30–19:30\nJeudi: 09:30–19:30\nVendredi: 09:30–19:30\nSamedi: 09:30–19:30\nDimanche: Fermé"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0488011, 50.6263755]
+      },
+      "properties": {
+        "name": "My Auchan Wazemmes",
+        "type": "magasin",
+        "address": "14 Pl. Nouvelle Aventure, 59000 Lille",
+        "phone": "0320388380",
+        "website": "https://www.auchan.fr/magasins/my-auchan-wazemmes/sl-4536",
+        "opening_hours": "Lundi: 08:00–22:00\nMardi: 08:00–22:00\nMercredi: 08:00–22:00\nJeudi: 08:00–22:00\nVendredi: 08:00–22:00\nSamedi: 08:00–22:00\nDimanche: 09:00–15:15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.054113, 50.6235125]
+      },
+      "properties": {
+        "name": "Carrefour City",
+        "type": "magasin",
+        "address": "146 Rue des Postes, 59000 Lille",
+        "phone": "0320318490",
+        "website": "https://www.carrefour.fr/magasin/city-lille-postes",
+        "opening_hours": "Lundi: 07:00–22:00\nMardi: 07:00–22:00\nMercredi: 07:00–22:00\nJeudi: 07:00–22:00\nVendredi: 07:00–22:00\nSamedi: 07:00–22:00\nDimanche: 09:00–13:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0513011, 50.6280142]
+      },
+      "properties": {
+        "name": "Market Lille Gambetta",
+        "type": "magasin",
+        "address": "281 Rue Léon Gambetta, 59000 Lille",
+        "phone": "0320147900",
+        "website": "https://www.carrefour.fr/magasin/market-lille-gambetta",
+        "opening_hours": "Lundi: 08:30–21:00\nMardi: 08:30–21:00\nMercredi: 08:30–21:00\nJeudi: 08:30–21:00\nVendredi: 08:30–21:00\nSamedi: 08:30–21:00\nDimanche: 09:00–12:45, 13:00–19:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.047547, 50.6264203]
+      },
+      "properties": {
+        "name": "Mangez Moi",
+        "type": "snack",
+        "address": "365 Rue Léon Gambetta, 59000 Lille",
+        "phone": "0366190538",
+        "price": "1–10 € (majoritairement)",
+        "opening_hours": "Lundi: Fermé\nMardi: 11:30–15:00, 18:00–23:30\nMercredi: 11:30–15:00, 18:00–23:30\nJeudi: 11:30–15:00, 18:00–23:30\nVendredi: 11:30–15:00, 18:00–01:00\nSamedi: 12:00–15:00, 18:00–01:00\nDimanche: 11:30–16:00, 18:00–23:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.1062993, 50.6396894]
+      },
+      "properties": {
+        "name": "Piscine Municipale de Mons-en-Baroeul",
+        "type": "piscine",
+        "address": "20 Rue Lacordaire, 59370 Mons-en-Barœul",
+        "phone": "0320561311",
+        "website": "http://piscine-monsenbaroeul.fr/",
+        "tarifs": "Moins de 4 ans : gratuit\nMoins de 18 ans : 2,30€\nCarte 10 entrées -18 ans : 20,70€\nAdulte : 3,45€\nCarte 10 entrées adulte : 27,60€\n\nTarifs Monsois :\nAdulte Monsois : 3,15€\nCarte 10 entrées adulte Monsois : 25,20€\nCarte 10 entrées -18 ans Monsois : 18,90€",
+        "opening_hours": "Vacances scolaires:\nLundi: Fermé\nMardi: 10:00–13:30, 14:00–16:00, 17:00–19:00\nMercredi: 10:00–13:30, 14:00–16:00, 17:00–19:30\nJeudi: 10:00–13:30, 14:00–16:00, 17:00–19:00\nVendredi: 10:00–13:30, 14:00–16:00, 17:00–19:30\nSamedi: 09:00–12:00, 15:00–18:00\nDimanche: 09:00–12:00\n\nHors vacances:\nLundi: Fermé\nMardi: 11:30–13:30, 17:00–19:00\nMercredi: 09:00–12:30, 14:00–16:00, 17:00–19:30\nJeudi: 10:00–11:30 (seniors), 11:30–13:30, 17:00–19:00\nVendredi: 11:30–13:30, 17:00–19:30\nSamedi: 09:00–12:00, 15:00–18:00\nDimanche: 09:00–12:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.0508811, 50.6195204]
+      },
+      "properties": {
+        "name": "G LA DALLE LILLE",
+        "type": "snack",
+        "address": "248 Rue des Postes, 59000 Lille",
+        "phone": "0376055744",
+        "price": "10–20 € par personne (majoritairement)",
+        "opening_hours": "lundi: 00:00–06:00, 11:30–00:00\nmardi: 00:00–06:00, 11:30–00:00\nmercredi: 00:00–06:00, 11:30–00:00\njeudi: 00:00–07:00, 11:30–00:00\nvendredi: 00:00–07:00, 11:30–00:00\nsamedi: 00:00–07:00, 11:30–00:00\ndimanche: 00:00–07:00, 11:30–00:00"
+      }
+    },
+  {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.0502399, 50.6261481] 
+      },
+      "properties": {
+        "name": "Marché de Wazemmes",
+        "type": "marché",
+        "address": "Pl. Nouvelle Aventure, 59000 Lille",
+        "phone": "0320495592",
+        "opening_hours": "mardi: 08:00–14:00,\njeudi: 08:00–14:00,\ndimanche: 08:00–15:00",
+        "website": "https://en.lilletourism.com/marche-de-wazemmes.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.1140648, 50.6459406] 
+      },
+      "properties": {
+        "name": "Marché de Mons-en-Barœul",
+        "type": "marché",
+        "address": "Bd Pierre Mendes France, 59370 Mons-en-Barœul",
+        "website": "https://www.monsenbaroeul.fr/vivre-mons-en-baroeul/entreprendre-saccomplir-et-consommer/consommer-local/mons-marche",
+        "opening_hours": "mardi: 08:00–14:00,\njeudi: 08:00–14:00,\ndimanche: 08:00–15:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.049543619155884, 50.63801956176758] 
+      },
+      "properties": {
+        "name": "Parc de la Citadelle",
+        "type": "parc",
+        "address": "Voie Piétonne du Bois de la Deûle, 59130 Lille",
+        "phone": "0328361350",
+        "website": "https://parcdelacitadelle.lille.fr/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.0492714, 50.6367472] 
+      },
+      "properties": {
+        "name": "Jardin Vauban",
+        "type": "jardin",
+        "address": "Bd Vauban, 59000 Lille",
+        "phone": "0362260828",
+        "website": "https://www.lille.fr/Nos-equipements/Le-jardin-Vauban"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.0697181, 50.6278459] 
+      },
+      "properties": {
+        "name": "Parc Jean-Baptiste Lebas (Parc rouge)",
+        "type": "parc",
+        "address": "Bd Jean-Baptiste Lebas, 59000 Lille",
+        "phone": "0374660660",
+        "website": "http://www.lille.fr/Nos-equipements/Le-parc-Jean-Baptiste-Lebas",
+        "opening_hours": "Tous les jours: 07:30–21:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [3.0706319, 50.6142523] 
+      },
+      "properties": {
+        "name": "Jardin des Plantes (Jardin Botanique)",
+        "type": "jardin botanique",
+        "address": "306 Rue du Jardin des Plantes, 59000 Lille",
+        "phone": "0362260828",
+        "website": "https://www.lilletourism.com/explorer/hello-nature/prendre-lair/parcs-jardins/jardin-des-plantes-lille-fr-4432249/",
+        "opening_hours": "Tous les jours: 07:00–21:30"
+      }
+    },
+    {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0346661, 50.6353374] },
+    "properties": {
+      "name": "Piscine Marx Dormoy",
+      "type": "piscine",
+      "address": "36 Av. Marx Dormoy, 59000 Lille",
+      "phone": "0320925330",
+      "website": "http://www.lille.fr/Nos-equipements/Piscine-olympique-Marx-Dormoy",
+      "opening_hours": "lundi, 08:00-13:30, 17:00-21:00\nmardi, 08:00–13:30, 17:00–21:00\nmercredi, 08:00–16:00, 17:00–19:30\njeudi, 08:00–13:30 17:00–21:00\nvendredi, 08:00–13:30, 17:00–19:30\nsamedi, 08:00–13:00, 14:30–18:00\ndimanche, 08:30–12:30"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0440729, 50.6274258] },
+    "properties": {
+      "name": "Proxi Service – Lille",
+      "type": "épicerie",
+      "address": "90 Rue des Stations, 59800 Lille",
+      "opening_hours": "mardi, 10:00–22:00\nmercredi, 09:40–22:00\njeudi, 10:00–22:00\nvendredi, 10:00–22:00\nsamedi, 10:00–22:00\ndimanche, 10:00–22:00\nlundi (Fête Nationale du 14 juillet), 10:00–22:00, Les horaires peuvent être modifiés"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0491611, 50.6272329] },
+    "properties": {
+      "name": "Aux Merveilleux de Fred",
+      "type": "boulangerie",
+      "address": "336 Rue Léon Gambetta, 59800 Lille",
+      "phone": "0320572558",
+      "website": "http://www.auxmerveilleux.fr/",
+      "opening_hours": "mardi, 06:30–19:30\nmercredi, 06:30–19:30\njeudi, 06:30–19:30\nvendredi, 06:30–19:30\nsamedi, 06:30–19:30\ndimanche, 06:30–19:30\nlundi (Fête Nationale du 14 juillet), 06:30–19:30, Les horaires peuvent être modifiés"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0501758, 50.6275861] },
+    "properties": {
+      "name": "Basic-Fit Léon Gambetta",
+      "type": "salle de sport",
+      "address": "Rue Léon Gambetta, 59900 Lille, France",
+      "phone": "0366333344",
+      "website": "https://www.basic-fit.com/fr-fr/clubs/basic-fit-lille-rue-l%C3%A9on-gambetta-0a2a7e0f64ba4947b71d9bee4ce023d0.html?utm_medium=yext&utm_source=gmb",
+      "opening_hours": "mardi, 06:00–22:30\nmercredi, 06:00–22:30\njeudi, 06:00–22:30\nvendredi, 06:00–22:30\nsamedi, 09:00–19:00\ndimanche, 09:00–19:00\nlundi (Fête Nationale du 14 juillet), 06:00–22:30, Les horaires peuvent être modifiés"
+    }
+  },
+  {
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0490518, 50.6199159]
+  },
+  "properties": {
+    "name": "Mosquée Assounna",
+    "type": "mosquée",
+    "address": "8 Rue Jean du Solier, 59000 Lille, France",
+    "website": "https://www.instagram.com/mosqueeassounna?igsh=YXl4dzh1dXNrbnhs",
+    "phone": "+33320252775"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0511433, 50.6257264]
+  },
+  "properties": {
+    "name": "Basic-Fit Sarrazins",
+    "type": "salle de sport",
+    "address": "4bis Rue des Sarrazins, 59800 Lille",
+    "phone": "0366333344",
+    "website": "https://www.basic-fit.com/fr-fr/clubs/basic-fit-lille-rue-des-sarrazins-08ca48fccea34f2886bb30402b958843.html?utm_medium=yext&utm_source=gmb",
+    "opening_hours": "mardi: 06:00–22:30\nmercredi: 06:00–22:30\njeudi: 06:00–22:30\nvendredi: 06:00–22:30\nsamedi: 09:00–19:00\ndimanche: 09:00–19:00\nlundi (Fête Nationale du 14 juillet): 06:00–22:30"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0460143, 50.6213724]
+  },
+  "properties": {
+    "name": "Basic-Fit Montebello",
+    "type": "salle de sport",
+    "address": "154 Bd Montebello, 59000 Lille",
+    "website": "https://www.basic-fit.com/fr-fr/clubs/basic-fit-lille-boulevard-montebello-e90548863db54c9cb8f3984d83e0c82f.html?utm_medium=yext&utm_source=gmb",
+    "opening_hours": "mardi, 06:00–22:30\nmercredi, 06:00–22:30\njeudi, 06:00–22:30\nvendredi, 06:00–22:30\nsamedi, 09:00–19:00\ndimanche, 09:00–19:00\nlundi (Fête Nationale du 14 juillet), 06:00–22:30, Les horaires peuvent être modifiés"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0640011, 50.6192932]
+  },
+  "properties": {
+    "name": "Mosquée Badr",
+    "type": "mosquée",
+    "address": "9 Rue Armand Barbès, 59000 Lille, France",
+    "website": "http://mosqueebadr.fr/",
+    "phone": "+33320532093"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.1031251, 50.6342842]
+  },
+  "properties": {
+    "name": "Grande Mosquée de Mons-en-Baroeul (Mosquée Al Wifaq)",
+    "type": "mosquée",
+    "address": "1 Rue Jacquard, 59370 Mons-en-Barœul, France",
+    "website": "http://www.mosqueemons.fr/",
+    "phone": "+33320334233"
+  }
+},
+{
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0608918, 50.6133103]
+    },
+    "properties": {
+      "name": "Grande Mosquée de Lille (Mosquée Al-Imane)",
+      "type": "mosquée",
+      "address": "59 Rue de Marquillies, 59000 Lille, France",
+      "website": "http://www.mosqueedelille.fr/",
+      "phone": "+33320530265"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0914662, 50.6418592]
+    },
+    "properties": {
+      "name": "Mosquée El Forkane",
+      "type": "mosquée",
+      "address": "250 Rue du Faubourg de Roubaix, 59800 Lille, France",
+      "website": "https://www.mosquee-elforkane.com/",
+      "phone": "+33320065901"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0940773, 50.6333319]
+    },
+    "properties": {
+      "name": "GARAGE LILLE MECANIQUE",
+      "type": "garage",
+      "address": "53 Rue Mirabeau, 59800 Lille, France",
+      "phone": "+33650270581",
+      "opening_hours": "lundi, 09:00–18:00\nmardi, 09:00–18:00\nmercredi, 09:00–18:00\njeudi, 09:00–18:00\nvendredi, 09:00–18:00\nsamedi, 09:00–12:00\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0587148, 50.6067204]
+    },
+    "properties": {
+      "name": "Garage STA Lille",
+      "type": "garage",
+      "address": "270 Rue du Faubourg d'Arras, 59000 Lille, France",
+      "phone": "+33320530333",
+      "website": "http://garage-sta-lille.com/",
+      "opening_hours": "lundi, 08:30–13:00, 14:00–18:30\nmardi, 08:30–13:00, 14:00–18:30\nmercredi, 08:30–13:00, 14:00–18:30\njeudi, 08:30–13:00, 14:00–18:30\nvendredi, 08:30–13:00, 14:00–18:30\nsamedi, 09:00–12:30\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0948114, 50.6243302]
+    },
+    "properties": {
+      "name": "Renault/Dacia-Garage Asloun",
+      "type": "garage",
+      "address": "13 Rue Salomé, 59800 Lille, France",
+      "phone": "+33320564083",
+      "website": "https://garageasloun.fr/",
+      "opening_hours": "lundi, 08:00–12:00, 13:30–19:00\nmardi, 08:00–12:00, 13:30–19:00\nmercredi, 08:00–12:00, 13:30–19:00\njeudi, 08:00–12:00, 13:30–19:00\nvendredi, 08:00–12:00, 13:30–19:00\nsamedi, 08:00–12:00\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0794113, 50.6224458]
+    },
+    "properties": {
+      "name": "Hôpital Saint Vincent de Paul",
+      "type": "hôpital",
+      "address": "Bd de Belfort, 59000 Lille, France",
+      "phone": "+33320874848",
+      "website": "https://www.saintvincentdepaul-lille.fr/",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0336577, 50.6120915]
+    },
+    "properties": {
+      "name": "CHU de Lille",
+      "type": "hôpital",
+      "address": "Rue Michel Polonowski, 59000 Lille, France",
+      "phone": "+33320445962",
+      "website": "https://www.chu-lille.fr/",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0309767, 50.6082229]
+    },
+    "properties": {
+      "name": "Hôpital Roger Salengro",
+      "type": "hôpital",
+      "address": "Rue Emile Laine, 59037 Lille, France",
+      "phone": "+33320445962",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0857594, 50.6470057]
+    },
+    "properties": {
+      "name": "Hôpital privé La Louvière - Ramsay Santé",
+      "type": "hôpital",
+      "address": "69 Rue de la Louvière, 59800 Lille, France",
+      "phone": "+33320157000",
+      "website": "https://hopital-prive-la-louviere-lille.ramsaysante.fr/",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0442573, 50.6311057]
+    },
+    "properties": {
+      "name": "Colbert Auto-École",
+      "type": "auto-école",
+      "address": "101 Rue Colbert, 59800 Lille, France",
+      "phone": "+33320547602",
+      "website": "http://www.autoecolecolbert.fr/",
+      "opening_hours": "lundi, 09:00–13:00, 14:00–18:00\ntardi, 13:00–18:00\nmercredi, 09:00–13:00, 14:00–18:00\njeudi, 09:00–13:00, 14:00–18:00\nvendredi, 09:00–12:00\nsamedi, Fermé\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.108492, 50.624084]
+    },
+    "properties": {
+      "name": "Esso",
+      "type": "station-service",
+      "address": "72 Av. du Président John F. Kennedy, 59000 Lille, France",
+      "phone": "+33800774252",
+      "website": "https://carburant.esso.fr/fr-fr/find-station/esso-lille-essoexpressstsauveur-100185951",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0979881, 50.634006]
+    },
+    "properties": {
+      "name": "E.Leclerc Station Service",
+      "type": "station-service",
+      "address": "94 Rue de Lannoy, 59800 Lille, France",
+      "phone": "+33320617617",
+      "website": "https://www.e.leclerc/mag/e-leclerc-lille",
+      "opening_hours": "Ouvert 24h/24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0507543, 50.6184007]
+    },
+    "properties": {
+      "name": "TotalEnergies Access - RELAIS LILLE DOREZ",
+      "type": "station-service",
+      "address": "365 Bd Victor Hugo, 59000 Lille, France",
+      "phone": "+33320570986",
+      "website": "https://store.totalenergies.fr/fr_FR/NF004004?utm_source=google&utm_medium=organic&utm_campaign=mybusiness-website",
+      "opening_hours": "lundi, 06:00–22:00\nmardi, 06:00–22:00\nmercredi, 06:00–22:00\njeudi, 06:00–22:00\nvendredi, 06:00–22:00\nsamedi, 07:00–21:00\ndimanche, 08:00–21:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.1006859, 50.6500532]
+    },
+    "properties": {
+      "name": "TotalEnergies Access - RELAIS MONS EN BAROEUL",
+      "type": "station-service",
+      "address": "Voie Rapide Urbaine, N356, 59370 Mons-en-Barœul, France",
+      "phone": "+33320475157",
+      "website": "https://store.totalenergies.fr/fr_FR/NF080034?utm_source=google&utm_medium=organic&utm_campaign=mybusiness-website",
+      "opening_hours": "lundi, 06:00–22:00\nmardi, 06:00–22:00\nmercredi, 06:00–22:00\njeudi, 06:00–22:00\nvendredi, 06:00–22:00\nsamedi, 06:00–22:00\ndimanche, 06:00–22:00"
+    }
+  },
+  {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.1423838, 50.6115957]
+      },
+      "properties": {
+        "name": "Université de Lille",
+        "type": "université",
+        "address": "Cité Scientifique, 59650 Villeneuve-d'Ascq, France",
+        "phone": "+33320434343",
+        "website": "http://www.univ-lille1.fr/",
+        "opening_hours": "Non renseigné"
+      }
+    },
+    {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0437586, 50.6298824]
+    },
+    "properties": {
+      "name": "École maternelle et élémentaire Thérèse d'Avila",
+      "type": "école",
+      "address": "124 Bd Vauban, 59800 Lille, France",
+      "phone": "0328365757",
+      "website": "http://www.theresedavila.eu/ecole/",
+      "opening_hours": "lundi, 07:30–18:30\nmardi, 07:30–18:30\nmercredi, 08:00–12:00\njeudi, 07:30–18:30\nvendredi, 07:30–18:30\nsamedi, Fermé\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0443848, 50.6284925]
+    },
+    "properties": {
+      "name": "Collège Thérèse d'Avila",
+      "type": "collège",
+      "address": "13 Rue des Frères Vaillant, 59000 Lille, France",
+      "phone": "0328365757",
+      "website": "http://theresedavila.eu/college/",
+      "opening_hours": "lundi, 07:40–18:00\nmardi, 07:40–18:00\nmercredi, 07:40–16:30\njeudi, 07:40–18:00\nvendredi, 07:40–18:00\nsamedi, Fermé\ndimanche, Fermé"
+    }
+  },
+  {
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.048118, 50.6310143]
+  },
+  "properties": {
+    "name": "Lycée Thérèse d'Avila",
+    "type": "lycée",
+    "address": "254 Rue Nationale, 59800 Lille, France",
+    "phone": "0328365757",
+    "website": "http://www.theresedavila.eu/lycee",
+    "opening_hours": "lundi, 07:30–18:00\nmardi, 07:30–18:00\nmercredi, 07:30–18:00\njeudi, 07:30–18:00\nvendredi, 07:30–18:00\nsamedi, Fermé\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.048722, 50.627063]
+  },
+  "properties": {
+    "name": "Grande Pharmacie de Wazemmes",
+    "type": "pharmacie",
+    "address": "344-352, Rue Léon Gambetta, 59000 Lille, France",
+    "phone": "0320573995",
+    "website": "http://grandepharmaciedewazemmes.pharmabest.com/",
+    "opening_hours": "lundi, 08:30–19:30\nmardi, 08:30–19:30\nmercredi, 08:30–19:30\njeudi, 08:30–19:30\nvendredi, 08:30–19:30\nsamedi, 09:00–20:00\ndimanche, 09:00–13:30"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0480799, 50.6266279]
+  },
+  "properties": {
+    "name": "Picard",
+    "type": "supermarché",
+    "address": "349 Rue Léon Gambetta, 59000 Lille, France",
+    "phone": "0320429915",
+    "website": "https://magasins.picard.fr/1022-picard-wazemmes?utm_source=gmb",
+    "opening_hours": "lundi, 09:00–20:00\nmardi, 09:00–20:00\nmercredi, 09:00–20:00\njeudi, 09:00–20:00\nvendredi, 09:00–20:00\nsamedi, 09:00–20:00\ndimanche, 09:00–12:45"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.171209, 50.691236]
+  },
+  "properties": {
+    "name": "Mosquée Abou Bakr Essedik",
+    "type": "mosquée",
+    "address": "63 Rue Franklin, 59100 Roubaix, France",
+    "phone": "0362527793",
+    "website": "http://www.essedik.fr/",
+    "opening_hours": "lundi, 03:30–00:00\nmardi, 03:30–00:00\nmercredi, 03:30–00:00\njeudi, 03:30–00:00\nvendredi, 03:30–00:00\nsamedi, 03:30–00:00\ndimanche, 03:30–00:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0682936, 50.621599]
+  },
+  "properties": {
+    "name": "École catholique Saint Vincent de Paul",
+    "type": "école",
+    "address": "28 Rue de Fontenoy, 59000 Lille, France",
+    "phone": "0320520822",
+    "website": "https://www.ecolesaintvincentlillemoulins.com/",
+    "opening_hours": "Non renseigné"
+  }
+}
+]
+}

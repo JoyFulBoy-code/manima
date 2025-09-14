@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Manima - Validation Commerces</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+    h1 { color: #2c3e50; }
+    .commerce { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+    .pending { background-color: #fff8e1; }
+    .approved { background-color: #e8f5e9; }
+    .rejected { background-color: #ffebee; }
+    button { padding: 5px 10px; margin-right: 5px; cursor: pointer; }
+    textarea { width: 100%; height: 150px; margin-top: 10px; font-family: monospace; }
+    .hidden { display: none; }
+    .filters { margin: 20px 0; padding: 10px; background: #f5f5f5; }
+  </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <h1>Admin Manima - Validation des Commerces</h1>
+  
+  <div class="filters">
+    <label>
+      <input type="radio" name="filter" value="pending" checked> En attente
+    </label>
+    <label>
+      <input type="radio" name="filter" value="approved"> Validés
+    </label>
+    <label>
+      <input type="radio" name="filter" value="rejected"> Rejetés
+    </label>
+  </div>
+
+  <div id="commerces-list"></div>
+
+  <div id="geojson-container" class="hidden">
+    <h3>Code GeoJSON à copier :</h3>
+    <textarea id="geojson-output" readonly></textarea>
+    <p>Copiez ce code dans votre fichier <code>lille.geojson</code></p>
+  </div>
+
+  <script>
+    // Configuration Firebase (remplacez par votre config)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAid2_e5G6nk7_rAgn_G2M9gMYpGv9TyVc",
+      authDomain: "manima-7e23a.firebaseapp.com",
+      databaseURL: "https://manima-7e23a-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "manima-7e23a",
+      storageBucket: "manima-7e23a.appspot.com",
+      messagingSenderId: "135877962056",
+      appId: "1:135877962056:web:06da5bcc6901a352ccab7d"
+    };
+
+    // Initialisation Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Références Firebase
+    const pendingRef = db.ref('commerces_en_attente');
+    const approvedRef = db.ref('commerces_valides');
+    const rejectedRef = db.ref('commerces_rejetes');
+
+    // Charger les commerces
+    function loadCommerces(status = 'pending') {
+      const ref = status === 'approved' ? approvedRef : 
+                 status === 'rejected' ? rejectedRef : pendingRef;
+      
+      ref.once('value').then(snapshot => {
+        const commerces = snapshot.val();
+        const container = document.getElementById('commerces-list');
+        container.innerHTML = '';
+
+        if (!commerces) {
+          container.innerHTML = '<p>Aucun commerce ' + getStatusText(status) + '</p>';
+          return;
+        }
+
+        Object.entries(commerces).forEach(([id, commerce]) => {
+          const commerceEl = document.createElement('div');
+          commerceEl.className = `commerce ${status}`;
+          commerceEl.innerHTML = `
+            <h3>${commerce.properties.name}</h3>
+            <p><strong>Catégorie:</strong> ${commerce.properties.amenity}</p>
+            <p><strong>Adresse:</strong> ${commerce.properties.address}</p>
+            <p><strong>Contact:</strong> ${commerce.properties.gerant.nom} - ${commerce.properties.gerant.email}</p>
+            <p><strong>Téléphone:</strong> ${commerce.properties.phone || 'Non renseigné'}</p>
+            <p><strong>Coordonnées:</strong> ${commerce.geometry.coordinates.join(', ')}</p>
+            ${status === 'pending' ? `
+              <button onclick="approveCommerce('${id}')">Valider</button>
+              <button onclick="rejectCommerce('${id}')">Rejeter</button>
+            ` : ''}
+            <button onclick="showGeoJSON('${id}')">Voir GeoJSON</button>
+          `;
+          container.appendChild(commerceEl);
+        });
+      });
+    }
+
+    // Fonctions de gestion
+    function approveCommerce(id) {
+      pendingRef.child(id).once('value').then(snapshot => {
+        const commerce = snapshot.val();
+        
+        // Déplacer vers commerces validés
+        approvedRef.child(id).set(commerce);
+        
+        // Supprimer de la liste d'attente
+        pendingRef.child(id).remove();
+        
+        // Afficher le GeoJSON
+        showGeoJSON(id);
+        
+        // Afficher les infos de contact
+        const email = commerce.properties.gerant.email;
+        const nomCommerce = commerce.properties.name;
+        alert(`Commerce validé !\n\nContactez le commerçant :\nEmail: ${email}\n\nMessage à envoyer :\n"Bonjour,\nVotre commerce "${nomCommerce}" a été validé et sera visible prochainement sur notre carte.\nCordialement,\nL'équipe Manima"`);
+        
+        // Recharger la liste
+        loadCommerces('pending');
+      });
+    }
+
+    function rejectCommerce(id) {
+      if (confirm("Voulez-vous vraiment rejeter ce commerce ?")) {
+        pendingRef.child(id).once('value').then(snapshot => {
+          const commerce = snapshot.val();
+          
+          // Déplacer vers commerces rejetés
+          rejectedRef.child(id).set(commerce);
+          
+          // Supprimer de la liste d'attente
+          pendingRef.child(id).remove();
+          
+          // Afficher les infos de contact
+          const email = commerce.properties.gerant.email;
+          const nomCommerce = commerce.properties.name;
+          alert(`Commerce rejeté !\n\nContactez le commerçant :\nEmail: ${email}\n\nMessage à envoyer :\n"Bonjour,\nMalheureusement, votre commerce "${nomCommerce}" ne répond pas à nos critères et ne sera pas publié.\nCordialement,\nL'équipe Manima"`);
+          
+          // Recharger la liste
+          loadCommerces('pending');
+        });
+      }
+    }
+
+    function showGeoJSON(id) {
+      pendingRef.child(id).once('value').then(snapshot => {
+        const commerce = snapshot.val();
+        if (!commerce) {
+          approvedRef.child(id).once('value').then(snap => {
+            displayGeoJSON(snap.val());
+          });
+        } else {
+          displayGeoJSON(commerce);
+        }
+      });
+    }
+
+    function displayGeoJSON(commerce) {
+      const geojson = {
+        "type": "Feature",
+        "geometry": commerce.geometry,
+        "properties": {
+          "name": commerce.properties.name,
+          "amenity": commerce.properties.amenity,
+          "phone": commerce.properties.phone,
+          "address": commerce.properties.address
+        }
+      };
+      
+      document.getElementById('geojson-output').value = JSON.stringify(geojson, null, 2);
+      document.getElementById('geojson-container').classList.remove('hidden');
+    }
+
+    function getStatusText(status) {
+      return {
+        'pending': 'en attente',
+        'approved': 'validés',
+        'rejected': 'rejetés'
+      }[status];
+    }
+
+    // Initialisation
+    document.querySelectorAll('input[name="filter"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        loadCommerces(e.target.value);
+      });
+    });
+
+    // Charger les commerces en attente par défaut
+    loadCommerces('pending');
+  </script>
+</body>
+</html>

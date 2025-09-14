@@ -1,0 +1,3815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Manima - Carte interactive Lille et services locaux</title>
+  <meta name="description" content="Manima est une carte interactive comme Google Maps : trouvez des services à Lille (restaurants, taxis, commerces, garages, pharmacies), consultez leurs horaires, avis et itinéraires. Recherchez aussi des adresses partout dans le monde.">
+  <meta name="keywords" content="manima, carte interactive, services Lille, restaurants Lille, taxis Lille, garages Lille, pharmacies Lille, avis commerces, itinéraires, carte mondiale">
+  
+  <!-- Balises pour les réseaux sociaux -->
+  <meta property="og:title" content="Manima | Carte Interactive des Services Locaux">
+  <meta property="og:description" content="Trouvez les meilleurs services autour de vous avec la carte Manima - Taxis, chauffeurs, garages, pharmacies et plus encore.">
+  <meta property="og:image" content="icone-manima.png">
+  <meta property="og:url" content="https://votre-site.com">
+  <meta property="og:type" content="website">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Manima - Carte Interactive des Services">
+  <meta name="twitter:description" content="Découvrez et évaluez les services locaux sur notre carte interactive. Ajoutez votre commerce gratuitement.">
+
+  <!-- Leaflet & Plugins -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <!-- Sitemap et robots.txt -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+  <link rel="canonical" href="https://votre-site.com">
+
+  <!-- Balises pour les résultats Google -->
+  <meta name="description" content="Manima - Carte interactive des services à Lille">
+  <meta property="og:title" content="Manima - Carte interactive">
+  <meta property="og:description" content="Trouvez les services autour de vous avec Manima">
+  <meta property="og:image" content="icone-manima.PNG">
+  <meta property="og:url" content="https://votre-site.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Remplacez l'ancien favicon par votre image -->
+  <link rel="icon" type="image/png" href="icone-manima.PNG">
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
+  
+  <!-- Prechargement des ressources critiques -->
+  <link rel="preload" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" as="style">
+  <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" as="style">
+  <link rel="preconnect" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://firebasedatabase.app">
+  <!-- Données structurées Schema.org -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Manima",
+    "description": "Carte interactive des services à Lille avec fonctionnalités d'avis et d'ajout de commerces",
+    "applicationCategory": "MapApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "150"
+    }
+  }
+  </script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+
+    // Initialisation immédiate d'EmailJS
+    (function() {
+      emailjs.init('NgKsLCNz1k3Yxpue7');
+    })();
+  </script>
+  <!-- Remplacez l'ancien import par celui-ci -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+  <style>
+    body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; }
+    header, footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+    }
+    #map { height: calc(100vh - 160px); width: 100%; transition: transform 0.2s linear; transform-origin: center center; }
+    .search-bar {
+      padding: 10px;
+      text-align: center;
+    }
+    .search-bar input {
+      padding: 10px;
+      font-size: 1rem;
+      width: 80%;
+      max-width: 400px;
+      border: 2px solid #4CAF50;
+      border-radius: 8px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding-top: 50px;
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+    }
+    .badge-moussaillon {
+      width: 40px;  /* Augmentez cette valeur */
+      height: 40px; /* Augmentez cette valeur */
+      margin-left: 5px;
+      vertical-align: middle;
+      transition: transform 0.3s; /* Pour l'animation au survol */
+    }
+    .badge-moussaillon:hover {
+      transform: scale(1.2); /* Effet de zoom au survol */
+    }
+    /* Nouveaux styles pour les chauffeurs */
+    #chauffeurs-btn {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      background-color: #2196F3;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none; /* Caché par défaut */
+    }
+    #chauffeurs-btn {
+      z-index: 10000; /* Plus élevé que les autres éléments */
+    }
+
+    #chauffeurs-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    #chauffeurs-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .chauffeur-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background-color: #f9f9f9;
+    }
+
+    .chauffeur-card h3 {
+      margin-top: 0;
+      color: #2196F3;
+    }
+
+    .call-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    /* Styles pour les avis de chauffeurs */
+    .chauffeur-avis-container {
+      margin-top: 15px;
+      border-top: 1px dashed #ddd;
+      padding-top: 15px;
+    }
+
+    .chauffeur-avis-form {
+      margin-top: 10px;
+    }
+
+    .chauffeur-avis-form textarea {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .chauffeur-avis-list {
+      margin-top: 10px;
+    }   
+
+    .chauffeur-avis-item {
+      padding: 8px;
+      margin-bottom: 8px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+
+    .vote-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .vote-btn {
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .vote-vert {
+    }
+
+    .vote-rouge {
+    }
+    /* Style pour la modal des avis */
+    #tous-les-avis-modal .modal-content {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* Style pour les éléments d'avis */
+    .chauffeur-avis-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    /* Style pour le bouton "Voir tous les avis" */
+    .call-btn {
+      /* Votre style existant */
+      transition: all 0.3s;
+    }
+
+    .call-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    /* Ajoutez ceci dans votre section <style> */
+    .popup-btn {
+      padding: 6px 10px;
+      margin: 2px 0;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      font-size: 0.9em;
+      display: inline-block;
+      width: auto;
+    }
+
+    .call-btn {
+      background-color: #2196F3;
+    }
+
+    .avis-btn {
+      background-color: #FF9800;
+    } 
+    textarea, input[type="file"], input[type="text"] {
+      width: 90%; padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #388e3c; }
+    #contenu-avis { max-height: 400px; overflow-y: auto; }
+    .arrow-icon {
+      width: 50px; height: 50px;
+      background-color: #4CAF50;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    /* Nouveaux styles pour le formulaire de commerce */
+    #commerce-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      overflow: auto;
+    }
+
+    #commerce-modal .modal-content {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      margin: 5% auto;
+      width: 90%;
+    }
+
+    #commerce-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      min-height: 0; /* Important pour le scroll */
+    } 
+    
+    #commerce-form h2 {
+      grid-column: 1 / -1;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      overflow: hidden; /* Empêche le contenu de déborder */
+    }
+    
+    .section h3 {
+      color: #4CAF50;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #commerce-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #34495e;
+    }
+    
+    #commerce-form input[type="text"],
+    #commerce-form input[type="tel"],
+    #commerce-form input[type="email"],
+    #commerce-form input[type="url"],
+    #commerce-form select,
+    #commerce-form textarea {
+      width: calc(100% - 30px); /* Réduit légèrement la largeur */
+      max-width: 100%;
+      box-sizing: border-box; /* Inclut le padding dans la largeur */
+    }
+    
+    #commerce-form input:focus,
+    #commerce-form select:focus,
+    #commerce-form textarea:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      outline: none;
+      background-color: white;
+    }
+    
+    #commerce-form input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    
+    #commerce-horaires-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    #commerce-horaires-container div {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #commerce-horaires-container input {
+      margin-bottom: 0;
+    }
+    
+    .required::after {
+      content: " *";
+      color: #e74c3c;
+    }
+    
+    /* Bouton de soumission (conservé comme demandé) */
+    #commerce-form button[type="submit"] {
+      grid-column: 1 / -1;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s;
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    #commerce-form button[type="submit"]:hover {
+      background-color: #388E3C;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    } 
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      #commerce-form {
+        grid-template-columns: 1fr;
+      }
+      
+      #commerce-horaires-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    #ajouter-commerce-btn {
+      position: fixed;
+      bottom: 100px;
+      right: 1200px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 9999; /* Plus élevé pour être au-dessus de la carte */
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    /* Style pour la modal QR Code */
+    #qr-modal .modal-content {
+      text-align: center;
+      max-width: 300px;
+    }
+
+    #qr-code-container {
+      margin: 20px auto;
+      padding: 10px;
+      background: white;
+      display: inline-block;
+    }
+
+    #qr-code-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    #lien-partage {
+      word-break: break-all;
+      margin: 15px 0;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 5px;
+    }
+    #streetview-embed-container {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 10000;
+    }
+    #streetview-iframe {
+      width: 90%; height: 90%;
+      margin: 2% auto;
+      display: block;
+      border: none;
+      border-radius: 8px;
+    }
+    .close-streetview {
+      position: absolute;
+      top: 15px; right: 15px;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      background: rgba(0,0,0,0.5);
+      width: 40px; height: 40px;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 50%;
+    }
+    .leaflet-popup-content button.popup-btn {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .leaflet-popup-content button.popup-btn:hover {
+      background: #388E3C;
+    }
+    #streetview-embed-container {
+      display: none;
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 10000;
+    }
+
+    #streetview-iframe {
+      width: 90%; 
+      height: 90%;
+      margin: 2% auto;
+      display: block;
+      border: none;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .close-streetview {
+      position: absolute;
+      top: 15px; 
+      right: 15px;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      background: rgba(0,0,0,0.5);
+      width: 40px; 
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 50%;
+    }
+
+    .close-streetview:hover {
+      background: rgba(0,0,0,0.8);
+    }
+    #qr-code-container {
+      margin: 20px auto;
+      padding: 15px;
+      background: white;
+      display: inline-block;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    #qr-code-container div:first-child {
+      font-size: 18px;
+      color: #4CAF50;
+      padding-bottom: 10px;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    
+    .logo {
+      width: 50px;
+      height: 50px;
+      background-color: #4CAF50;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .logo::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+      transform: rotate(30deg);
+    }
+    
+    .logo-m {
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transform: translateY(3px);
+    }
+    
+    .logo-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-left: 12px;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    
+    /* Animation au survol */
+    .logo:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+    /* Structure sémantique */
+    header, nav, main, footer {
+      display: block;
+    }
+    
+    /* Amélioration de l'accessibilité */
+    :focus {
+      outline: 2px solid #4CAF50;
+      outline-offset: 2px;
+    }
+    
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    
+    /* Navigation SEO */
+    .seo-links {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: white;
+      padding: 5px;
+      z-index: 10000;
+      transition: top 0.3s;
+    }
+    
+    .seo-links:focus-within {
+      top: 0;
+    }
+    
+    .seo-links a {
+      margin: 0 10px;
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    
+    /* Contenu textuel pour SEO */
+    .seo-content {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .seo-content h2 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+    
+    .seo-content p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    
+    /* Positionnement des boutons pour mobile */
+    @media (max-width: 768px) {
+      #chauffeurs-btn {
+        bottom: 160px;
+        right: 20px;
+      }
+      
+      #ajouter-commerce-btn {
+        bottom: 90px;
+        left: 20px;
+        right: auto;
+      }
+    }
+    /* Ajoutez ces styles pour les nouveaux boutons */
+    .popup-btn {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .popup-btn.call-btn {
+      background-color: #2196F3;
+    }
+
+    .popup-btn:hover {
+      opacity: 0.9;
+    }
+    /* Style pour la popup de détails */
+.custom-popup .leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 15px;
+  line-height: 1.5;
+}
+
+.details-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.details-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.3em;
+  color: #2c3e50;
+}
+
+.details-header h4 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #3498db;
+  font-weight: normal;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.details-content {
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+/* Amélioration des sauts de ligne */
+.details-content br {
+  display: block;
+  content: "";
+  margin: 8px 0;
+}
+/* Ajout pour le conteneur de recommandations */
+   #recommandation-container {
+  position: fixed;
+  bottom: 200px;
+  right: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  border: 2px solid #4CAF50;
+  width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 15px;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+#recommandation-title {
+  font-weight: bold;
+  color: #4CAF50;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+#recommandation-service ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+#recommandation-service li {
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #f0f8ff;
+  border-left: 4px solid #4CAF50;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#recommandation-service li:hover {
+  background-color: #d0e8ff;
+}
+
+#recommandation-time {
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+  text-align: right;
+}
+/* Styles pour le carré de recommandation amélioré */
+    #recommandation-container {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      border: 2px solid #4CAF50;
+      width: 280px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+      transition: transform 0.3s ease;
+    }
+    
+    #recommandation-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    #recommandation-title {
+      font-weight: bold;
+      color: #4CAF50;
+      font-size: 18px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+    
+    #recommandation-service ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    
+    #recommandation-service li {
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #f0f8ff;
+      border-left: 4px solid #4CAF50;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #recommandation-service li:hover {
+      background-color: #d0e8ff;
+      transform: translateX(-3px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    #recommandation-service li::after {
+      content: "→";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4CAF50;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    #recommandation-service li:hover::after {
+      opacity: 1;
+    }
+    
+    #recommandation-time {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+      text-align: right;
+      font-style: italic;
+    }
+    
+    #close-recommandation {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #777;
+    }
+    
+    #close-recommandation:hover {
+      color: #4CAF50;
+    }
+
+    /* Animation pour le chargement des recommandations */
+    .loading-dots {
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+    }
+    
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      margin: 0 4px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+    
+    .dot:nth-child(1) { animation-delay: 0s; }
+    .dot:nth-child(2) { animation-delay: 0.5s; }
+    .dot:nth-child(3) { animation-delay: 1s; }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+    /* Style supplémentaire pour le titre du marché */
+    .market-day {
+      color: #e74c3c;
+      font-weight: bold;
+      font-style: italic;
+      margin-top: 5px;
+    }
+    #recommandation-market-day {
+  color: #e74c3c;
+  font-weight: bold;
+  font-style: italic;
+  margin-top: 5px;
+  display: none; /* caché par défaut */
+}
+/* Style pour le conteneur des marchés */
+  #market-container {
+    position: fixed;
+    bottom: 20px;
+    right: 320px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 2px solid #e74c3c;
+    width: 250px;
+    padding: 15px;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+    transition: transform 0.3s ease;
+  }
+
+  #market-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  #market-title {
+    font-weight: bold;
+    color: #e74c3c;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+
+  #market-service ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  #market-service li {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: #fdf2f2;
+    border-left: 4px solid #e74c3c;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #market-service li:hover {
+    background-color: #f8d7da;
+    transform: scale(1.05); /* Effet de grossissement au survol */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+
+  #market-service li::after {
+    content: "→";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #e74c3c;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  #market-service li:hover::after {
+    opacity: 1;
+  }
+
+/* Ajoutez ce style à la fin de votre CSS existant */
+.warning-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 10000;
+  border-bottom: 1px solid #ffeeba;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.warning-banner.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.warning-banner p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #856404;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 15px;
+  padding: 5px;
+}
+/*mosquee*/
+#jumua-container {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 2px solid #4CAF50;
+    width: 250px;
+    padding: 15px;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+    transition: transform 0.3s ease;
+  }
+
+  #jumua-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  #jumua-title {
+    font-weight: bold;
+    color: #4CAF50;
+    font-size: 18px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+
+  #jumua-service ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  #jumua-service li {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: #f0f8ff;
+    border-left: 4px solid #4CAF50;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #jumua-service li:hover {
+    background-color: #d0e8ff;
+    transform: scale(1.05); /* Effet de grossissement au survol */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+
+  #jumua-service li::after {
+    content: "→";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4CAF50;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  #jumua-service li:hover::after {
+    opacity: 1;
+  }
+  /* Responsive mobile */
+@media (max-width: 768px) {
+
+  /* Carte */
+  #map {
+    height: calc(100vh - 120px);
+  }
+
+  /* Bouton Ajouter Commerce : petit, bas à droite */
+  #ajouter-commerce-btn {
+    bottom: 10px;
+    right: 1px;
+    left:300px;
+    padding: 6px 7px;
+    font-size: 13px;
+    min-width: 59px;    /* largeur minimale pour rester cliquable */
+    min-height: 20px;   /* hauteur minimale pour rester cliquable */
+  }
+
+  /* Bouton Chauffeurs */
+  #chauffeurs-btn {
+    bottom: 70px;
+    right: 15px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  #recommandation-container,
+#market-container,
+#jumua-container {
+  width: 190px;
+  height: 90px;
+  left: 10px;       /* collé à gauche */
+  padding: 5px;
+  position: fixed;
+  overflow-y: auto;
+  box-sizing: border-box;
+  right: auto;
+}
+
+/* Empilement vertical bien propre */
+#market-container         { bottom: 20px; }   /* tout en bas */
+#recommandation-container { bottom: 20px; }  /* juste au-dessus de market */
+#jumua-container          { bottom: 220px; }  /* au-dessus de recommendation */*/
+
+  /* Modales */
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+    padding: 15px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  #contenu-avis {
+    max-height: 50vh;
+  }
+
+  /* Avis sur mobile */
+  .chauffeur-avis-item {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  /* Formulaires */
+  textarea, input[type="file"], input[type="text"] {
+    width: 95%;
+    padding: 8px;
+  }
+
+  /* Barre de recherche */
+  .search-bar input {
+    width: 90%;
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  /* Boutons popup */
+  .popup-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+    margin: 3px 0;
+  }
+}
+@media (max-width: 768px) {
+  #market-container {
+    width: 190px !important;
+    height: 100px !important;
+    left: 10px !important;
+    right: auto !important;
+    bottom: 125px !important; /* tout en bas */
+    position: fixed !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    z-index: 1000 !important;
+  }
+
+  #recommandation-container {
+    bottom: 15px !important; /* juste au-dessus */
+    left: 10px !important;
+    right: auto !important;
+    height:100px !important;
+  }
+
+  #jumua-container {
+    bottom: 125px !important; /* au-dessus */
+    left: 10px !important;
+    right: auto !important;
+    width:190px !important;
+    height:100px !important;
+  }
+  #chauffeurs-btn {
+    position: fixed !important;
+    bottom: 80px !important;  /* juste au-dessus du bouton ajouter commerce */
+    right: 20px !important;   /* aligné à droite */
+    left: auto !important;     /* désactive le left si nécessaire */
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    z-index: 10000 !important; /* au-dessus des autres éléments */
+  }
+}
+
+/* Très petits écrans */
+@media (max-width: 480px) {
+  header h1 { font-size: 1.5rem; }
+  footer p { font-size: 0.8rem; }
+  .modal-content { padding: 10px; }
+  .modal-content h2 { font-size: 1.2rem; }
+  button { padding: 8px; font-size: 0.9rem; }
+}
+
+/* Expérience tactile */
+@media (hover: none) and (pointer: coarse) {
+  .popup-btn, button { min-height: 44px; min-width: 44px; }
+  #recommandation-service li { padding: 12px 15px; }
+}
+  </style>
+</head>
+<body>
+  <!-- Navigation cachée pour SEO -->
+  <nav class="seo-links" aria-label="Liens rapides">
+    <a href="#services-lille">Services à Lille</a>
+    <a href="#ajouter-commerce">Ajouter un commerce</a>
+    <a href="#chauffeurs-lille">Chauffeurs Lille</a>
+    <a href="#carte-interactive">Carte interactive</a>
+  </nav>
+  <header><h1>Manima</h1></header>
+
+  <div class="search-bar">
+    <input type="text" id="search-bar" placeholder="Rechercher un service (garage, hôpital, etc.)">
+  </div>
+
+  <div id="map"></div>
+
+  <!-- Bouton Chauffeurs (visible seulement pour les Commandants) -->
+  <button id="chauffeurs-btn" onclick="afficherChauffeurs()">🚖 Nos Chauffeurs</button>
+  <!-- Bouton Ajouter Commerce (visible pour tous) -->
+  <button id="ajouter-commerce-btn" onclick="afficherFormulaireCommerce()">➕ Ajouter mon  commerce</button>
+  <!-- Modal des Chauffeurs -->
+  <div id="chauffeurs-modal" class="modal">
+    <div id="chauffeurs-content">
+      <span class="close-btn" onclick="fermerChauffeurs()">&times;</span>
+      <h2>Nos Chauffeurs Partenaires</h2>
+      <div id="liste-chauffeurs"></div>
+    </div>
+  </div>
+  
+  <!-- Ajoutez cette div juste après l'ouverture du <body> -->
+  <div id="warningBanner" class="warning-banner">
+    <p>
+      <strong>Nos services sont pour l’instant disponibles uniquement à Lille.</strong>
+      Si vous êtes en dehors de cette zone, il est normal qu’aucun service n’apparaisse autour de vous. Vous êtes commerçant, restaurateur ou professionnel ? Ajoutez gratuitement votre service sur la carte et rendez-le visible auprès de nos utilisateurs !
+    </p>
+    <button class="close-btn" onclick="hideWarning()">×</button>
+  </div>
+
+  <!-- Modals -->
+  <div id="avis-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fermerModal()">&times;</span>
+      <h2 id="titre-avis">Soumettre un avis</h2>
+      <form id="avis-form">
+        <input type="text" id="pseudo-avis" placeholder="Votre pseudo" disabled />
+        <textarea id="text-avis" placeholder="Votre avis..." required></textarea>
+        <label for="photo-avis" style="display: block; margin-bottom: 5px; font-weight: bold;">Photo (optionnel)</label>
+        <input type="file" id="photo-avis" accept="image/*" />
+
+        <label for="video-avis" style="display: block; margin-top: 10px; margin-bottom: 5px; font-weight: bold;">Vidéo (optionnel)</label>
+        <input type="file" id="video-avis" accept="video/*" />
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="liste-avis-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fermerListeAvis()">&times;</span>
+      <h2 id="titre-liste-avis">Avis</h2>
+      <div id="contenu-avis"></div>
+    </div>
+  </div>
+  
+ <!-- Correction du conteneur de recommandations -->
+<div id="recommandation-container">
+  <div id="recommandation-title">Recommandations du moment</div>
+  <div id="recommandation-market-day"></div>
+  <div id="recommandation-service"></div>
+  <div id="recommandation-time"></div>
+</div>
+
+<!-- Ajoutez ceci après votre conteneur de recommandations existant -->
+<div id="market-container" style="display: none; position: fixed; bottom: 390px; right: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #e74c3c; width: 250px; padding: 15px; z-index: 1000; font-family: Arial, sans-serif;">
+  <div id="market-title" style="font-weight: bold; color: #e74c3c; font-size: 18px; margin-bottom: 10px; text-align: center;"></div>
+  <div id="market-service"></div>
+</div>
+
+<!-- Ajoutez ceci après le conteneur de marché -->
+<div id="jumua-container" style="display: none; position: fixed; bottom: 150px; right: 1110px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #4CAF50; width: 250px; padding: 15px; z-index: 1000; font-family: Arial, sans-serif;">
+  <div id="jumua-title" style="font-weight: bold; color: #4CAF50; font-size: 18px; margin-bottom: 10px; text-align: center;">Jumua</div>
+  <div id="jumua-service"></div>
+</div>
+
+  <!-- Modal Ajout Commerce -->
+<div id="commerce-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fermerCommerceModal()">&times;</span>
+      <h2>Ajouter mon commerce</h2>
+      <form id="commerce-form">
+        <!-- Section Infos de base -->
+        <div class="section">
+          <h3><span>🏪</span> Infos de base sur le commerce</h3>
+          <label for="commerce-nom" class="required">Nom du commerce</label>
+          <input type="text" id="commerce-nom" required placeholder="Ex: Boulangerie du Centre">
+          
+          <label for="commerce-categorie" class="required">Catégorie</label>
+          <select id="commerce-categorie" required>
+            <option value="">-- Sélectionnez --</option>
+            <option value="boulangerie">Boulangerie</option>
+            <option value="coiffeur">Coiffeur</option>
+            <option value="garage">Garage</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="pharmacie">Pharmacie</option>
+            <option value="supermarche">Super marché</option>
+            <option value="autre">Autre</option>
+          </select>
+          
+          <label for="commerce-description" class="required">Description courte (max 300 caractères)</label>
+          <textarea id="commerce-description" maxlength="300" required placeholder="Décrivez brièvement votre commerce..."></textarea>
+        </div>
+        
+        <!-- Section Localisation -->
+        <div class="section">
+          <h3><span>📍</span> Localisation précise</h3>
+          <label for="commerce-adresse" class="required">Adresse complète</label>
+          <input type="text" id="commerce-adresse" required placeholder="Ex: 123 Rue Principale">
+          
+          <label for="commerce-ville" class="required">Ville</label>
+          <input type="text" id="commerce-ville" required placeholder="Ex: Lille">
+          
+          <label for="commerce-codepostal" class="required">Code postal</label>
+          <input type="text" id="commerce-codepostal" required placeholder="Ex: 59000">
+          
+          <div style="margin-top: 15px;">
+            <label>
+              <input type="checkbox" id="commerce-geoloc-auto"> 
+              <span style="font-weight: normal;">Géolocalisation automatique</span>
+            </label>
+            <small style="display: block; margin-top: 5px; color: #7f8c8d;">Cochez pour trouver automatiquement les coordonnées GPS</small>
+          </div>
+        </div>
+        
+        <!-- Section Horaires -->
+        <div class="section">
+          <h3><span>🕒</span> Horaires d'ouverture</h3>
+          <div id="commerce-horaires-container"></div>
+          <div style="margin-top: 15px;">
+            <label>
+              <input type="checkbox" id="commerce-ouvert-7j7"> 
+              <span style="font-weight: normal;">Ouvert 7j/7</span>
+            </label>
+          </div>
+          <div style="margin-top: 10px;">
+            <label>
+              <input type="checkbox" id="commerce-sur-rdv"> 
+              <span style="font-weight: normal;">Sur RDV uniquement</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Section Contact -->
+        <div class="section">
+          <h3><span>☎️</span> Contact</h3>
+          <label for="commerce-telephone" class="required">Numéro de téléphone</label>
+          <input type="tel" id="commerce-telephone" required placeholder="Ex: 0612345678">
+          
+          <label for="commerce-email">Adresse email</label>
+          <input type="email" id="commerce-email" placeholder="Ex: contact@commerce.com">
+          
+          <label for="commerce-whatsapp">Lien WhatsApp</label>
+          <input type="url" id="commerce-whatsapp" placeholder="Ex: https://wa.me/33612345678">
+        </div>
+        
+        <!-- Section Identité -->
+        <div class="section">
+          <h3><span>✍️</span> Identité du déposant</h3>
+          <label for="commerce-nom-gerant" class="required">Nom complet du gérant/responsable</label>
+          <input type="text" id="commerce-nom-gerant" required placeholder="Ex: Jean Dupont">
+          
+          <label for="commerce-email-gerant" class="required">Email de contact</label>
+          <input type="email" id="commerce-email-gerant" required placeholder="Ex: gerant@commerce.com">
+          
+          <div style="margin-top: 15px;">
+            <label>
+              <input type="checkbox" id="commerce-cgu" required> 
+              <span style="font-weight: normal;">
+                J'accepte les <a href="/cgu.html">Conditions Générales d’Utilisation</a> et je confirme que ces informations sont exactes
+              </span>
+            </label>
+          </div>
+        </div>
+        
+        <button type="submit">Soumettre mon commerce</button>
+      </form>
+    </div>
+  </div>
+  <div id="streetview-embed-container">
+    <iframe id="streetview-iframe" allowfullscreen></iframe>
+    <div class="close-streetview" onclick="fermerStreetView()">×</div>
+  </div>
+  <div id="streetview-embed-container" style="display:none;position:fixed;top:0;left:0; width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;">
+    <!-- Le contenu sera injecté par JavaScript -->
+  </div>
+  <footer><p>&copy; 2025 Manima. Tous droits réservés.</p></footer>
+  <script>
+    // Ajoutez cet objet de mapping des mots-clés au début de votre script, après les constantes
+    const keywordToTypes = {
+  'pompe essence': ['station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station'],
+  'station essence': ['station-service', 'pompe essence', 'carburant', 'total', 'esso', 'leclerc station'],
+  'essence': ['station-service', 'pompe essence', 'carburant'],
+  'restaurant': ['restaurant', 'fast food', 'café', 'bar', 'bistrot', 'resto', 'snack'],
+  'nourriture': ['boulangerie', 'supermarché', 'épicerie', 'market', 'alimentation'],
+  'santé': ['pharmacie', 'hôpital', 'clinique', 'médecin', 'dentiste'],
+  'transport': ['metro','métro','transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train'],
+  'metro': ['transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train'],
+  'shopping': ['magasin', 'centre commercial', 'boutique', 'commerce'],
+  'loisirs': ['cinéma', 'musée', 'parc', 'jardin', 'zoo', 'attraction'],
+  'éducation': ['école', 'université', 'bibliothèque', 'école de conduite'],
+  'hébergement': ['hôtel', 'motel', 'auberge', 'chambre d’hôte'],
+  'religion': ['mosquée', 'église', 'temple', 'lieu de culte'],
+  'urgence': ['police', 'pompiers', 'urgences', 'hôpital urgence']
+};
+    const firebaseConfig = {
+      apiKey: "AIzaSyAid2_e5G6nk7_rAgn_G2M9gMYpGv9TyVc",
+      authDomain: "manima-7e23a.firebaseapp.com",
+      databaseURL: "https://manima-7e23a-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "manima-7e23a",
+      storageBucket: "manima-7e23a.appspot.com",
+      messagingSenderId: "135877962056",
+      appId: "1:135877962056:web:06da5bcc6901a352ccab7d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/duea4ynnh/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'avis_image';
+
+    let utilisateurConnecte = null;
+    firebase.auth().onAuthStateChanged(async (user) => {
+      utilisateurConnecte = user;
+      console.log("Utilisateur connecté:", {
+        email: user?.email,
+        verified: user?.emailVerified,
+        providers: user?.providerData?.map(p => p.providerId)
+      });
+
+      if (user) {
+        const userRef = db.ref(`utilisateurs/${user.uid}`);
+        const snapshot = await userRef.once('value');
+        const data = snapshot.val() || {};
+
+        // Si l'email n'est pas encore enregistré dans la base, on le sauvegarde
+        if (!data.email && user.email) {
+          await userRef.update({
+            email: user.email,
+            displayName: user.displayName || 'Utilisateur',
+            nom: user.displayName || 'Utilisateur'
+          });
+        }
+
+        // Facultatif : vérifier si le bouton commandant doit s'afficher
+        verifierStatutCommandant();
+      }
+    });
+
+    const map = L.map('map').setView([50.6292, 3.0573], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
+      .on('markgeocode', function(e) {
+        const center = e.geocode.center;
+        map.setView(center, 17);
+        tracerItineraire([center.lat, center.lng]);
+      }).addTo(map);
+  
+
+  // Afficher le formulaire d'avis
+  function afficherFormulaireAvis(nom) {
+    nomServiceActuel = nom;
+
+    if (!utilisateurConnecte) {
+      // Si l'utilisateur n'est pas connecté, ouvrir la fenêtre d'authentification
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          utilisateurConnecte = result.user;
+          afficherFormulaireAvis(nom);  // Réappel de la fonction après la connexion
+        })
+        .catch((error) => {
+          alert("Connexion requise pour laisser un avis.");
+          console.error(error);
+        });
+      return;
+    }
+
+    // Si l'utilisateur est connecté, afficher le formulaire
+    document.getElementById("titre-avis").innerText = "Avis pour " + nom;
+    document.getElementById("pseudo-avis").value = utilisateurConnecte.displayName;
+    document.getElementById("pseudo-avis").disabled = true;
+    document.getElementById("avis-modal").style.display = "block";
+  }
+
+  // Ton code existant continue ici...
+
+    
+
+    let itineraireLayer = L.layerGroup().addTo(map);
+    let userLocation = null;
+    let userMarker = null;
+    let suiviItineraire = false;
+
+    const arrowIcon = L.divIcon({ className: 'arrow-icon', iconSize: [50, 50], iconAnchor: [25, 25] });
+
+    navigator.geolocation.watchPosition(pos => {
+      userLocation = [pos.coords.latitude, pos.coords.longitude];
+      const heading = pos.coords.heading || 0;
+
+      if (userMarker) {
+        userMarker.setLatLng(userLocation);
+        userMarker.setRotationAngle(heading);
+      } else {
+        userMarker = L.marker(userLocation, {
+          icon: arrowIcon,
+          rotationAngle: heading,
+          rotationOrigin: 'center center'
+        }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
+        map.setView(userLocation, 17);
+      }
+
+      if (suiviItineraire) {
+        map.setView(userLocation, 17);
+      }
+
+      document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
+    }, err => console.error("Erreur de géolocalisation :", err), {
+      enableHighAccuracy: false,
+      maximumAge: 1000,
+      timeout: 100000
+    });
+
+    function formaterDuree(minutes) {
+      const h = Math.floor(minutes / 60);
+      const m = Math.round(minutes % 60);
+      return h > 0 ? `${h}h${m > 0 ? ` ${m} min` : ''}` : `${m} min`;
+    }
+
+    let currentRoute = null; // Stocke la ligne d'itinéraire actuelle
+let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
+let routeUpdateInterval = null; // Intervalle de mise à jour
+
+function tracerItineraire(dest) {
+    if (!userLocation) return alert("Localisation non disponible");
+    
+    // Nettoyage des éléments précédents
+    itineraireLayer.clearLayers();
+    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
+    
+    // Création du conteneur d'informations
+    const infoContainerId = "itineraire-infos";
+    let infoContainer = document.getElementById(infoContainerId);
+    if (!infoContainer) {
+        infoContainer = document.createElement("div");
+        infoContainer.id = infoContainerId;
+        infoContainer.style.padding = "10px";
+        infoContainer.style.background = "#fff";
+        infoContainer.style.position = "absolute";
+        infoContainer.style.bottom = "450px";
+        infoContainer.style.left = "10px";
+        infoContainer.style.zIndex = "999";
+        infoContainer.style.borderRadius = "8px";
+        infoContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
+        map.getContainer().appendChild(infoContainer);
+    }
+    infoContainer.innerHTML = "";
+
+    const mode = 'driving';
+    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.routes || data.routes.length === 0) return;
+
+            const route = data.routes[0];
+            const durationMin = Math.round(route.duration / 60);
+            const durationFormatted = formaterDuree(durationMin);
+            const distanceKm = (route.distance / 1000).toFixed(2);
+
+            // Stocke les coordonnées complètes de l'itinéraire
+            routeCoords = route.geometry.coordinates;
+            
+            // Trace l'itinéraire complet initialement
+            currentRoute = L.geoJSON(route.geometry, {
+                style: { color: 'red', weight: 4 }
+            }).addTo(itineraireLayer);
+            
+            map.setView(userLocation, 17);
+
+            // Affiche les infos d'itinéraire
+            const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            infoContainer.innerHTML += line;
+
+            // Démarrer le suivi progressif
+            startRouteTracking(dest);
+        })
+        .catch(err => {
+            console.error(`Erreur itinéraire voiture :`, err);
+        });
+
+    suiviItineraire = true;
+}
+
+function startRouteTracking(destination) {
+    // Vérifie toutes les 3 secondes la position et met à jour l'itinéraire
+    routeUpdateInterval = setInterval(() => {
+        if (!userLocation || routeCoords.length < 2) return;
+
+        // Trouve le point le plus proche sur l'itinéraire
+        let closestIndex = 0;
+        let minDistance = Infinity;
+        
+        routeCoords.forEach((coord, index) => {
+            const distance = L.latLng(userLocation).distanceTo([coord[1], coord[0]]);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = index;
+            }
+        });
+
+        // Garde seulement la partie non parcourue (avec un peu d'avance pour un meilleur visuel)
+        const remainingCoords = routeCoords.slice(Math.max(0, closestIndex - 3));
+        
+        // Met à jour la ligne visible
+        itineraireLayer.clearLayers();
+        currentRoute = L.geoJSON({
+            type: "LineString",
+            coordinates: remainingCoords
+        }, {
+            style: { color: 'red', weight: 4 }
+        }).addTo(itineraireLayer);
+
+        // Vérifie si on est arrivé à destination (à moins de 50m)
+        if (L.latLng(userLocation).distanceTo(destination) < 50) {
+            clearInterval(routeUpdateInterval);
+            itineraireLayer.clearLayers();
+            suiviItineraire = false;
+        }
+    }, 3000); // Mise à jour toutes les 3 secondes
+}
+
+// Initialisation des clusters et services (conservé tel quel)
+const clusterLayer = L.markerClusterGroup().addTo(map);
+let allFeatures = [];
+
+// Charger uniquement votre fichier lille.geojson
+    fetch('ret.geojson')
+      .then(res => res.json())
+      .then(data => {
+        allFeatures = data.features;
+        afficherServices("");
+      }) 
+    function normalize(str) {
+      return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    }
+
+    function icon(name) {
+      return L.icon({
+        iconUrl: `icons/${name}`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+      });
+    }
+
+    function getIconByCategory(properties) {
+      const name = (properties.name || "").toLowerCase();
+      const amenity = (properties.amenity || "").toLowerCase();
+      const leisure = (properties.leisure || "").toLowerCase();
+      const shop = (properties.shop || "").toLowerCase();
+      const religion = (properties.religion || "").toLowerCase();
+
+      // Mosquée
+      if (amenity === "place_of_worship" && religion === "muslim") return icon("mosquee.png");
+
+      // Autres catégories
+      if (name.includes("pharm") || name.includes("sant") || amenity === "pharmacy") return icon("sante.png");
+      if (name.includes("école") || amenity === "school") return icon("ecole.png");
+      if (["hospital", "clinic"].includes(amenity) || name.includes("hôpital") || name.includes("clinique")) return icon("sante.png");
+      if (["restaurant", "fast_food", "cafe"].includes(amenity) || shop === "restaurant" || name.includes("resto")) return icon("restaurant.png");
+      if (["car", "car_repair"].includes(shop) || amenity === "car_repair" || name.includes("garage")) return icon("garage.png");
+      if (leisure === "sports_centre" || amenity === "gym" || name.includes("sport")) return icon("sport.png");
+      if (["atm", "bank", "bureau_de_change"].includes(amenity)) return icon("financier.png");
+      if (["cinema", "arts_centre", "theatre"].includes(amenity) || leisure === "cinema" ||  name.includes("théâtre")) return icon("culture.png");
+      if (["fire_station", "post_office", "courthouse", "police", "community_centre"].includes(amenity)) return icon("administration.png");
+      if (["car_rental", "car_sharing", "car_wash", "fuel", "charging_station", "bicycle_rental"].includes(amenity)) return icon("transport.png");
+      if (["childcare", "kindergarten", "animal_boarding", "animal_shelter"].includes(amenity) || name.includes("chien") || name.includes("chat")) return icon("animal.png");
+      if (["coworking_space", "give_box"].includes(amenity)) return icon("culture.png");
+      if (["bench", "fountain", "clock"].includes(amenity)) return icon("default.png");
+      if (shop !== "") return icon("shop.png");
+      if (amenity === "boulangerie" || name.includes("boulang")) return icon("boulangerie.png");
+      if (amenity === "coiffeur" || name.includes("coiff")) return icon("coiffeur.png");
+      if (amenity === "garage" || name.includes("garage")) return icon("garage.png");
+      if (amenity === "restaurant" || name.includes("resto")) return icon("restaurant.png");
+      if (amenity === "pharmacie" || name.includes("pharm")) return icon("pharmacie.png");
+      if (amenity === "supermarche" || name.includes("supermarche")) return icon("supermarche.png");
+
+      return icon("default.png");
+    }
+
+    // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
+// Correction de la fonction afficherServices
+function afficherServices(filtre = "") {
+  itineraireLayer.clearLayers();
+  clusterLayer.clearLayers();
+  const filtreMin = normalize(filtre);
+
+  if (!allFeatures || allFeatures.length === 0) return;
+
+  let count = 0;
+
+  // Si le filtre est vide, on affiche tout
+  if (!filtreMin) {
+    allFeatures.forEach(f => {
+      if (!f.geometry || f.geometry.type !== "Point") return;
+      const props = f.properties;
+      const name = props.name;
+      if (!name || name.trim() === "") return;
+      const [lng, lat] = f.geometry.coordinates;
+      const marker = createMarker(props, lat, lng);
+      clusterLayer.addLayer(marker);
+      count++;
+    });
+    console.log(`Total des services affichés: ${count}`);
+    return;
+  }
+
+  // Recherche intelligente : on cherche d'abord les mots-clés exacts
+  let typesRecherches = [];
+  
+  // Vérifier si le filtre correspond exactement à un mot-clé
+  for (const [keyword, types] of Object.entries(keywordToTypes)) {
+    const normalizedKeyword = normalize(keyword);
+    
+    // Recherche exacte ou recherche par mot entier
+    if (filtreMin === normalizedKeyword || 
+        filtreMin.split(' ').some(word => word === normalizedKeyword) ||
+        normalizedKeyword.split(' ').some(word => word === filtreMin)) {
+      typesRecherches = typesRecherches.concat(types);
+    }
+  }
+
+  // Si on a trouvé des types par mot-clé, on les utilise
+  if (typesRecherches.length > 0) {
+    console.log("Recherche par mot-clé:", typesRecherches);
+    
+    allFeatures.forEach(f => {
+      if (!f.geometry || f.geometry.type !== "Point") return;
+      const props = f.properties;
+      const name = props.name;
+      if (!name || name.trim() === "") return;
+
+      const type = props.type ? normalize(props.type) : '';
+      const amenity = props.amenity ? normalize(props.amenity) : '';
+      const leisure = props.leisure ? normalize(props.leisure) : '';
+      const shop = props.shop ? normalize(props.shop) : '';
+
+      // Vérifier si le type correspond à un des types recherchés
+      const match = typesRecherches.some(t => {
+        const normalizedType = normalize(t);
+        return type.includes(normalizedType) || 
+               amenity.includes(normalizedType) || 
+               leisure.includes(normalizedType) || 
+               shop.includes(normalizedType);
+      });
+
+      if (match) {
+        const [lng, lat] = f.geometry.coordinates;
+        const marker = createMarker(props, lat, lng);
+        clusterLayer.addLayer(marker);
+        count++;
+      }
+    });
+  } else {
+    // Recherche textuelle classique
+    console.log("Recherche textuelle classique");
+    
+    allFeatures.forEach(f => {
+      if (!f.geometry || f.geometry.type !== "Point") return;
+      const props = f.properties;
+      const name = props.name;
+      if (!name || name.trim() === "") return;
+
+      const searchText = [
+        props.name, 
+        props.amenity, 
+        props.shop, 
+        props.leisure,
+        props.category,
+        props.address,
+        props.type
+      ] 
+      .filter(Boolean)
+      .map(normalize)
+      .join(" ");
+
+      if (searchText.includes(filtreMin)) {
+        const [lng, lat] = f.geometry.coordinates;
+        const marker = createMarker(props, lat, lng);
+        clusterLayer.addLayer(marker);
+        count++;
+      }
+    });
+  }
+
+  console.log(`Total des services affichés: ${count}`);
+}
+
+      
+
+    document.getElementById("search-bar").addEventListener("input", (e) => {
+      afficherServices(e.target.value);
+    });
+
+    let nomServiceActuel = "";
+
+    document.getElementById("avis-form").onsubmit = async function(e) {
+  e.preventDefault();
+  
+  if (!utilisateurConnecte) {
+    alert("Vous devez être connecté avec Google pour soumettre un avis.");
+    return;
+  }
+  // Créer le profil utilisateur avec les permissions minimales
+  try {
+      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/pseudo`).set(utilisateurConnecte.displayName);
+      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/email`).set(utilisateurConnecte.email);
+  } catch (error) {
+        console.error("Erreur création profil utilisateur:", error);
+  }
+
+  // 1. D'abord vérifier si c'est le premier avis
+  const estPremierAvis = await verifierPremierAvis(utilisateurConnecte.uid);
+  
+  // 2. Ensuite préparer l'objet avis
+  const avis = {
+    pseudo: utilisateurConnecte.displayName,
+    text: document.getElementById("text-avis").value.trim() || "(aucun commentaire)",
+    date: new Date().toLocaleDateString(),
+    uid: utilisateurConnecte.uid
+  };
+
+  // 3. Upload des médias si présents
+  try {
+    const photoFile = document.getElementById("photo-avis").files[0];
+    const videoFile = document.getElementById("video-avis").files[0];
+
+    if (photoFile) {
+      avis.photoUrl = await uploadToCloudinary(photoFile, 'image');
+    }
+    if (videoFile) {
+      avis.videoUrl = await uploadToCloudinary(videoFile, 'video');
+    }
+
+    // 4. Maintenant enregistrer l'avis
+    await db.ref('avis/' + nomServiceActuel).push(avis);
+
+    // 5. Si c'était le premier avis, envoyer l'email
+    if (estPremierAvis) {
+      console.log("✅ Premier avis - Envoi de l'email");
+      envoyerEmailPremierAvis(utilisateurConnecte.email, utilisateurConnecte.displayName);
+    }
+
+    // 6. Fermer le modal et réinitialiser
+    fermerModal();
+    afficherAvis(nomServiceActuel);
+    document.getElementById("avis-form").reset();
+
+  } catch (error) {
+    alert("Erreur lors de l'envoi de l'avis.");
+    console.error(error);
+  }
+};
+
+// Normalisation du texte
+function normalize(str) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // supprime accents
+    .trim();
+}
+
+function matchesFilter(props, filter) {
+  if (!filter) return true; // filtre vide = tout afficher
+  const filterWords = filter.split(/\s+/).map(normalize);
+
+  // Champs pertinents pour la recherche
+  const fields = [
+    props.name,
+    props.type,
+    props.amenity,
+    props.shop,
+    props.leisure,
+    props.category,
+    props.address
+  ].filter(Boolean).map(normalize);
+
+  // Chaque mot du filtre doit matcher le début d’un mot d’un champ
+  return filterWords.every(fw => fields.some(f => f.startsWith(fw)));
+}
+
+// Ajoutez cette fonction pour créer les marqueurs (évite la duplication de code)
+function createMarker(props, lat, lng) {
+  // Construction du contenu du popup
+  let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
+
+  // Boutons principaux
+  popupContent += `
+    ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
+    ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
+  
+  // Bouton pour les horaires (avec formatage)
+  if (props.opening_hours) {
+    const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
+    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Horaires', \`${formattedHours}\`)">🕒 Horaires</button>`;
+  }
+  
+  // Bouton pour les tarifs (si disponible)
+  if (props.price || props.tarifs) {
+    const tarifs = props.price || props.tarifs;
+    const formattedTarifs = tarifs.replace(/\n/g, '<br>');
+    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
+  }
+  
+  // Boutons communs
+  popupContent += `
+    <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
+    <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
+    <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
+    <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
+    <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
+  `;
+
+  return L.marker([lat, lng], {
+    icon: getIconByCategory(props)
+  }).bindPopup(popupContent);
+}
+
+// Nouvelle fonction pour afficher les détails dans une popup
+function afficherDetailsPopup(nom, type, contenu) {
+  // Créer une fenêtre popup plus grande
+  const popup = L.popup({ className: 'custom-popup', maxWidth: 400 })
+    .setContent(`
+      <div class="details-header">
+        <h3>${nom}</h3>
+        <h4>${type}</h4>
+      </div>
+      <div class="details-content">
+        ${contenu}
+      </div>
+    `)
+    .setLatLng(map.getCenter())
+    .openOn(map);
+}
+
+
+function afficherHorairesPopup(nomService, horaires) {
+  // Formater les horaires pour un affichage plus lisible
+  const horairesFormatted = horaires.replace(/;/g, '<br>');
+  
+  // Créer une popup Leaflet
+  L.popup()
+    .setLatLng(map.getCenter())
+    .setContent(`
+      <div style="max-width: 300px; padding: 10px;">
+        <h3 style="margin-top: 0;">Horaires - ${nomService}</h3>
+        <div>${horairesFormatted}</div>
+      </div>
+    `)
+    .openOn(map);
+}
+async function verifierPremierAvis(uid) {
+    // Vérifier d'abord si l'email a déjà été envoyé
+    const userSnapshot = await db.ref(`utilisateurs/${uid}`).once('value');
+    if (userSnapshot.exists() && userSnapshot.val().emailBienvenueEnvoye) {
+      return false;
+    }
+
+    // Ensuite vérifier s'il a d'autres avis
+    const avisSnapshot = await db.ref('avis').once('value');
+    const tousLesAvis = avisSnapshot.val();
+  
+    if (!tousLesAvis) return true;
+  
+    for (const service in tousLesAvis) {
+      for (const avisId in tousLesAvis[service]) {
+        if (tousLesAvis[service][avisId].uid === uid) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+async function envoyerEmailPremierAvis(email, nom) {
+  try {
+    // Vérification supplémentaire de l'email
+    if (!email || !email.includes('@')) {
+      console.error("Email invalide:", email);
+      return;
+    }
+
+    console.log("Tentative d'envoi d'email à:", email);
+    
+    const result = await emailjs.send("service_wreyh0i", "template_5enx2ae", {
+      to_email: email,  // Changed from {{email}} to just email
+      from_name: "Manima",
+      user_name: nom,
+      message: "Merci pour votre premier avis sur Manima!"
+    });
+    
+    console.log("Email envoyé avec succès:", result);
+    await db.ref(`utilisateurs/${utilisateurConnecte.uid}/emailBienvenueEnvoye`).set(true);
+  } catch (error) {
+    console.error("Erreur détaillée:", {
+      status: error.status,
+      text: error.text,
+      email: email,
+      utilisateur: utilisateurConnecte
+    });
+  }
+}
+
+// Fonction d'upload vers Cloudinary
+async function uploadToCloudinary(file, type) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  const response = await fetch(CLOUDINARY_URL, {
+    method: "POST",
+    body: formData
+  });
+  const data = await response.json();
+  return data.secure_url;
+}
+
+ 
+
+const verifierEtEnvoyerEmailSiPremierAvis = async () => {
+  const avisGlobalRef = db.ref('avis');
+  const snapshot = await avisGlobalRef.once('value');
+  const tousLesAvis = snapshot.val();
+  let premierAvis = true;
+
+  // Si des avis existent, on cherche si l'utilisateur a déjà laissé un avis
+  if (tousLesAvis) {
+    // Parcourir tous les services
+    for (const service in tousLesAvis) {
+      const avisService = tousLesAvis[service];
+      // Parcourir tous les avis de ce service
+      for (const avisId in avisService) {
+        const unAvis = avisService[avisId];
+        // Vérifier si l'UID correspond
+        if (unAvis.uid === utilisateurConnecte.uid) {
+          premierAvis = false;
+          break; // Sortir de la boucle dès qu'on trouve un avis existant
+        }
+      }
+      if (!premierAvis) break; // Sortir de la boucle principale si avis trouvé
+    }
+  }
+
+  // Si c'est le premier avis de l'utilisateur, envoyer un email
+  if (premierAvis) {
+  console.log("Tentative d'envoi d'email pour UID:", utilisateurConnecte.uid);
+  
+  if (utilisateurConnecte?.email) {
+    console.log("Email trouvé:", utilisateurConnecte.email);
+    envoyerEmailPremierAvis(
+      utilisateurConnecte.email, 
+      utilisateurConnecte.displayName || "Utilisateur"
+    );
+  } else {
+    console.warn("Aucun email disponible pour l'utilisateur:", {
+      uid: utilisateurConnecte?.uid,
+      providerData: utilisateurConnecte?.providerData
+    });
+  }
+}
+  };
+
+    function fermerModal() {
+      document.getElementById("avis-modal").style.display = "none";
+    }
+
+    function voirAvis(nom) {
+      afficherAvis(nom);
+    }
+
+    function afficherAvis(nom) {
+    document.getElementById("liste-avis-modal").style.display = "block";
+    document.getElementById("titre-liste-avis").innerText = "Avis sur " + nom;
+
+    const contenuAvis = document.getElementById("contenu-avis");
+    contenuAvis.innerHTML = "<div class='loading-dots'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>";
+
+    // On utilise le nom tel quel (pas d'encodeURIComponent)
+    db.ref('avis/' + nom).once('value')
+      .then(snapshot => {
+        const avisList = snapshot.val();
+        if (avisList) {
+            const avisArray = Object.entries(avisList).map(([avisId, avis]) => ({ avisId, ...avis }));
+
+            // Récupérer les informations des utilisateurs pour les badges
+            const promises = avisArray.map(avis => {
+                return db.ref(`utilisateurs/${avis.uid}`).once('value')
+                    .then(userSnapshot => {
+                        const userData = userSnapshot.val() || {};
+                        return {
+                            ...avis,
+                            hasBadgeMoussaillon: userData.badgeMoussaillon || false,
+                            hasBadgeCommandant: userData.badgeCommandant || false
+                        };
+                    });
+            });
+
+            Promise.all(promises).then(avisAvecBadges => {
+                // Trier par priorité: Commandant > Moussaillon > autres
+                avisAvecBadges.sort((a, b) => {
+                    if (b.hasBadgeCommandant && !a.hasBadgeCommandant) return 1;
+                    if (a.hasBadgeCommandant && !b.hasBadgeCommandant) return -1;
+                    if (b.hasBadgeMoussaillon && !a.hasBadgeMoussaillon) return 1;
+                    if (a.hasBadgeMoussaillon && !b.hasBadgeMoussaillon) return -1;
+                    return 0;
+                });
+
+                contenuAvis.innerHTML = '';
+
+                avisAvecBadges.forEach(({ avisId, hasBadgeMoussaillon, hasBadgeCommandant, ...avis }) => {
+                    const avisElement = document.createElement("div");
+                    avisElement.className = "avis-item";
+                    avisElement.style.marginBottom = "15px";
+                    avisElement.style.paddingBottom = "15px";
+                    avisElement.style.borderBottom = "1px solid #eee";
+
+                    const currentUserId = utilisateurConnecte?.uid;
+                    const isOwnAvis = currentUserId && avis.uid === currentUserId;
+                    const userVoteType = currentUserId && avis.voteurs?.[currentUserId];
+
+                    const voteButtons = `
+                        <div style="margin-top:10px; display:flex; gap:15px; font-size:18px;">
+                            <span onclick="${!isOwnAvis ? `voterAvis('${nom}', '${avisId}', 'vert')` : ''}" 
+                                  style="cursor:${isOwnAvis ? 'default' : 'pointer'};
+                                         ${userVoteType === 'vert' ? 'font-weight:bold;' : ''}">
+                                🟢 ${avis.pointsVerts || 0}
+                            </span>
+                            <span onclick="${!isOwnAvis ? `voterAvis('${nom}', '${avisId}', 'rouge')` : ''}" 
+                                  style="cursor:${isOwnAvis ? 'default' : 'pointer'};
+                                         ${userVoteType === 'rouge' ? 'font-weight:bold;' : ''}">
+                                🔴 ${avis.pointsRouges || 0}
+                            </span>
+                        </div>`;
+
+                    let deleteButton = '';
+                    if (isOwnAvis) {
+                        deleteButton = `<button onclick="supprimerAvis('${nom}', '${avisId}')" style="padding:5px; font-size:12px;">🗑️ Supprimer</button>`;
+                    }
+
+                    let badgeHtml = '';
+                    if (hasBadgeCommandant) {
+                        badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Commandant">';
+                    } else if (hasBadgeMoussaillon) {
+                        badgeHtml = '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon">';
+                    }
+
+                    avisElement.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
+                                     alt="avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
+                                <div>
+                                    <strong>${avis.pseudo || "anonyme"}</strong>
+                                    ${badgeHtml}
+                                    <br>
+                                    <small>${avis.date || "Date inconnue"}</small>
+                                </div>
+                            </div>
+                            ${deleteButton}
+                        </div>
+                        <div style="margin-top: 10px;">${avis.text || "(aucun commentaire)"}</div>
+                        ${avis.photoUrl ? `<br><img src="${avis.photoUrl}" style="max-width:100%; max-height:200px; margin-top:10px; border-radius:8px;" />` : ""}
+                        ${avis.videoUrl ? `<br><video controls style="max-width:100%; max-height:300px; margin-top:10px;"><source src="${avis.videoUrl}" type="video/mp4"></video>` : ""}
+                        ${voteButtons}
+                    `;
+
+                    contenuAvis.appendChild(avisElement);
+                });
+            });
+        } else {
+            contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Aucun avis pour ce lieu</i></div>";
+        }
+    })
+    .catch(error => {
+        console.error("Erreur lors du chargement des avis:", error);
+        contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Impossible de charger les avis</i></div>";
+    });
+}
+
+function fermerListeAvis() {
+    document.getElementById("liste-avis-modal").style.display = "none";
+    document.getElementById("contenu-avis").innerHTML = "";
+}
+
+    function supprimerAvis(nomService, avisId) {
+      if (confirm("Voulez-vous vraiment supprimer cet avis ?")) {
+        db.ref('avis/' + nomService + '/' + avisId).remove()
+          .then(() => {
+            alert("Avis supprimé.");
+            afficherAvis(nomService);  // Recharger les avis
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la suppression :", error);
+            alert("Une erreur est survenue.");
+          });
+      }
+    }
+    function envoyerEmailBadge(email, nom, badgeType) {
+        console.log("envoyerEmailBadge appelé avec :", email, nom, badgeType);
+        if (!email || !email.includes('@')) {
+            console.error("Email invalide:", email);
+            return;
+        }
+
+        const templateParams = {
+            to_email: email,
+            user_name: nom,
+            badge_type: badgeType,
+            date_obtention: new Date().toLocaleDateString('fr-FR'),
+            reply_to: "no-reply@manima.com"
+        };
+
+        console.log("Tentative d'envoi d'email à:", email);
+        console.log("templateParams envoyés :", templateParams);
+
+        emailjs.send("service_wreyh0i", "template_yz8d8qs", templateParams)
+            .then(() => console.log("Email de badge envoyé avec succès"))
+            .catch(error => {
+                console.error("Échec envoi email:", {
+                    status: error.status,
+                    text: error.text
+                });
+            });
+    }
+    function fermerListeAvis() {
+      document.getElementById("liste-avis-modal").style.display = "none";
+    }
+    async function voterAvis(nomService, avisId, typeVote) {
+        if (!utilisateurConnecte) {
+            alert("Connectez-vous pour voter");
+            return;
+        }
+
+        const uidVotant = utilisateurConnecte.uid;
+        const avisRef = db.ref(`avis/${nomService}/${avisId}`);
+
+        try {
+            // 1. Vérifier que l'utilisateur ne vote pas pour lui-même
+            const avisSnapshot = await avisRef.once('value');
+            const avis = avisSnapshot.val();
+        
+            if (!avis) {
+                alert("Cet avis n'existe plus");
+                return;
+            }
+
+            if (avis.uid === uidVotant) {
+                alert("Vous ne pouvez pas voter pour votre propre avis");
+                return;
+            }
+
+            // 2. Préparer les mises à jour
+            const currentVote = avis.voteurs?.[uidVotant];
+            const updates = {};
+
+            if (currentVote === typeVote) {
+                // Annuler le vote
+                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+                updates[`voteurs/${uidVotant}`] = null;
+            } else {
+                // Nouveau vote ou changement
+                if (currentVote) {
+                    updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+                }
+                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
+                updates[`voteurs/${uidVotant}`] = typeVote;
+            }
+
+            // 3. Appliquer les mises à jour
+            await avisRef.update(updates);
+        
+            // 4. Vérifier les badges (uniquement si vote vert)
+            if (typeVote === 'vert') {
+                await verifierBadges(avis.uid);
+            }
+
+            // 5. Actualiser l'affichage
+            afficherAvis(nomService);
+
+        } catch (error) {
+            console.error("Erreur lors du vote:", error);
+            alert("Erreur lors du vote: " + error.message);
+        }
+    }
+
+    async function verifierBadges(uidAuteur) {
+        try {
+            const avisSnapshot = await db.ref('avis').once('value');
+            let totalPointsVerts = 0;
+
+            avisSnapshot.forEach(service => {
+                service.forEach(avis => {
+                    if (avis.val().uid === uidAuteur) {
+                        totalPointsVerts += avis.val().pointsVerts || 0;
+                    }
+                });
+            });
+
+            const userRef = db.ref(`utilisateurs/${uidAuteur}`);
+            const userSnapshot = await userRef.once('value');
+            const userData = userSnapshot.val() || {};
+
+            const updates = {};
+            let badgeMoussaillonDebloque = false;
+            let badgeCommandantDebloque = false;
+
+            // Moussaillon
+            if (totalPointsVerts >= 2 && !userData.badgeMoussaillon) {
+                updates.badgeMoussaillon = true;
+                updates.dateObtentionBadge = new Date().toISOString();
+                badgeMoussaillonDebloque = true;
+
+            }
+
+            // Commandant
+            if (totalPointsVerts >= 5 && !userData.badgeCommandant) {
+                updates.badgeCommandant = true;
+                updates.dateObtentionBadgeCommandant = new Date().toISOString();
+                badgeCommandantDebloque = true;
+            }
+
+            if (Object.keys(updates).length > 0) {
+                await userRef.update(updates);
+
+                // Email après mise à jour
+                if (badgeMoussaillonDebloque) {
+                    const email = userData.email;
+                    const nom = userData.displayName || userData.nom || 'Utilisateur';
+    
+                    if (email && email.includes('@')) {
+                        envoyerEmailBadge(email, nom, "Moussaillon");
+                    } else {
+                        console.warn("Email invalide ou manquant pour l'auteur:", email);
+                    }
+                }
+
+                // Interface
+                if (
+                    utilisateurConnecte &&
+                    utilisateurConnecte.uid === uidAuteur &&
+                    badgeCommandantDebloque
+                ) {
+                    document.getElementById('chauffeurs-btn').style.display = 'block';
+                }
+            }
+        } catch (error) {
+            console.error("Erreur vérification badges:", error);
+        }
+    }
+    async function verifierBadgesApresVote(uidAuteur) {
+        try {
+            // 1. Compter les points verts totaux
+            const avisSnapshot = await db.ref('avis').once('value');
+            let totalPointsVerts = 0;
+        
+            avisSnapshot.forEach(service => {
+                service.forEach(avis => {
+                    if (avis.val().uid === uidAuteur) {
+                        totalPointsVerts += avis.val().pointsVerts || 0;
+                    }
+                });
+            });
+
+            // 2. Vérifier les badges
+            const userRef = db.ref(`utilisateurs/${uidAuteur}`);
+            const userSnapshot = await userRef.once('value');
+            const userData = userSnapshot.val() || {};
+        
+            const updates = {};
+            let shouldSendEmail = false;
+
+            // Badge Moussaillon (3 points verts)
+            if (totalPointsVerts >= 2 && !userData.badgeMoussaillon) {
+                updates.badgeMoussaillon = true;
+                updates.dateObtentionBadge = new Date().toISOString();
+                shouldSendEmail = true;
+            }
+
+            // Badge Commandant (4 points verts)
+            if (totalPointsVerts >= 5 && !userData.badgeCommandant) {
+                updates.badgeCommandant = true;
+                updates.dateObtentionBadgeCommandant = new Date().toISOString();
+            }
+
+            // 3. Appliquer les mises à jour si nécessaire
+            if (Object.keys(updates).length > 0) {
+                // Seul l'utilisateur peut modifier son propre profil
+                if (utilisateurConnecte && utilisateurConnecte.uid === uidAuteur) {
+                    await userRef.update(updates);
+                
+                    // Envoyer email pour badge Moussaillon
+                    const email = utilisateurConnecte.email;
+                    if (shouldSendEmail && email && email.includes('@')) {
+                        envoyerEmailBadge(
+                            email,
+                            utilisateurConnecte.displayName || 'Utilisateur',
+                              "Moussaillon"
+                        );
+                    } else {
+                        console.warn("Email invalide ou manquant pour l'envoi:", email);
+                    }
+                
+                    // Afficher le bouton chauffeurs si commandant
+                    if (updates.badgeCommandant) {
+                        document.getElementById('chauffeurs-btn').style.display = 'block';
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.error("Erreur vérification badges:", error);
+        }
+    }
+        // Fonction pour vérifier si l'utilisateur est Commandant et afficher le bouton
+        function verifierStatutCommandant() {
+          console.log("Vérification statut commandant...");
+          if (utilisateurConnecte) {
+            console.log("Utilisateur connecté, UID:", utilisateurConnecte.uid);
+            db.ref(`utilisateurs/${utilisateurConnecte.uid}/badgeCommandant`).once('value')
+              .then(snapshot => {
+                const isCommandant = snapshot.val();
+                console.log("Statut commandant:", isCommandant);
+                const chauffeursBtn = document.getElementById('chauffeurs-btn');
+                if (chauffeursBtn) {
+                  console.log("Bouton trouvé, affichage:", isCommandant ? 'block' : 'none');
+                  chauffeursBtn.style.display = isCommandant ? 'block' : 'none';
+                } else {
+                  console.log("Bouton non trouvé dans le DOM");
+                }
+              });
+          }
+        }
+    function afficherChauffeurs() {
+  document.getElementById('chauffeurs-modal').style.display = 'block';
+  const listeChauffeurs = document.getElementById('liste-chauffeurs');
+  
+  const chauffeurs = [
+    {
+      id: "1",
+      type: "Taxi Premium",
+      vehicule: "Mercedes-Benz Classe E 2022, couleur noire",
+      experience: "Depuis 2016",
+      telephone: "07.53.01.48.20",
+      horaire: "24H/7j",
+      langues: "Français, Arabe, Anglais, Tarifit, Tamazight",
+      zone: "France",
+      specialites: "Tous types de trajets (longs trajets, aéroports, patients médicaux)",
+      capacite: "4 places",
+      tarifs: {
+        nuitAller: "3.06€/Km",
+        nuitAllerRetour: "1.53€/Km",
+        jourAller: "2.40€/Km", 
+        jourAllerRetour: "1.20€/Km"
+      }
+    },
+    {
+      id: "2", 
+      type: "VTC",
+      vehicule: "Toyota Prius +, couleur noire",
+      experience: "Depuis 2016",
+      telephone: "06.63.78.66.08",
+      horaire: "24H/7j",
+      langues: "Français, Arabe, Anglais, Tarifit, Tamazight",
+      zone: "France",
+      specialites: "Tous types de trajets (longs/courts trajets, aéroports, patients médicaux)",
+      capacite: "6 places"
+    },
+    {
+      id: "3", 
+      type: "Taxi",
+      vehicule: "Toyota Prius +, couleur noire",
+      experience: "Depuis 2016",
+      telephone: "06.69.75.34.52",
+      horaire: "24H/7j",
+      langues: "Français, Tarifit, Arabe, Anglais, Tamazight",
+      zone: "France",
+      specialites: "Tous types de trajets (longs/courts trajets, aéroports, patients médicaux)",
+      capacite: "6 places"
+    },
+    // Nouveau chauffeur médical
+    {
+      id: "4",
+      type: "Taxi ",
+      telephone: "06.19.76.86.96", // Numéro à adapter
+      horaire: "24H/7j sur réservation",
+      zone: "France"
+    }
+  ];
+
+  listeChauffeurs.innerHTML = chauffeurs.map(chauffeur => `
+    <div class="chauffeur-card">
+      <h3>${chauffeur.type}</h3>
+      
+      ${chauffeur.id === "1" || chauffeur.id === "2" 
+        ? `<p style="color: red; font-weight: bold;"></p>` 
+        : ''}
+      
+      ${chauffeur.nom ? `<p><strong>Nom:</strong> ${chauffeur.nom}</p>` : ''}
+      ${chauffeur.vehicule ? `<p><strong>Véhicule:</strong> ${chauffeur.vehicule}</p>` : ''}
+      ${chauffeur.experience ? `<p><strong>Expérience:</strong> ${chauffeur.experience}</p>` : ''}
+      <p><strong>Téléphone:</strong> ${chauffeur.telephone}</p>
+      <p><strong>Horaire:</strong> ${chauffeur.horaire}</p>
+      ${chauffeur.capacite ? `<p><strong>Capacité:</strong> ${chauffeur.capacite}</p>` : ''}
+      ${chauffeur.langues ? `<p><strong>Langues parlées:</strong> ${chauffeur.langues}</p>` : ''}
+      <p><strong>Zone de couverture:</strong> ${chauffeur.zone}</p>
+      ${chauffeur.specialites ? `<p><strong>Spécialités:</strong> ${chauffeur.specialites}</p>` : ''}
+      
+      ${chauffeur.id === "1" ? `
+        <div class="tarifs" style="margin: 10px 0; padding: 10px; background: #f8f8f8; border-radius: 5px;">
+          <h4 style="margin-bottom: 5px;">Tarifs :</h4>
+          <ul style="margin-top: 5px; padding-left: 20px;">
+            <li>Course nuit (aller sans retour): ${chauffeur.tarifs.nuitAller}</li>
+            <li>Course nuit (aller-retour): ${chauffeur.tarifs.nuitAllerRetour}</li>
+            <li>Course jour (aller sans retour): ${chauffeur.tarifs.jourAller}</li>
+            <li>Course jour (aller-retour): ${chauffeur.tarifs.jourAllerRetour}</li>
+          </ul>
+        </div>
+      ` : ''}
+      
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <a href="tel:${chauffeur.telephone.replace(/\./g, '')}" class="call-btn">📞 Appeler</a>
+        <button onclick="afficherTousLesAvisChauffeur('${chauffeur.id}')" class="call-btn">👀 Voir les avis</button>
+      </div>
+
+      <!-- Notation -->
+      <div class="notation-chauffeur" style="margin: 15px 0; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+        <h4>Notez ce chauffeur :</h4>
+        <div class="vote-buttons" style="justify-content: center; font-size: 18px;">
+          <span onclick="noterChauffeur('${chauffeur.id}', 'vert')" style="cursor: pointer; margin-right: 15px;">
+            🟢 <span id="chauffeur-points-verts-${chauffeur.id}">0</span>
+          </span>
+          <span onclick="noterChauffeur('${chauffeur.id}', 'rouge')" style="cursor: pointer;">
+            🔴 <span id="chauffeur-points-rouges-${chauffeur.id}">0</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Section Avis -->
+      <div class="chauffeur-avis-container" style="display: none;" id="chauffeur-avis-container-${chauffeur.id}">
+        <h4>Avis sur ce chauffeur</h4>
+        <div id="chauffeur-avis-list-${chauffeur.id}" class="chauffeur-avis-list"></div>
+        <div class="chauffeur-avis-form">
+          <textarea id="chauffeur-avis-text-${chauffeur.id}" placeholder="Votre avis..."></textarea>
+          <button onclick="ajouterAvisChauffeur('${chauffeur.id}')">Envoyer l'avis</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  chauffeurs.forEach(chauffeur => {
+    chargerNotesChauffeur(chauffeur.id);
+    initPointsChauffeur(chauffeur.id);
+  });
+}
+
+    function fermerChauffeurs() {
+      document.getElementById('chauffeurs-modal').style.display = 'none';
+    }
+
+    // Appeler cette fonction quand l'utilisateur se connecte
+    firebase.auth().onAuthStateChanged((user) => {
+      utilisateurConnecte = user;
+      if (user) {
+        verifierStatutCommandant();
+      } else {
+        document.getElementById('chauffeurs-btn').style.display = 'none';
+      }
+    });
+
+    function chargerAvisChauffeur(chauffeurId) {
+      const avisContainer = document.getElementById(`chauffeur-avis-list-${chauffeurId}`);
+      if (!avisContainer) return;
+
+      avisContainer.innerHTML = '<p>Chargement...</p>';
+
+      db.ref(`avisChauffeurs/${chauffeurId}`).orderByChild('date').once('value')
+        .then(snapshot => {
+          avisContainer.innerHTML = '';
+  
+          if (!snapshot.exists()) {
+            avisContainer.innerHTML = '<p>Aucun avis pour ce chauffeur.</p>';
+            return;
+          }
+
+          snapshot.forEach(childSnapshot => {
+            const avis = childSnapshot.val();
+            const avisElement = document.createElement('div');
+            avisElement.className = 'chauffeur-avis-item';
+    
+            let badgeHtml = '';
+            if (utilisateurConnecte) {
+              db.ref(`utilisateurs/${avis.userId}/badgeCommandant`).once('value')
+                .then(badgeSnapshot => {
+                  if (badgeSnapshot.val()) {
+                    badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Badge Commandant" />';
+                  }
+                  avisElement.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
+                      style="width: 40px; height: 40px; border-radius: 50%;" />
+                      <div>
+                        <strong>${avis.pseudo || 'Anonyme'}</strong>
+                        ${badgeHtml}
+                      </div>
+                    </div>
+                    <p>${avis.text || avis.texte || 'Aucun texte'}</p>
+                    <small>${avis.date || 'Date inconnue'}</small>
+                  `;
+                });
+            } else {
+              avisElement.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
+                  style="width: 40px; height: 40px; border-radius: 50%;" />
+                  <div>
+                    <strong>${avis.pseudo || 'Anonyme'}</strong>
+                  </div>
+                </div>
+                <p>${avis.text || avis.texte || 'Aucun texte'}</p>
+                <small>${avis.date || 'Date inconnue'}</small>
+              `;
+            }
+
+            avisContainer.appendChild(avisElement);
+          });
+        })
+        .catch(error => {
+          console.error("Erreur de chargement:", error);
+          avisContainer.innerHTML = '<p>Erreur de chargement des avis</p>';
+        });
+    }   
+
+    function ajouterAvisChauffeur(chauffeurId) {
+      if (!utilisateurConnecte) {
+        alert("Connectez-vous pour poster un avis");
+        return;
+      }
+
+      const textAvis = document.getElementById(`chauffeur-avis-text-${chauffeurId}`).value.trim();
+      if (!textAvis) {
+        alert("Veuillez écrire un avis");
+        return;
+      }
+
+      const nouvelAvis = {
+        texte: textAvis,
+        pseudo: utilisateurConnecte.displayName || "Anonyme",
+        userId: utilisateurConnecte.uid,
+        date: new Date().toLocaleDateString('fr-FR') // Format français
+      };
+
+      db.ref(`avisChauffeurs/${chauffeurId}`).push(nouvelAvis)
+        .then(() => {
+          document.getElementById(`chauffeur-avis-text-${chauffeurId}`).value = '';
+          chargerAvisChauffeur(chauffeurId);
+        })  
+        .catch(error => {
+          console.error("Erreur:", error);
+          alert("Erreur lors de l'envoi de l'avis");
+        });
+    }
+    // Fonction pour initialiser les points si nécessaire
+    function initPointsChauffeur(chauffeurId) {
+      const chauffeurRef = db.ref(`notesChauffeurs/${chauffeurId}`);
+  
+      return chauffeurRef.once('value').then(snapshot => {
+        const data = snapshot.val() || {};
+        let updates = {};
+    
+        // FORCER la réinitialisation à 0 si valeur négative
+        if (typeof data.pointsVerts !== 'number' || data.pointsVerts < 0) {
+          updates.pointsVerts = 0;
+        }
+        if (typeof data.pointsRouges !== 'number' || data.pointsRouges < 0) {
+          updates.pointsRouges = 0;
+        }
+    
+        if (Object.keys(updates).length > 0) {
+          console.log('Réinitialisation des points:', updates);
+          return chauffeurRef.update(updates);
+        }
+        return Promise.resolve();
+      });
+    }
+
+    function noterChauffeur(chauffeurId, typeVote) {
+      if (!utilisateurConnecte) return alert("Connectez-vous pour noter");
+
+      const uid = utilisateurConnecte.uid;
+      const chauffeurRef = db.ref(`notesChauffeurs/${chauffeurId}`);
+      const voteRef = db.ref(`votesChauffeurs/${chauffeurId}/${uid}`);
+
+      console.log(`Tentative de vote: ${typeVote}`);
+
+      // 1. INITIALISATION - Corrige les valeurs négatives
+      initPointsChauffeur(chauffeurId)
+        .then(() => {
+          // 2. RÉCUPÉRATION de l'état actuel
+          return Promise.all([
+            chauffeurRef.once('value'),
+            voteRef.once('value')
+          ]);
+        })
+        .then(([chauffeurSnap, voteSnap]) => {
+          const currentData = chauffeurSnap.val() || { pointsVerts: 0, pointsRouges: 0 };
+          const currentVote = voteSnap.val();
+      
+        console.log('État actuel:', currentData);
+
+          // 3. PRÉPARATION des mises à jour
+          const updates = {};
+          let voteOperation = Promise.resolve();
+
+          if (currentVote === typeVote) {
+            // ANNULATION
+            console.log('Annulation du vote');
+            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+              firebase.database.ServerValue.increment(-1);
+            voteOperation = voteRef.remove();
+          } else {
+            // NOUVEAU VOTE ou CHANGEMENT
+            if (currentVote) {
+              updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+                firebase.database.ServerValue.increment(-1);
+            }
+            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+              firebase.database.ServerValue.increment(1);
+            voteOperation = voteRef.set(typeVote);
+          }
+
+          // 4. APPLICATION des mises à jour
+          return Promise.all([
+            chauffeurRef.update(updates),
+            voteOperation
+          ]);
+        })
+        .then(() => {
+          console.log('Mise à jour réussie');
+          // 5. ACTUALISATION de l'affichage
+          return chargerNotesChauffeur(chauffeurId);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          alert("Erreur: " + error.message);
+        });
+    }
+
+    // Version optimisée de chargerNotesChauffeur
+    function chargerNotesChauffeur(chauffeurId) {
+      const chauffeurRef = db.ref(`notesChauffeurs/${chauffeurId}`);
+  
+      return chauffeurRef.once('value').then(snapshot => {
+        const data = snapshot.val() || { pointsVerts: 0, pointsRouges: 0 };
+    
+        console.log('Nouvelles valeurs:', {
+          verts: data.pointsVerts,
+          rouges: data.pointsRouges
+        });
+
+        const vertsElem = document.getElementById(`chauffeur-points-verts-${chauffeurId}`);
+        const rougesElem = document.getElementById(`chauffeur-points-rouges-${chauffeurId}`);
+
+        if (vertsElem) {
+          vertsElem.textContent = data.pointsVerts || 0;
+          console.log('Affichage vert mis à jour:', vertsElem.textContent);
+        }
+        if (rougesElem) {
+          rougesElem.textContent = data.pointsRouges || 0;
+          console.log('Affichage rouge mis à jour:', rougesElem.textContent);
+        }
+      });
+    }
+
+    // Fonction pour voter sur un avis de chauffeur
+    function voterAvisChauffeur(chauffeurId, avisId, typeVote) {
+      if (!utilisateurConnecte) {
+        alert("Vous devez être connecté pour voter.");
+        return;
+      }
+
+      const avisRef = db.ref(`avisChauffeurs/${chauffeurId}/${avisId}`);
+      const uid = utilisateurConnecte.uid;
+
+      avisRef.once('value').then(snapshot => {
+        const avis = snapshot.val();
+        if (!avis) return;
+
+        if (avis.uid === uid) {
+          alert("Vous ne pouvez pas voter pour votre propre avis.");
+          return;
+        }
+
+        const currentVote = avis.voteurs?.[uid];
+        let updates = {};
+
+        if (typeof avis.pointsVerts !== 'number') updates.pointsVerts = 0;
+        if (typeof avis.pointsRouges !== 'number') updates.pointsRouges = 0;
+
+        if (!currentVote) {
+          // Nouveau vote
+          updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
+          updates[`voteurs/${uid}`] = typeVote;
+        } else if (currentVote === typeVote) {
+          // Même vote → annule
+          updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+          updates[`voteurs/${uid}`] = null;
+        } else {
+          // Changement de vote
+          updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+          updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
+          updates[`voteurs/${uid}`] = typeVote;
+        }
+
+        return avisRef.update(updates);
+      })
+      .then(() => chargerAvisChauffeur(chauffeurId))
+      .catch(error => {
+        console.error("Erreur lors du vote:", error);
+        alert("Une erreur est survenue lors de votre vote.");
+      });
+    }
+    function afficherTousLesAvisChauffeur(chauffeurId) {
+      const avisContainer = document.getElementById(`chauffeur-avis-container-${chauffeurId}`);
+      if (avisContainer.style.display === 'none') {
+        avisContainer.style.display = 'block';
+        chargerAvisChauffeur(chauffeurId);
+      } else {
+        avisContainer.style.display = 'none';
+      }
+    }
+
+    function fermerTousLesAvis() {
+      document.getElementById('tous-les-avis-modal').style.display = 'none';
+    }
+
+
+    // Fonctions pour le formulaire de commerce
+    function afficherFormulaireCommerce() {
+      // Générer les champs horaires si pas déjà fait
+      if (document.getElementById("commerce-horaires-container").children.length === 0) {
+        const jours = [
+          { nom: 'Lundi', emoji: '📅' },
+          { nom: 'Mardi', emoji: '📅' },
+          { nom: 'Mercredi', emoji: '📅' },
+          { nom: 'Jeudi', emoji: '📅' },
+          { nom: 'Vendredi', emoji: '📅' },
+          { nom: 'Samedi', emoji: '📅' },
+          { nom: 'Dimanche', emoji: '🚫' }
+        ];
+        const container = document.getElementById("commerce-horaires-container");
+    
+        jours.forEach(jour => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label for="commerce-horaire-${jour.nom.toLowerCase()}">
+              ${jour.emoji} ${jour.nom}
+            </label>
+            <input type="text" id="commerce-horaire-${jour.nom.toLowerCase()}" 
+                   placeholder="${jour.nom === 'Dimanche' ? 'Fermé' : '9h-12h / 14h-19h'}">
+          `;
+          container.appendChild(div);
+        });
+      }
+  
+      document.getElementById("commerce-modal").style.display = "block";
+    }
+
+    function fermerCommerceModal() {
+      document.getElementById("commerce-modal").style.display = "none";
+    }
+
+    // Gestion de la soumission du formulaire
+    document.getElementById("commerce-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+  
+      if (!document.getElementById("commerce-cgu").checked) {
+        alert("Veuillez accepter les CGU");
+        return;
+      }
+
+      // Récupérer les coordonnées GPS (géocodage)
+      const adresseComplete = `${document.getElementById("commerce-adresse").value}, ${document.getElementById("commerce-codepostal").value} ${document.getElementById("commerce-ville").value}`;
+      let coords = null;
+  
+      if (document.getElementById("commerce-geoloc-auto").checked) {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresseComplete)}`);
+          const data = await response.json();
+          if (data.length > 0) {
+            coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          }
+        } catch (error) {
+          console.error("Erreur de géocodage:", error);
+        }
+      }
+
+      // Récupérer les horaires
+      const jours = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+      const horaires = jours.reduce((acc, jour) => {
+        acc[jour] = document.getElementById(`commerce-horaire-${jour}`).value || "";
+        return acc;
+      }, {});
+
+      // Créer l'objet GeoJSON Feature
+      const feature = {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: coords || [0, 0] // Si pas de géoloc, sera mis à jour manuellement
+        },
+        properties: {
+          name: document.getElementById("commerce-nom").value,
+          amenity: document.getElementById("commerce-categorie").value,
+          description: document.getElementById("commerce-description").value,
+          address: adresseComplete,
+          phone: document.getElementById("commerce-telephone").value,
+          email: document.getElementById("commerce-email").value,
+          whatsapp: document.getElementById("commerce-whatsapp").value,
+          opening_hours: {
+            ouvert_7j7: document.getElementById("commerce-ouvert-7j7").checked,
+            sur_rdv: document.getElementById("commerce-sur-rdv").checked,
+            details: horaires
+          },
+          gerant: {
+            nom: document.getElementById("commerce-nom-gerant").value,
+            email: document.getElementById("commerce-email-gerant").value
+          },
+          statut: "en_attente",
+          date_ajout: new Date().toISOString(),
+          added_by: utilisateurConnecte ? utilisateurConnecte.uid : "anonymous"
+        }
+      };
+
+      try {
+        // Enregistrer dans Firebase
+        const newCommerceRef = db.ref('commerces').push();
+        await newCommerceRef.set(feature);
+    
+       
+        alert("Votre commerce a été soumis avec succès ! Il sera publié après validation.");
+        fermerCommerceModal();
+        document.getElementById("commerce-form").reset();
+    
+        // Recharger les données sur la carte
+        if (allFeatures) {
+          allFeatures.push(feature);
+          afficherServices("");
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'enregistrement:", error);
+        alert("Une erreur est survenue lors de l'enregistrement.");
+      }
+    });
+    // Fonctions pour le QR Code
+    let qrCodeActuel = null;
+    let lienPartageActuel = '';
+
+    function afficherQRModal(nomLieu, lat, lng) {
+      // Créer un lien court pour ce lieu
+      const lienComplet = `${window.location.origin}${window.location.pathname}?lieu=${ encodeURIComponent(nomLieu)}&lat=${lat}&lng=${lng}`;
+      lienPartageActuel = lienComplet;
+
+      // Afficher le lien dans la modal
+      document.getElementById('lien-partage').textContent = lienComplet;
+
+      // Générer le QR code avec le texte
+      const qrCodeContainer = document.getElementById('qr-code-container');
+      qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Rejoignez-nous ici :</div>'; // Texte ajouté
+
+      // Vérifier que QRCode est bien disponible
+      if (typeof QRCode !== 'undefined') {
+        qrCodeActuel = new QRCode(qrCodeContainer, {
+          text: lienComplet,
+          width: 200,
+          height: 200,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } else {
+        console.error("La librairie QRCode n'est pas chargée");
+        qrCodeContainer.innerHTML = '<p>Erreur de génération du QR Code</p>';
+        return;
+      }
+
+      document.getElementById('qr-modal').style.display = 'block';
+    }
+
+    function fermerQRModal() {
+      document.getElementById('qr-modal').style.display = 'none';
+    }
+
+    function telechargerQRCode() {
+      if (!qrCodeActuel) return;
+
+      const container = document.querySelector('#qr-code-container');
+      const canvas = container.querySelector('canvas');
+  
+      // Créer un nouveau canvas pour inclure le texte
+      const newCanvas = document.createElement('canvas');
+      newCanvas.width = canvas.width;
+      newCanvas.height = canvas.height + 40; // Espace pour le texte
+  
+      const ctx = newCanvas.getContext('2d');
+  
+      // Fond blanc
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+    
+      // Ajouter le texte
+      ctx.fillStyle = '#4CAF50';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Rejoignez-nous ici :', newCanvas.width/2, 25);
+  
+      // Ajouter le QR code
+      ctx.drawImage(canvas, 0, 40);
+  
+      // Télécharger
+      const lien = document.createElement('a');
+      lien.href = newCanvas.toDataURL('image/png');
+      lien.download = 'qr-code-manima.png';
+      lien.click();
+    }   
+
+    function copierLienPartage() {
+      navigator.clipboard.writeText(lienPartageActuel)
+        .then(() => alert('Lien copié dans le presse-papiers !'))
+        .catch(err => console.error('Erreur lors de la copie :', err));
+    }
+    // Au chargement de la page, vérifier les paramètres URL
+    function verifierParametresURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const nomLieu = urlParams.get('lieu');
+      const lat = urlParams.get('lat');
+      const lng = urlParams.get('lng');
+  
+      if (nomLieu && lat && lng) {
+        // Centrer la carte sur le lieu et ouvrir le popup
+        map.setView([lat, lng], 17);
+    
+        // Trouver le marqueur correspondant
+        clusterLayer.eachLayer(marker => {
+          if (marker.getLatLng().lat == lat && marker.getLatLng().lng == lng) {
+            marker.openPopup();
+          }
+        });
+      }
+    }
+
+    // Appeler cette fonction à la fin du chargement de la page
+    document.addEventListener('DOMContentLoaded', verifierParametresURL);
+
+    function afficherStreetView(lat, lng) {
+  const panoUrl = `https://www.google.com/maps/embed?pb=!4v0!6m8!1m7!1sCAoSLEFGMVFpcE1TRWxJazhiVnFzRzVvYXhtem1hd1Q2eVY4amE1bEVVTmN5a3hO!2m2!1d${lat}!2d${lng}!3f0!4f0!5f0.7820865974627469`;
+  
+  const container = document.getElementById('streetview-embed-container');
+  
+  // Crée l'iframe
+  const iframe = document.createElement('iframe');
+  iframe.src = panoUrl;
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.allowFullscreen = true;
+
+  // Bouton fermer
+  const closeBtn = document.createElement('div');
+  closeBtn.textContent = '×';
+  closeBtn.style = 'position:absolute;top:10px;right:20px;font-size:30px;color:white;cursor:pointer;';
+  closeBtn.onclick = fermerStreetView;
+
+  // Vider container et ajouter iframe + bouton fermer
+  container.innerHTML = '';
+  container.appendChild(iframe);
+  container.appendChild(closeBtn);
+  container.style.display = 'block';
+
+  // Timeout de 5 secondes pour vérifier si l'iframe charge
+  let iframeLoaded = false;
+  iframe.onload = () => {
+    iframeLoaded = true;
+  };
+
+  setTimeout(() => {
+    if (!iframeLoaded) {
+      // Affiche message d'urgence avec lien
+      container.innerHTML = `
+        <div style="color:white; padding:20px; text-align:center; font-size:18px;">
+          Street View temporairement indisponible.<br>
+          <a href="https://www.google.com/maps/@${lat},${lng},streetview" target="_blank" style="color:#00aaff; text-decoration:underline;">
+            Cliquez ici pour ouvrir dans Google Maps.
+          </a>
+        </div>
+        <div class="close-streetview" onclick="fermerStreetView()" style="position:absolute;top:10px;right:20px;font-size:30px;color:white;cursor:pointer; cursor:pointer;">×</div>
+      `;
+    }
+  }, 5000); // 5 secondes d'attente
+}
+
+
+
+// Nouvelle version sécurisée (clé API cachée côté serveur)
+async function getLilleWeather() {
+  try {
+    const response = await fetch('http://localhost:3000/weather');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur météo:", error);
+    return { 
+      raining: false, 
+      temp: 15,
+      recommendation: "intérieur" // Par défaut en cas d'erreur
+    };
+  }
+}
+
+
+function fermerStreetView() {
+  const container = document.getElementById('streetview-embed-container');
+  container.innerHTML = '';
+  container.style.display = 'none';
+}
+
+// Configuration des recommandations
+const recommendations = {
+  lundi: {
+    "00:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-06:30": ["L'Aziza (Rue Jules Guesde)", "Aux Pains Dorés"],
+    "06:30-11:00": ["Aux Merveilleux de Fred", "L'Aziza (Rue Jules Guesde)", "Aux Pains Dorés"],
+    "11:00-11:30": ["Snack Tetouan"],
+    "11:30-14:00": ["Snack Tetouan", "Agadir Snack", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"],
+    "14:00-18:00": { 
+      outdoor: [
+        "Jardin des Plantes (Jardin botanique)",
+        "Parc de la Citadelle",
+        "Zoo de Lille"
+      ],
+      indoor: [
+        "Palais des Beaux-Arts de Lille",
+        "Musée de l'illusion LILLE",
+        "Printemps Lille"
+      ]
+    },
+    "18:00-00:00": ["Snack Tetouan", "Snack Mounir", "G LA DALLE LILLE"] 
+  },
+  mardi: {
+    "00:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-07:00": ["Boulangerie Mathieu", "L'Aziza (Rue Jules Guesde)"],
+    "07:00-11:00": ["L'Aziza (Place Nouvelle Aventure)", "Boulangerie Mathieu"],
+    "11:00-11:30": ["Snack Tetouan"],
+    "11:30-14:00": [
+      "Snack Tetouan",
+      "Snack Mounir",
+      "Mangez Moi"
+    ],
+    "14:00-18:00": {  
+      outdoor: [
+        "Parc Jean-Baptiste Lebas",
+        "Jardin des Plantes (Jardin botanique)",
+        "Palais Rihour"
+      ],
+      indoor: [
+        "HEMA",
+        "Musée de l'illusion LILLE",
+        "Le Palais Rameau"
+      ]
+    },
+    "198:00-00:00": ["Snack Tetouan", "Agadir Snack", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"] 
+  },
+  mercredi: {
+    "00:00-01:00": ["G LA DALLE LILLE", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"],
+    "01:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-07:00": ["Aux Pains Dorés", "Boulangerie Mathieu"],
+    "07:00-11:00": ["Boulangerie Au p'tit Louis", "Aux Pains Dorés", "Boulangerie Mathieu"],
+    "11:00-14:00": ["Snack Tetouan", "Agadir Snack", "Mangez Moi"],
+    "14:00-18:00": {  
+      outdoor: [
+        "Parc de la Citadelle",
+        "Jardin des Plantes (Jardin botanique)",
+        "Parc Jean-Baptiste Lebas"
+      ],
+      indoor: [
+        "Musée de l'illusion LILLE",
+        "Palais des Beaux-Arts de Lille",
+        "Le Palais Rameau"
+      ]
+    },
+    "18:00-23:30": ["Snack Tetouan", "Snack Mounir", "Mangez Moi"],  
+    "23:30-00:00": ["Snack Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
+  },
+  jeudi: {
+    "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
+    "01:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-06:30": ["Aux Pains Dorés", "L'Aziza (Rue Jules Guesde)"],
+    "06:30-11:00": ["Aux Merveilleux de Fred", "L'Aziza (Rue Jules Guesde)"],
+    "11:00-14:00": ["Snack Tetouan", "Agadir Snack"],
+    "14:00-18:00": {  
+      outdoor: [
+        "Parc de la Citadelle",
+        "Jardin des Plantes (Jardin botanique)",
+        "Zoo de Lille"
+      ],
+      indoor: [
+        "Palais des Beaux-Arts de Lille",
+        "Musée de l'illusion LILLE",
+        "Le Palais Rameau"
+      ]
+    },
+    "18:00-23:30": ["Snack Tetouan", "Agadir Snack", "Mangez Moi"],  
+    "23:30-00:00": ["Snack Tetouan", "Agadir Snack", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
+  },
+  vendredi: {
+    "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
+    "01:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-11:00": ["Boulangerie Mathieu", "Aux Pains Dorés", "L'Aziza (Rue Jules Guesde)"],
+    "11:00-11:30": ["Snack Tetouan"],
+    "11:30-14:00": [
+      "Snack Tetouan",
+      "Snack Mounir",
+      "Mangez Moi"
+    ],
+    "14:00-18:00": {  
+      outdoor: [
+        "Parc de la Citadelle",
+        "Jardin des Plantes (Jardin botanique)",
+        "Zoo de Lille"
+      ],
+      indoor: [
+        "Palais des Beaux-Arts de Lille",
+        "Le Palais Rameau",
+        "Musée des Écoles de Lille"
+      ]
+    },
+    "18:00-00:00": ["Snack Tetouan", "Agadir Snack", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]  
+  },
+  samedi: {
+    "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "Mangez Moi"],
+    "01:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-06:30": ["Boulangerie Mathieu", "L'Aziza (Rue Jules Guesde)"],
+    "06:30-11:30": ["Aux Merveilleux de Fred", "Boulangerie Mathieu", "L'Aziza (Rue Jules Guesde)"],
+    "11:30-12:00": ["Snack Tetouan", "Agadir Snack", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"],
+    "12:00-14:00": ["Snack Mounir", "Mangez Moi", "Snack Tetouan"],
+    "14:00-18:00": {  
+      outdoor: [
+        "Jardin des Plantes (Jardin botanique)",
+        "Zoo de Lille",
+        "Parc de la Citadelle"
+      ],
+      indoor: [
+        "Musée de l'Institut Pasteur de Lille",
+        "Palais des Beaux-Arts de Lille",
+        "Musée de l'illusion LILLE"
+      ]
+    },
+    "18:00-01:00": ["Snack Tetouan", "Agadir Snack", "Mangez Moi", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]  
+  },
+  dimanche: {
+    "00:00-02:00": ["Snack Tetouan", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
+    "02:00-06:00": ["G LA DALLE LILLE"],
+    "06:00-06:30": ["Boulangerie Mathieu", "L'Aziza (Rue Jules Guesde)"],
+    "06:30-11:30": ["L'Aziza (Rue Jules Guesde)", "Aux Merveilleux de Fred"],
+    "11:30-14:00": ["Mangez Moi", "Snack Tetouan", "Agadir Snack"],
+    "14:00-18:00": {  // Changé de 18h à 19h
+      outdoor: [
+        "Jardin des Plantes",
+        "Zoo de Lille",
+        "Jardin Vauban"
+      ],
+      indoor: [
+        "Palais des Beaux-Arts de Lille",
+        "Musée de l'Institut Pasteur de Lille",
+        "Musée de l'illusion Lille"
+      ]
+    },
+    "18:00-00:00": ["Snack Tetouan", "Mangez Moi", "G LA DALLE LILLE"]  // Changé de 18h à 19h
+  }
+};
+
+
+
+ // Fonction pour déterminer la tranche horaire actuelle
+ 
+
+    // Fonction pour obtenir le jour en français
+function getFrenchDay() {
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  return days[new Date().getDay()];
+}
+
+// Fonction pour déterminer la tranche horaire actuelle
+function getCurrentTimeSlotDynamic(day) {
+  const now = new Date();
+  const totalMinutes = now.getHours() * 60 + now.getMinutes();
+
+  // Récupérer les plages horaires du jour (ex: "00:00-01:00", "01:00-06:00", etc.)
+  const slots = Object.keys(recommendations[day]);
+
+  for (const slot of slots) {
+    // Découper la plage en début et fin
+    const [startStr, endStr] = slot.split('-');
+    
+    // Convertir heures en minutes depuis minuit
+    const startParts = startStr.split(':');
+    const endParts = endStr.split(':');
+
+    const startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1]);
+    let endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1]);
+
+    // Gérer le cas où la fin est "00:00" (donc minuit suivant)
+    if (endMinutes === 0) endMinutes = 24 * 60;
+
+    // Vérifier si totalMinutes est dans cette plage
+    if (totalMinutes >= startMinutes && totalMinutes < endMinutes) {
+      return slot;
+    }
+  }
+
+  // Si aucune plage trouvée (peu probable), retourner la première
+  return slots[0];
+}
+
+// Fonction simulée pour afficher sur la carte (à adapter selon ton code)
+function afficherSurCarte(serviceName) {
+  console.log("Afficher sur la carte :", serviceName);
+  // Ajoute ici ta logique pour afficher le service sur la carte
+}
+
+ // Fonction pour trouver un service par son nom
+    function trouverServiceParNom(nom) {
+      if (!allFeatures) return null;
+      
+      for (const feature of allFeatures) {
+        const props = feature.properties;
+        if (props.name && props.name.toLowerCase() === nom.toLowerCase()) {
+          return {
+            name: props.name,
+            lat: feature.geometry.coordinates[1],
+            lng: feature.geometry.coordinates[0]
+          };
+        }
+      }
+      return null;
+    }
+
+    function centrerSurService(nom) {
+  const service = trouverServiceParNom(nom);
+  if (!service) {
+    console.warn("Service non trouvé :", nom);
+    return;
+  }
+
+  const decaleLat = service.lat - 0.0022;
+  const targetLatLng = L.latLng(service.lat, service.lng);
+
+  // Étape 1 : flyTo la position décalée
+  map.flyTo([decaleLat, service.lng], 17, {
+    animate: true,
+    duration: 1
+  });
+
+  // Étape 2 : après un petit délai, chercher et ouvrir le marker
+  // (le délai permet à flyTo de terminer, sans dépendre de moveend)
+  setTimeout(() => {
+    let trouvé = false;
+
+    clusterLayer.eachLayer(marker => {
+      if (!marker.getLatLng) return;
+
+      const distance = map.distance(marker.getLatLng(), targetLatLng);
+      if (distance < 10 && !trouvé) {
+        trouvé = true;
+
+        // zoomToShowLayer assure que le marker est bien visible (cluster déplié)
+        clusterLayer.zoomToShowLayer(marker, () => {
+          marker.openPopup();
+        });
+      }
+    });
+
+    if (!trouvé) {
+      console.warn("Aucun marker trouvé à proximité pour : ", nom);
+    }
+  }, 1100); // durée du flyTo (1000ms) + petite marge
+}
+
+    
+    // Fonction pour obtenir les services selon la météo
+async function getServicesForTimeSlot() {
+  const day = getFrenchDay();
+  const timeSlot = getCurrentTimeSlotDynamic(day);
+  const slotData = recommendations[day][timeSlot];
+  
+  // Vérifie si c'est une plage horaire avec choix indoor/outdoor
+  if (typeof slotData === 'object' && !Array.isArray(slotData)) {
+    const weather = await getLilleWeather();
+    return weather.raining ? slotData.indoor : slotData.outdoor;
+  }
+  
+  return slotData;
+}
+    
+    // Fonction pour afficher les recommandations
+    function getTitreRecommandation() {
+      const now = new Date();
+      const hours = now.getHours();
+      
+      if (hours >= 6 && hours < 11) {
+        return "Petit déjeuner";
+      } else if (hours >= 11 && hours < 14) {
+        return "Où déjeuner";
+      } else if (hours >= 14 && hours < 18) {
+        return "Activités à Lille";
+      } else if (hours >= 18 || hours < 0) {
+        return "Où dîner ce soir";
+      } else if (hours >= 0 || hours < 6) {
+        return "Petite collation nocturne?";
+      }
+      return "Recommandations du moment"; // Par défaut
+    }
+    
+    // Fonction pour vérifier si c'est un jour de marché
+    function isMarketDay() {
+      const day = new Date().getDay(); // 0 = dimanche, 1 = lundi, etc.
+      // Les jours de marché sont mardi, jeudi et dimanche
+      return day === 0 || day === 2 || day === 4; // Dimanche, Mardi, Jeudi
+    }
+    // Fonction pour vérifier si l'heure est entre 6h et 11h
+    function isMarketTime() {
+      const now = new Date();
+      const hour = now.getHours();
+      return hour >= 6 && hour < 14;
+    }
+
+
+    // Fonction pour obtenir les recommandations adaptées à la météo
+async function getWeatherAdjustedRecommendations(day, timeSlot) {
+  const weather = await getLilleWeather();
+  const isCold = weather.temp < 10; // On considère "froid" en dessous de 10°C
+  const isRaining = weather.raining;
+  
+  // Si chaud et pas de pluie: activités extérieur
+  if (!isCold && !isRaining) {
+    return recommendations[day][timeSlot]?.outdoor || [];
+  }
+  // Si froid ou pluie: activités intérieur
+  else {
+    return recommendations[day][timeSlot]?.indoor || [];
+  }
+}
+
+async function afficherRecommandations() {
+  const day = getFrenchDay(); // ex: "lundi"
+  const slot = getCurrentTimeSlotDynamic(day); // ex: "14:00-18:00"
+
+  const reco = recommendations[day][slot];
+
+  // Cas spécial : si la recommandation a "outdoor" et "indoor"
+  if (typeof reco === 'object' && reco.outdoor && reco.indoor) {
+    const meteo = await getLilleWeather(); // Obtenir la météo
+
+    const lieux = meteo.raining ? reco.indoor : reco.outdoor; // Choisir selon météo
+
+    console.log(`📍 Météo à Lille : ${meteo.raining ? "Pluie ☔️" : "Pas de pluie ☀️"}`);
+    console.log(`👉 Lieux recommandés (${meteo.raining ? "indoor" : "outdoor"}) :`, lieux);
+
+    lieux.forEach(nom => afficherSurCarte(nom)); // Afficher sur la carte
+  }
+  // Cas normal (pas de indoor/outdoor, juste une liste)
+  else if (Array.isArray(reco)) {
+    reco.forEach(nom => afficherSurCarte(nom));
+  }
+}
+
+    function showRecommendations() {
+  const container = document.getElementById('recommandation-container');
+  const titleElem = document.getElementById('recommandation-title');
+  const serviceElem = document.getElementById('recommandation-service');
+  const timeElem = document.getElementById('recommandation-time');
+  
+  titleElem.textContent = getTitreRecommandation();
+  
+  if (!allFeatures || allFeatures.length === 0) {
+    serviceElem.innerHTML = "<div style='text-align:center; padding:10px;'>Chargement des données...</div>";
+    return;
+  }
+  
+  serviceElem.innerHTML = `
+    <div class="loading-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  `;
+  
+  // Transformation en fonction asynchrone pour gérer la météo
+  setTimeout(async () => {
+    const day = getFrenchDay();
+    const timeSlot = getCurrentTimeSlotDynamic(day);
+    
+    let slotRecommendations = [];
+
+    // Modification uniquement pour le créneau 14h-18h
+    if (timeSlot === "14:00-18:00") {
+      try {
+        const weather = await getLilleWeather();
+        // Utiliser la recommandation du serveur
+        if (weather.recommendation === "extérieur") {
+          slotRecommendations = recommendations[day][timeSlot].outdoor || [];
+        } else {
+          slotRecommendations = recommendations[day][timeSlot].indoor || [];
+        }
+      } catch (error) {
+        console.error("Erreur météo:", error);
+        slotRecommendations = recommendations[day][timeSlot]?.outdoor || [];
+      }
+    }
+    // Comportement normal pour les autres créneaux
+    else if (recommendations[day] && recommendations[day][timeSlot]) {
+      slotRecommendations = recommendations[day][timeSlot];
+    }
+    
+    const validRecommendations = slotRecommendations.filter(nom => trouverServiceParNom(nom));
+    
+    if (validRecommendations.length === 0) {
+      serviceElem.innerHTML = "<div style='text-align:center; padding:10px;'>Aucune recommandation valide</div>";
+    } else {
+      const listHtml = validRecommendations
+        .map(rec => `<li>${rec}</li>`)
+        .join('');
+      
+      serviceElem.innerHTML = `<ul>${listHtml}</ul>`;
+      
+      const items = serviceElem.querySelectorAll('li');
+      items.forEach(item => {
+        item.addEventListener('click', () => {
+          centrerSurService(item.textContent);
+        });
+      });
+    }
+    
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    timeElem.textContent = `Mis à jour à ${hours}:${minutes}`;
+  }, 1000);
+  
+  // Gestion du carré supplémentaire pour les marchés (inchangé)
+  const marketContainer = document.getElementById('market-container');
+  const marketTitle = document.getElementById('market-title');
+  const marketService = document.getElementById('market-service');
+  const isMarket = isMarketDay() && isMarketTime();
+  
+  if (isMarket) {
+    marketContainer.style.display = 'block';
+    marketTitle.textContent = "Jour de marché!";
+    marketService.innerHTML = `
+      <ul>
+        <li>Marché de Wazemmes</li>
+        <li>Marché de Mons-en-Barœul</li>
+      </ul>
+    `;
+    
+    document.querySelectorAll('#market-service li').forEach(item => {
+      item.addEventListener('click', () => {
+        centrerSurService(item.textContent);
+      });
+    });
+  } else {
+    marketContainer.style.display = 'none';
+  }
+  
+  showJumuaMosques();
+}
+    
+    // Fermer le carré de recommandation
+    function fermerRecommandation() {
+      document.getElementById('recommandation-container').style.display = 'none';
+    }
+    
+    // Dans le code de chargement des données
+    fetch('ret.geojson')
+      .then(res => res.json())
+      .then(data => {
+        allFeatures = data.features;
+        afficherServices("");
+        
+        // Afficher les recommandations après le chargement des données
+        showRecommendations();
+      }) 
+      .catch(error => {
+        console.error("Erreur de chargement des données:", error);
+      });
+
+    // Rafraîchir les recommandations toutes les 10 minutes
+    setInterval(showRecommendations, 10 * 60 * 1000);
+    // Fonction pour obtenir le titre en fonction de l'heure
+    
+    // Fonction pour vérifier si c'est vendredi entre 11h et 14h
+function isJumuaTime() {
+  const now = new Date();
+  const day = now.getDay(); // 0 = dimanche, 5 = vendredi
+  const hour = now.getHours();
+  
+  return day === 5 && hour >= 10 && hour < 14;
+}
+
+// Fonction pour afficher les mosquées pour Jumua
+function showJumuaMosques() {
+  const container = document.getElementById('jumua-container');
+  const serviceElem = document.getElementById('jumua-service');
+  
+  if (isJumuaTime()) {
+    container.style.display = 'block';
+    serviceElem.innerHTML = `
+      <ul style="list-style: none; padding-left: 0; margin: 0;">
+        <li style="padding: 8px; border-radius: 6px; margin-bottom: 8px; background: #f0f8ff; border-left: 4px solid #4CAF50; cursor: pointer;">Grande Mosquée de Mons-en-Baroeul</li>
+        <li style="padding: 8px; border-radius: 6px; margin-bottom: 8px; background: #f0f8ff; border-left: 4px solid #4CAF50; cursor: pointer;">Mosquée Badr</li>
+        <li style="padding: 8px; border-radius: 6px; margin-bottom: 8px; background: #f0f8ff; border-left: 4px solid #4CAF50; cursor: pointer;">Mosquée El Forkane</li>
+      </ul>
+    `;
+    
+    // Ajouter les événements clic
+    document.querySelectorAll('#jumua-service li').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        const mosques = [
+          "Grande Mosquée de Mons-en-Baroeul (Mosquée Al Wifaq)",
+          "Mosquée Badr",
+          "Mosquée El Forkane"
+        ];
+        centrerSurService(mosques[index]);
+      });
+    });
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+// Appeler cette fonction au chargement et périodiquement
+showJumuaMosques();
+setInterval(showJumuaMosques, 60000); // Vérifier chaque minute
+// Ajoutez cette fonction dans votre script
+function checkLocation() {
+  // Coordonnées approximatives de Lille
+  const lilleCenter = [50.6292, 3.0573];
+  const lilleRadius = 15; // Rayon en kilomètres
+
+  if (!userLocation) return;
+
+  const distance = calculateDistance(
+    userLocation[0], 
+    userLocation[1],
+    lilleCenter[0],
+    lilleCenter[1]
+  );
+
+  if (distance > lilleRadius) {
+    document.getElementById('warningBanner').classList.remove('hidden');
+  }
+}
+
+// Fonction utilitaire pour calculer la distance
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Rayon de la terre en km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  return R * c; // Distance en km
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180);
+}
+
+function hideWarning() {
+  const banner = document.getElementById('warningBanner');
+  banner.classList.add('hidden');
+  setTimeout(() => { banner.style.display = 'none'; }, 350);
+}
+
+
+// Appeler cette fonction après avoir obtenu la position utilisateur
+// Dans votre fonction de géolocalisation existante, après avoir défini userLocation:
+checkLocation();
+  </script>
+  <!-- Modal QR Code -->
+<div id="qr-modal" class="modal">
+  <div class="modal-content" style="text-align: center; max-width: 300px;">
+    <span class="close-btn" onclick="fermerQRModal()">&times;</span>
+    <h2>Partager ce lieu</h2>
+    <div id="qr-code-container"></div>
+    <p id="lien-partage" style="word-break: break-all; margin: 15px 0;"></p>
+    <button onclick="telechargerQRCode()">Télécharger le QR Code</button>
+    <button onclick="copierLienPartage()">Copier le lien</button>
+  </div>
+</div>
+</body>
+</html>

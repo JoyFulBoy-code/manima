@@ -1,0 +1,2021 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2025-06-19T20:05:00Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "relation/2019668",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "building:levels": "3",
+        "contact:city": "Lille",
+        "contact:housenumber": "202-204-206",
+        "contact:phone": "+33 3 20 53 20 93",
+        "contact:postcode": "59000",
+        "contact:street": "Rue d'Arras",
+        "contact:website": "http://www.mosqueebadr.fr/",
+        "denomination": "sunni",
+        "name": "Mosquée Badr",
+        "name:ar": "مسجد بدر",
+        "religion": "muslim",
+        "type": "multipolygon",
+        "unisex": "yes",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0642016,
+          50.6192475
+        ]
+      },
+      "id": "relation/2019668"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/39689355",
+        "alt_name": "Mosquée Omar Ibn Al Khattab",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "contact:facebook": "https://www.facebook.com/mosquee.desboisblancs/",
+        "denomination": "sunni",
+        "male": "yes",
+        "name": "Mosquée Omar ibn Al Khattab",
+        "name:ar": "مسجد عمر بن الخطاب",
+        "religion": "muslim",
+        "source": "Mairie de Lille - Juin 2016",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0256719,
+          50.629007
+        ]
+      },
+      "id": "way/39689355"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/67711100",
+        "addr:city": "Jeumont",
+        "addr:housenumber": "387",
+        "addr:postcode": "59460",
+        "addr:street": "Rue Faidherbe",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Al-Wahda",
+        "name:ar": "مسجد الوحدة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.1072949,
+          50.2961048
+        ]
+      },
+      "id": "way/67711100"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/69977587",
+        "addr:city": "Hem",
+        "addr:housenumber": "225",
+        "addr:postcode": "59510",
+        "addr:street": "Avenue Laennec",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée al-Fateh",
+        "name:ar": "مسجد الفتج",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "website": "http://mosquee-de-hem.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1949894,
+          50.6669593
+        ]
+      },
+      "id": "way/69977587"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/74803167",
+        "addr:city": "Aulnoye-Aymeries",
+        "addr:housenumber": "51",
+        "addr:postcode": "59620",
+        "addr:street": "Rue Turgot",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée As-Salam",
+        "name:ar": "مسجد السلام",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "website": "http://mosqueeaulnoye.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8396381,
+          50.1961602
+        ]
+      },
+      "id": "way/74803167"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/74895938",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Mons-en-Barœul",
+        "contact:housenumber": "1",
+        "contact:phone": "+33 3 20 33 42 33",
+        "contact:postcode": "59370",
+        "contact:street": "Rue Voltaire",
+        "contact:website": "http://www.mosqueemons.fr/",
+        "denomination": "sunni",
+        "name": "Mosquée Al Wifaq",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1076133,
+          50.6348668
+        ]
+      },
+      "id": "way/74895938"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/76396472",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Dunkerque",
+        "contact:housenumber": "11",
+        "contact:postcode": "59140",
+        "contact:street": "Rue de Calais",
+        "contact:website": "http://islamdunkerquois.org/",
+        "denomination": "sunni",
+        "name": "Mosquée Fath",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3698491,
+          51.0284961
+        ]
+      },
+      "id": "way/76396472"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/76399503",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Dunkerque",
+        "contact:housenumber": "46",
+        "contact:postcode": "59140",
+        "contact:street": "Rue Caumartin",
+        "contact:website": "http://islamdunkerquois.org/",
+        "denomination": "sunni",
+        "name": "Mosquée Omar Farouq",
+        "name:ar": "مسجد عمر الفاروق",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3808033,
+          51.0315476
+        ]
+      },
+      "id": "way/76399503"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/76401975",
+        "addr:city": "Dunkerque",
+        "addr:housenumber": "369",
+        "addr:postcode": "59640",
+        "addr:street": "Rue du Kruysbellaert",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Sounnah",
+        "name:ar": "مسجد السنة",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "website": "http://masjidsounnah.free.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3206508,
+          51.0210877
+        ]
+      },
+      "id": "way/76401975"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/76406917",
+        "addr:city": "Dunkerque",
+        "addr:housenumber": "3440",
+        "addr:postcode": "59640",
+        "addr:street": "Avenue de Petite-Synthe",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Eyup Sultan",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "website": "https://sites.google.com/site/acsctdunkerque/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3253653,
+          51.0190295
+        ]
+      },
+      "id": "way/76406917"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/76409553",
+        "addr:city": "Dunkerque",
+        "addr:housenumber": "2",
+        "addr:postcode": "59140",
+        "addr:street": "Rue de l'Industrie",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Abou Dhar Al Ghifari",
+        "religion": "muslim",
+        "source": "extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010",
+        "website": "http://islamdunkerquois.org/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3807887,
+          51.0293573
+        ]
+      },
+      "id": "way/76409553"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/77491833",
+        "addr:city": "Villeneuve-d'Ascq",
+        "addr:postcode": "59650",
+        "addr:street": "Rue Baudouin IX",
+        "alt_name": "Mosquée Tawba",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "email": "contact@mosqueedevilleneuvedascq.fr",
+        "name": "Centre Islamique de Villeneuve d'Ascq",
+        "phone": "+33 3 20 19 46 14",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre;mise à jour : 2009",
+        "website": "http://mosqueedevilleneuvedascq.fr/",
+        "wikipedia": "fr:Grande mosquée de Villeneuve-d'Ascq",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1364553,
+          50.6256087
+        ]
+      },
+      "id": "way/77491833"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/77494312",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "check_date": "2024-10-11",
+        "contact:city": "Lille",
+        "contact:housenumber": "94",
+        "contact:postcode": "59000",
+        "contact:street": "Rue Jean Jaurès",
+        "denomination": "sunni",
+        "name": "Mosquée Es-Salam",
+        "name:ar": "مسجد السلام",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "unisex": "yes",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0744717,
+          50.6205452
+        ]
+      },
+      "id": "way/77494312"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/77572384",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "32",
+        "addr:postcode": "59200",
+        "addr:street": "Rue du Bus",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Salman Al Farissi",
+        "name:ar": "مسجد سلمان الفارسي",
+        "phone": "+33 3 20 25 41 72",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1606923,
+          50.7272156
+        ]
+      },
+      "id": "way/77572384"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/78416671",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1809231,
+          50.7385098
+        ]
+      },
+      "id": "way/78416671"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/78417045",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "313",
+        "addr:postcode": "59200",
+        "addr:street": "Rue Colbert",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Othman Ibn 'Afane",
+        "name:ar": "مسجد عثمان بن عفان",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1837401,
+          50.7362169
+        ]
+      },
+      "id": "way/78417045"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/79062681",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "59",
+        "addr:postcode": "59200",
+        "addr:street": "Rue du Clinquet",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Ibn Taymiyya",
+        "name:ar": "مسجد ابن تيمية",
+        "phone": "+33 3 20 03 82 33",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1416093,
+          50.7230876
+        ]
+      },
+      "id": "way/79062681"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/79517648",
+        "addr:housenumber": "63",
+        "addr:street": "Rue Franklin",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Abou Bakr Essedik",
+        "name:ar": "مسجد أبو بكر الصديق",
+        "religion": "muslim",
+        "source:geometry": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2020",
+        "website": "http://www.essedik.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1903214,
+          50.6899156
+        ]
+      },
+      "id": "way/79517648"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/79532920",
+        "addr:city": "Roubaix",
+        "addr:housenumber": "229",
+        "addr:postcode": "59100",
+        "addr:street": "Rue de l'Épeule",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Bilal",
+        "name:ar": "مسجد بلال",
+        "phone": "+33 3 20 45 90 04",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "website": "http://mosqueebilalroubaix.com/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1588338,
+          50.6866009
+        ]
+      },
+      "id": "way/79532920"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/80136907",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Association cultuelle musulmane de la Potennerie",
+        "operator": "Association cultuelle musulmane de la Potennerie",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1865349,
+          50.6828449
+        ]
+      },
+      "id": "way/80136907"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/80146908",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "131",
+        "addr:postcode": "59200",
+        "addr:street": "Rue d'Anzin",
+        "alt_name": "Mosquée des 3 Ponts",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Arrahma",
+        "name:ar": "مسجد الرحمة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.2029235,
+          50.689055
+        ]
+      },
+      "id": "way/80146908"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/81726431",
+        "addr:city": "Loos",
+        "addr:housenumber": "51",
+        "addr:postcode": "59120",
+        "addr:street": "Rue Wastin",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée de Loos",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0181439,
+          50.6094241
+        ]
+      },
+      "id": "way/81726431"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/84399753",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name:signed": "no",
+        "operator": "Al Tawhid Wa Al Ihssan",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0574736,
+          50.6230521
+        ]
+      },
+      "id": "way/84399753"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/84402253",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Lille",
+        "contact:housenumber": "8",
+        "contact:postcode": "59000",
+        "contact:street": "Rue Jean du Solier",
+        "denomination": "sunni",
+        "name": "Mosquée Assounna",
+        "name:ar": "مسجد السنة",
+        "operator": "Association Fidélité",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0489286,
+          50.6200251
+        ]
+      },
+      "id": "way/84402253"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/84937317",
+        "addr:city": "Lille",
+        "addr:housenumber": "250",
+        "addr:postcode": "59000",
+        "addr:street": "Rue du Faubourg de Roubaix",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "check_date": "2025-04-15",
+        "contact:city": "Lille",
+        "contact:housenumber": "250",
+        "contact:phone": "+33 3 20 06 59 01",
+        "contact:postcode": "59000",
+        "contact:street": "Rue du Faubourg de Roubaix",
+        "contact:website": "http://mosquee-alforqan.over-blog.com/",
+        "denomination": "sunni",
+        "name": "Mosquée de Lille el Forkane",
+        "name:ar": "مسجد الفرقان",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "unisex": "yes",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0914501,
+          50.6418945
+        ]
+      },
+      "id": "way/84937317"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/85013993",
+        "addr:city": "Comines",
+        "addr:housenumber": "51",
+        "addr:postcode": "59560",
+        "addr:street": "Rue Gambetta",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Er-Rahma",
+        "name:ar": "مسجد الرحمة",
+        "phone": "+33320143911",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0087811,
+          50.7620276
+        ]
+      },
+      "id": "way/85013993"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/85087432",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Lille",
+        "contact:housenumber": "34",
+        "contact:postcode": "59000",
+        "contact:street": "Rue Coustou",
+        "denomination": "sunni",
+        "name": "Association Culturelle Des Travailleurs Turcs",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0992223,
+          50.6310502
+        ]
+      },
+      "id": "way/85087432"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/85100568",
+        "addr:city": "Lille",
+        "addr:housenumber": "67 bis",
+        "addr:postcode": "59800",
+        "addr:street": "Rue Malsence",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée Fraternité",
+        "phone": "+33 6 51 33 91 85",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "website": "https://www.centre-fraternite.fr/",
+        "wheelchair": "yes",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0931469,
+          50.631675
+        ]
+      },
+      "id": "way/85100568"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/100713924",
+        "addr:city": "Douai",
+        "addr:housenumber": "414",
+        "addr:postcode": "59500",
+        "addr:street": "Rue d'Albergotti",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée de Douai",
+        "name:ar": "مسجد دووي",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "website": "http://www.mosquee-douai.com/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0689995,
+          50.3699472
+        ]
+      },
+      "id": "way/100713924"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/102193469",
+        "addr:city": "Waziers",
+        "addr:housenumber": "254",
+        "addr:postcode": "59119",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Bilal",
+        "name:ar": "مسجد بلال",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1013088,
+          50.3814645
+        ]
+      },
+      "id": "way/102193469"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/102838990",
+        "addr:city": "Flers-en-Escrebieux",
+        "addr:housenumber": "17",
+        "addr:postcode": "59128",
+        "addr:street": "Rue Marceau Martin",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée At-Tawba",
+        "name:ar": "مسجد التوبة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0876508,
+          50.4000882
+        ]
+      },
+      "id": "way/102838990"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/105344621",
+        "addr:city": "Roost-Warendin",
+        "addr:housenumber": "4",
+        "addr:postcode": "59286",
+        "addr:street": "Rue de Ceton",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée En-Nour",
+        "name:ar": "مسجد النور",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.100105,
+          50.405654
+        ]
+      },
+      "id": "way/105344621"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/105423701",
+        "addr:city": "Auby",
+        "addr:postcode": "59950",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée d'Auby",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.065329,
+          50.4165325
+        ]
+      },
+      "id": "way/105423701"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/108182762",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Lomme",
+        "contact:housenumber": "231",
+        "contact:phone": "+33 3 20 00 87 83",
+        "contact:postcode": "59160",
+        "contact:street": "Rue de la Mitterie",
+        "denomination": "sunni",
+        "name": "Mosquée Ennour",
+        "name:ar": "مسجد النور",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0024855,
+          50.647483
+        ]
+      },
+      "id": "way/108182762"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/108640778",
+        "addr:city": "Fresnes-sur-Escaut",
+        "addr:housenumber": "72",
+        "addr:postcode": "59970",
+        "addr:street": "Square du 19 Mars 1962",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Abou Bakr",
+        "name:ar": "مسجد أبي بكر",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.578116,
+          50.4308965
+        ]
+      },
+      "id": "way/108640778"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/108767992",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Lille",
+        "contact:housenumber": "59",
+        "contact:phone": "+33 3 20 53 02 65",
+        "contact:postcode": "59000",
+        "contact:street": "Rue de Marquillies",
+        "contact:website": "http://www.mosqueelille.fr/",
+        "denomination": "sunni",
+        "name": "Mosquée Al Imane",
+        "name:ar": "مسجد الإيمان",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "unisex": "yes",
+        "wikidata": "Q3324846",
+        "wikipedia": "fr:Mosquée Al-Imane de Lille",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0613216,
+          50.6134467
+        ]
+      },
+      "id": "way/108767992"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/109487450",
+        "addr:city": "Masny",
+        "addr:postcode": "59176",
+        "addr:street": "Avenue du 8 Mai 1945",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Masny",
+        "name:ar": "مسجد ماسني",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "website": "http://mosquee-masny.com/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1886915,
+          50.337936
+        ]
+      },
+      "id": "way/109487450"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/110724606",
+        "addr:city": "Armentières",
+        "addr:housenumber": "77",
+        "addr:postcode": "59280",
+        "addr:street": "Rue des Résistants",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée El-Ansar",
+        "phone": "+33320355526",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.871984,
+          50.6911365
+        ]
+      },
+      "id": "way/110724606"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/118845748",
+        "addr:city": "Saint-Pol-sur-Mer",
+        "addr:housenumber": "141",
+        "addr:postcode": "59430",
+        "addr:street": "Rue Raspail",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Nour",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "website": "http://islamdunkerquois.org/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.347316,
+          51.0332145
+        ]
+      },
+      "id": "way/118845748"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/125558093",
+        "addr:city": "Seclin",
+        "addr:housenumber": "12",
+        "addr:postcode": "59113",
+        "alt_name": "Mosquée de Seclin",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Salle Mossa",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+        "website": "https://sites.google.com/site/accsmossa/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.024918,
+          50.5484995
+        ]
+      },
+      "id": "way/125558093"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/146795091",
+        "addr:city": "Maubeuge",
+        "addr:housenumber": "452",
+        "addr:postcode": "59600",
+        "addr:street": "Rue d'Hautmont",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée El-Imane",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9368504,
+          50.266387
+        ]
+      },
+      "id": "way/146795091"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/194403561",
+        "addr:city": "Denain",
+        "addr:housenumber": "33",
+        "addr:postcode": "59220",
+        "addr:street": "Rue Jules Mousseron",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée AlQuds",
+        "name:ar": "مسجد القدس",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.387191,
+          50.327498
+        ]
+      },
+      "id": "way/194403561"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/194494773",
+        "addr:city": "Escaudain",
+        "addr:housenumber": "29",
+        "addr:postcode": "59124",
+        "addr:street": "Rue Camille Desmoulins",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Al Mohssinine",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "website": "https://www.mosquee-escaudain.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.350706,
+          50.3352765
+        ]
+      },
+      "id": "way/194494773"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/194597866",
+        "addr:city": "Wallers",
+        "addr:housenumber": "9",
+        "addr:postcode": "59135",
+        "addr:street": "Chemin du Bois Montois",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée de Wallers",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.419094,
+          50.3823685
+        ]
+      },
+      "id": "way/194597866"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/194766708",
+        "addr:city": "Anzin",
+        "addr:housenumber": "39",
+        "addr:postcode": "59410",
+        "addr:street": "Rue de Roubaix",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Salle de prière",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.501319,
+          50.377435
+        ]
+      },
+      "id": "way/194766708"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/194882278",
+        "addr:city": "Saint-Amand-les-Eaux",
+        "addr:housenumber": "15",
+        "addr:postcode": "59230",
+        "addr:street": "Rue du 18 Juin",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée de Saint-Amand-les-Eaux",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.431912,
+          50.448317
+        ]
+      },
+      "id": "way/194882278"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/195062654",
+        "addr:city": "Haveluy",
+        "addr:housenumber": "8",
+        "addr:postcode": "59255",
+        "addr:street": "Rue Ferdinand Decarpentry",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée d'Haveluy",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.4068066,
+          50.3554808
+        ]
+      },
+      "id": "way/195062654"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/195128869",
+        "addr:city": "Halluin",
+        "addr:housenumber": "193",
+        "addr:postcode": "59250",
+        "addr:street": "Rue de la Lys",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Tawhid",
+        "name:ar": "مسجد التوحيد",
+        "phone": "+33 3 20 94 15 61",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "website": "https://www.mosquee-halluin.fr/",
+        "wikidata": "Q3324881",
+        "wikipedia": "fr:Mosquée Tawhid",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1185775,
+          50.7848725
+        ]
+      },
+      "id": "way/195128869"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/195474374",
+        "addr:city": "Raismes",
+        "addr:housenumber": "130",
+        "addr:postcode": "59590",
+        "addr:street": "Rue Thiers",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Assalam",
+        "name:ar": "مسجد السلام",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "website": "http://www.mosquee-acmr.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.513717,
+          50.404577
+        ]
+      },
+      "id": "way/195474374"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/199294862",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "contact:city": "Cambrai",
+        "contact:housenumber": "41",
+        "contact:postcode": "59400",
+        "contact:street": "Rue Saint-Vaast",
+        "denomination": "sunni",
+        "name": "Mosquée An Nour",
+        "name:ar": "مسجد النور",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.232265,
+          50.178655
+        ]
+      },
+      "id": "way/199294862"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/200917388",
+        "addr:city": "Condé-sur-l'Escaut",
+        "addr:housenumber": "12",
+        "addr:postcode": "59163",
+        "addr:street": "Route de Bernissart",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Rahma",
+        "name:ar": "مسجد الرحمة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.612271,
+          50.470695
+        ]
+      },
+      "id": "way/200917388"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/200920571",
+        "addr:city": "Condé-sur-l'Escaut",
+        "addr:housenumber": "174",
+        "addr:postcode": "59163",
+        "addr:street": "Rue du Gras Bœuf",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Souna",
+        "name:ar": "مسجد السنة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6096935,
+          50.469551
+        ]
+      },
+      "id": "way/200920571"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/201439803",
+        "addr:city": "Escautpont",
+        "addr:housenumber": "156",
+        "addr:postcode": "59278",
+        "addr:street": "Rue Jean Jaurès",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée d'Escautpont",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.557647,
+          50.4104025
+        ]
+      },
+      "id": "way/201439803"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/201529707",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée de Ar Rahma",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.2474045,
+          50.175891
+        ]
+      },
+      "id": "way/201529707"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/219270334",
+        "addr:city": "Beuvrages",
+        "addr:housenumber": "9",
+        "addr:postcode": "59192",
+        "addr:street": "Rue de la Gare",
+        "alt_name": "Mosquée Noor;Nour mosquée;Noor mosquée",
+        "alt_name:ur": "نور مسجد",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "ahmadiyya",
+        "name": "Mosquée Nour",
+        "name:en": "Noor Mosque",
+        "name:ur": "مسجد نور",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.5072115,
+          50.3895548
+        ]
+      },
+      "id": "way/219270334"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/219647608",
+        "addr:city": "Quiévrechain",
+        "addr:housenumber": "45",
+        "addr:postcode": "59920",
+        "addr:street": "Rue Valeriani",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée de Quièvrechain An'Nour",
+        "name:ar": "مسجد النور",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6695335,
+          50.3930785
+        ]
+      },
+      "id": "way/219647608"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/219648242",
+        "addr:city": "Quiévrechain",
+        "addr:housenumber": "12",
+        "addr:postcode": "59920",
+        "addr:street": "Rue des Groseillers",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée El Fath",
+        "name:ar": "مسجد الفتح",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6714835,
+          50.3931535
+        ]
+      },
+      "id": "way/219648242"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/317037377",
+        "addr:city": "Roubaix",
+        "addr:housenumber": "16",
+        "addr:postcode": "59100",
+        "addr:street": "Rue Saint-Maurice",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Es-Sunna",
+        "name:ar": "مسجد السنة",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1726455,
+          50.7002028
+        ]
+      },
+      "id": "way/317037377"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/318183640",
+        "addr:city": "Denain",
+        "addr:housenumber": "70",
+        "addr:postcode": "59220",
+        "addr:street": "Rue Lazare Bernard",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Arrahma",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.3888735,
+          50.3284175
+        ]
+      },
+      "id": "way/318183640"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/318341589",
+        "addr:city": "Valenciennes",
+        "addr:housenumber": "8",
+        "addr:postcode": "59300",
+        "addr:street": "Rue François Colliez",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée de Valenciennes",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.5140525,
+          50.3512313
+        ]
+      },
+      "id": "way/318341589"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/319079592",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "92",
+        "addr:postcode": "59200",
+        "addr:street": "Rue de la Croix Rouge",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Es-Salam",
+        "phone": "+33 3 20 76 34 77",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1725817,
+          50.7272291
+        ]
+      },
+      "id": "way/319079592"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/319252733",
+        "addr:city": "Ostricourt",
+        "addr:housenumber": "606",
+        "addr:postcode": "59162",
+        "addr:street": "Rue Florent Evrard",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Khalid Ibn Walid",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0357718,
+          50.459358
+        ]
+      },
+      "id": "way/319252733"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/319262890",
+        "addr:city": "Louvroil",
+        "addr:postcode": "59720",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée El Feth",
+        "name:ar": "مسجد الفتح",
+        "religion": "muslim",
+        "website": "http://mosquee-el-feth-de-maubeuge.fr/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.954649,
+          50.2695274
+        ]
+      },
+      "id": "way/319262890"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/319532679",
+        "addr:city": "Beuvrages",
+        "addr:housenumber": "2",
+        "addr:postcode": "59192",
+        "addr:street": "Rue Robert Fuge",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Assalam",
+        "name:ar": "مسجد السلام",
+        "phone": "+33327491397",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2013",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.509514,
+          50.390246
+        ]
+      },
+      "id": "way/319532679"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/320104233",
+        "addr:housenumber": "1278",
+        "addr:postcode": "59182",
+        "addr:street": "Rue Maurice Ravel",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée Nour",
+        "name:ar": "مسجد النور",
+        "religion": "muslim",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.174587,
+          50.3749538
+        ]
+      },
+      "id": "way/320104233"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/399099319",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "contact:city": "Lille",
+        "contact:housenumber": "386",
+        "contact:postcode": "59000",
+        "contact:street": "Rue de l'Arbrisseau",
+        "denomination": "sunni",
+        "name": "Mosquée El-Houda",
+        "name:ar": "مسجد الهدى",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
+        "unisex": "yes",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.051158,
+          50.6016853
+        ]
+      },
+      "id": "way/399099319"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/407549088",
+        "addr:city": "Roubaix",
+        "addr:housenumber": "12",
+        "addr:postcode": "59100",
+        "addr:street": "Rue Archimède",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée Da'wa",
+        "name:ar": "مسجد الدعوة",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2016",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.171158,
+          50.6981758
+        ]
+      },
+      "id": "way/407549088"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/732594044",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "name": "Mosquée Errahma",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2019",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3069505,
+          51.0173901
+        ]
+      },
+      "id": "way/732594044"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/860868131",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "name": "Mosquée Eyüp Sultan Roubaix",
+        "religion": "muslim",
+        "source:geometry": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2020",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1903892,
+          50.7069161
+        ]
+      },
+      "id": "way/860868131"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/899621998",
+        "addr:city": "Maubeuge",
+        "addr:housenumber": "3",
+        "addr:postcode": "59600",
+        "addr:street": "Rue des Acacias",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée El-Mominine",
+        "name:ar": "مسجد المؤمنين",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Finances Publiques - Cadastre. Mise à jour : 2021",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9498844,
+          50.2840121
+        ]
+      },
+      "id": "way/899621998"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/902110281",
+        "addr:city": "Sin-le-Noble",
+        "addr:postcode": "59450",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "denomination": "sunni",
+        "name": "Mosquée de l'Union",
+        "religion": "muslim",
+        "source": "cadastre-dgi-fr source : Direction Générale des Finances Publiques - Cadastre. Mise à jour : 2021",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1100866,
+          50.3557953
+        ]
+      },
+      "id": "way/902110281"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/1014024210",
+        "addr:city": "Maing",
+        "addr:postcode": "59233",
+        "amenity": "place_of_worship",
+        "building": "mosque",
+        "denomination": "sunni",
+        "name": "Mosquée El Nour",
+        "religion": "muslim",
+        "website": "http://mosqueedemaing.e-monsite.com/",
+        "@geometry": "center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.4882403,
+          50.3165811
+        ]
+      },
+      "id": "way/1014024210"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3247564841",
+        "addr:postcode": "59760",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée Salam",
+        "name:ar": "مسجد السلام",
+        "religion": "muslim",
+        "website": "http://islamdunkerquois.org/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.2931973,
+          51.012983
+        ]
+      },
+      "id": "node/3247564841"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3256284166",
+        "addr:city": "Wattrelos",
+        "addr:housenumber": "9",
+        "addr:postcode": "59150",
+        "addr:street": "Rue de Stalingrad",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée Omar Ibn al-Kattab",
+        "name:ar": "مسجد عمر بن الخطاب",
+        "religion": "muslim",
+        "website": "http://www.mosquee-wattrelos.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.2125598,
+          50.6984605
+        ]
+      },
+      "id": "node/3256284166"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3256284167",
+        "addr:city": "Marcq-en-Barœul",
+        "addr:housenumber": "2",
+        "addr:postcode": "59700",
+        "addr:street": "Rue Georges Bizet",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée de Marcq-en-Barœul",
+        "phone": "+33320891603",
+        "religion": "muslim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0844957,
+          50.666249
+        ]
+      },
+      "id": "node/3256284167"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3258608870",
+        "addr:city": "Hautmont",
+        "addr:postcode": "59330",
+        "addr:street": "Rue Jules Campagne",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée Sunna",
+        "name:ar": "مسجد السنة",
+        "religion": "muslim",
+        "website": "http://masjidsunna.fr/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9066624,
+          50.2464389
+        ]
+      },
+      "id": "node/3258608870"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3264467764",
+        "addr:housenumber": "90",
+        "addr:street": "Rue Daubenton",
+        "alt_name:ar": "جامع أيوب سلطان",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée Eyüp Sultan",
+        "name:ar": "مسجد أيوب سلطان",
+        "name:tr": "Eyüp Sultan Camii",
+        "phone": "+33 3 20 70 67 09",
+        "religion": "muslim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1786145,
+          50.7011149
+        ]
+      },
+      "id": "node/3264467764"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3931764191",
+        "addr:city": "Hazebrouck",
+        "addr:housenumber": "390",
+        "addr:postcode": "59190",
+        "addr:street": "Rue de Merville",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Mosquée Rahma",
+        "name:ar": "مسجد الرحمة",
+        "religion": "muslim",
+        "website": "http://mosqueehazebrouck.unblog.fr"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.5483559,
+          50.710745
+        ]
+      },
+      "id": "node/3931764191"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11724688365",
+        "addr:city": "Tourcoing",
+        "addr:housenumber": "8",
+        "addr:postcode": "59200",
+        "addr:street": "Rue de l'Europe",
+        "amenity": "place_of_worship",
+        "name": "Ibn-abd-al-barr",
+        "religion": "muslim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1474643,
+          50.73682
+        ]
+      },
+      "id": "node/11724688365"
+    }
+  ]
+}
