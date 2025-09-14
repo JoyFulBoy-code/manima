@@ -1736,7 +1736,7 @@ const clusterLayer = L.markerClusterGroup().addTo(map);
 let allFeatures = [];
 
 // Charger uniquement votre fichier lille.geojson
-    fetch('ret.geojson')
+    fetch('te.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;
@@ -3077,7 +3077,7 @@ function fermerListeAvis() {
 
       // Générer le QR code avec le texte
       const qrCodeContainer = document.getElementById('qr-code-container');
-      qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Rejoignez-nous ici :</div>'; // Texte ajouté
+      qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Trouvez-nous ici :</div>'; // Texte ajouté
 
       // Vérifier que QRCode est bien disponible
       if (typeof QRCode !== 'undefined') {
@@ -3123,7 +3123,7 @@ function fermerListeAvis() {
       ctx.fillStyle = '#4CAF50';
       ctx.font = 'bold 16px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('Rejoignez-nous ici :', newCanvas.width/2, 25);
+      ctx.fillText('Trouvez-nous ici :', newCanvas.width/2, 25);
   
       // Ajouter le QR code
       ctx.drawImage(canvas, 0, 40);
@@ -3692,7 +3692,7 @@ async function afficherRecommandations() {
     }
     
     // Dans le code de chargement des données
-    fetch('ret.geojson')
+    fetch('te.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;
