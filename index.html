@@ -3823,13 +3823,16 @@ checkLocation();
 </div>
 <script defer src="/_vercel/insights/script.js"></script>
 <script>
-  fetch('/data/services.json')
+  fetch('/data/te.geojson')
     .then(response => response.json())
-    .then(services => {
-      console.log(services); // tu as tout le contenu du JSON
-      // ici tu peux afficher tes services sur la carte
+    .then(data => {
+      console.log(data); // Contenu de ton GeoJSON
+      // Ici tu peux parcourir les features pour les afficher sur ta carte
+      data.forEach(feature => {
+        console.log(feature.properties.name); // exemple d'accès aux propriétés
+      });
     })
-    .catch(error => console.error('Erreur de chargement des données:', error));
+    .catch(error => console.error('Erreur de chargement du GeoJSON:', error));
 </script>
 </body>
 </html>
