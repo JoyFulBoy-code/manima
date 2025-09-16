@@ -3822,5 +3822,14 @@ checkLocation();
   </div>
 </div>
 <script defer src="/_vercel/insights/script.js"></script>
+<script>
+  fetch('/data/services.json')
+    .then(response => response.json())
+    .then(services => {
+      console.log(services); // tu as tout le contenu du JSON
+      // ici tu peux afficher tes services sur la carte
+    })
+    .catch(error => console.error('Erreur de chargement des données:', error));
+</script>
 </body>
 </html>
