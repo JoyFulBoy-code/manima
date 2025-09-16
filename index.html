@@ -3162,6 +3162,16 @@ function fermerListeAvis() {
 
     // Appeler cette fonction à la fin du chargement de la page
     document.addEventListener('DOMContentLoaded', verifierParametresURL);
+    
+
+
+    function logError(type, message) {
+      firebase.firestore().collection("logs").add({
+      type: type,
+      message: message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(err => console.error("Erreur lors du log :", err));
+    }
 
     function afficherStreetView(lat, lng) {
   const panoUrl = `https://www.google.com/maps/embed?pb=!4v0!6m8!1m7!1sCAoSLEFGMVFpcE1TRWxJazhiVnFzRzVvYXhtem1hd1Q2eVY4amE1bEVVTmN5a3hO!2m2!1d${lat}!2d${lng}!3f0!4f0!5f0.7820865974627469`;
