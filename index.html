@@ -1314,6 +1314,7 @@
   }
 
   .warning-banner p {
+    margin-top:10px;
     margin: 0;
     line-height: 1.4;
     word-break: break-word;  /* coupe les mots si nécessaire */
@@ -1581,37 +1582,7 @@
   </div>
   <footer><p>&copy; 2025 Manima. Tous droits réservés.</p></footer>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // Supprimer tout espace blanc en haut sur mobile
-    function removeTopSpace() {
-      if (window.innerWidth <= 768) { // Seulement sur mobile
-        document.documentElement.style.marginTop = '0';
-        document.documentElement.style.paddingTop = '0';
-        document.body.style.marginTop = '0';
-        document.body.style.paddingTop = '0';
-        
-        // Forcer le header à être en haut
-        const header = document.querySelector('header');
-        if (header) {
-          header.style.marginTop = '0';
-          header.style.paddingTop = '10px';
-          header.style.top = '0';
-        }
-      }
-    }
 
-    // Appeler la fonction au chargement et au redimensionnement
-    removeTopSpace();
-    window.addEventListener('resize', removeTopSpace);
-    
-    // Correction supplémentaire pour iOS
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-      document.body.style.paddingTop = '1px';
-      setTimeout(() => {
-        document.body.style.paddingTop = '0';
-      }, 100);
-    }
-  });
     // Ajoutez cet objet de mapping des mots-clés au début de votre script, après les constantes
     const keywordToTypes = {
   'pompe essence': ['station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station'],
