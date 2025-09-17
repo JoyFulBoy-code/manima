@@ -1363,6 +1363,28 @@
       user-select: none;
     }
   }
+  /* Correction spécifique pour iOS */
+    @supports (-webkit-touch-callout: none) {
+      body {
+        height: -webkit-fill-available;
+      }
+    }
+    
+    /* Pour les très petits écrans */
+    @media (max-width: 360px) {
+      header {
+        padding: 10px 5px;
+      }
+      
+      header h1 {
+        font-size: 1.3rem;
+      }
+    }
+    
+    /* Pour Safari iOS spécifiquement */
+    _::-webkit-full-page-media, _:future, :root body {
+      height: 100%;
+    }
   </style>
 </head>
 <body>
@@ -3387,7 +3409,7 @@ const recommendations = {
       ]
     },
     "18:00-23:30": ["Snack Tetouan", "Snack Mounir", "Mangez Moi"],  
-    "23:30-00:00": ["Snck Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
+    "23:30-00:00": ["Snack Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
   },
   jeudi: {
     "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
