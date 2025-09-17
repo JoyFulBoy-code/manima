@@ -1291,16 +1291,21 @@
 @media (max-width: 600px) {
   .warning-banner {
     position: fixed;
-    bottom: 15px;              /* un peu au-dessus du bord */
-    left: 50%;                 /* point de départ au centre */
-    transform: translateX(-50%); /* pour centrer */
+    top: 20px;                 /* espace depuis le haut */
+    left: 50%;                 /* centrage horizontal */
+    transform: translateX(-50%);
     max-width: 90%;            /* largeur max relative à l’écran */
-    width: auto;               /* largeur s’adapte au contenu */
+    width: auto;
     padding: 10px 15px;
     font-size: 12px;
-    border-radius: 20px;       /* bulle arrondie */
-    flex-direction: row;       /* texte + bouton côte à côte */
+    border-radius: 10px;       /* coins arrondis */
+    background-color: #fff3cd;
+    color: #856404;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
   }
 
   .warning-banner p {
