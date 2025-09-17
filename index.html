@@ -1291,13 +1291,13 @@
 @media (max-width: 600px) {
   .warning-banner {
     position: fixed;
-    top: 40px;                /* un peu plus bas que le haut */
+    top: 80px;                /* position plus bas sur l'écran */
     left: 50%;                /* centrage horizontal */
     transform: translateX(-50%);
-    width: 280px;             /* plus long en largeur */
-    max-height: 100px;        /* pas trop haut */
+    width: 300px;             /* largeur plus grande */
+    min-height: 60px;         /* hauteur minimale pour le texte */
     padding: 10px 15px;       /* espace intérieur */
-    font-size: 12px;
+    font-size: 13px;
     border-radius: 12px;      /* coins arrondis */
     background-color: #fff3cd;
     color: #856404;
@@ -1308,14 +1308,13 @@
     justify-content: center;
     text-align: center;
     z-index: 10000;
-    overflow: hidden;         /* empêche le texte de dépasser */
+    overflow: visible;        /* le texte ne sera pas coupé */
   }
 
   .warning-banner p {
     margin: 0;
-    line-height: 1.3;
-    font-size: 12px;
-    word-break: break-word;   /* coupe le texte si nécessaire */
+    line-height: 1.4;
+    word-break: break-word;   /* coupe les mots si nécessaire */
   }
 
   .close-btn {
