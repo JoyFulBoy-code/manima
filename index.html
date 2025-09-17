@@ -1326,56 +1326,62 @@
 }
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
-* {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+ html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+
+  body {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  header {
+    position: relative !important;
+    top: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 10px !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  /* Correction spécifique pour iOS */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      padding-top: constant(safe-area-inset-top) !important;
+      padding-top: env(safe-area-inset-top) !important;
     }
-    
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow-x: hidden;
-      position: relative;
-    }
-    
+
     header {
-      position: relative;
-      width: 100%;
-      padding: 12px 10px;
-      background-color: #4CAF50;
-      color: white;
-      text-align: center;
-      z-index: 1000;
-      margin: 0 !important;
-      top: 0 !important;
-      left: 0 !important;
+      margin-top: calc(-1 * constant(safe-area-inset-top)) !important;
+      margin-top: calc(-1 * env(safe-area-inset-top)) !important;
     }
-    
-    header h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      padding: 0;
-      line-height: 1.2;
+  }
+
+  /* Pour les anciennes versions d'iOS */
+  @supports (padding-top: constant(safe-area-inset-top)) {
+    body {
+      padding-top: constant(safe-area-inset-top) !important;
     }
-    
-    /* Suppression de l'espace résiduel sur iOS */
-    @supports (-webkit-touch-callout: none) {
-      body {
-        padding-top: 1px !important;
-        margin-top: -1px !important;
-      }
+
+    header {
+      margin-top: calc(-1 * constant(safe-area-inset-top)) !important;
     }
-    
-    /* Correction pour les navigateurs mobiles */
-    body::before {
-      content: '';
-      display: block;
-      height: 0;
-      overflow: hidden;
-    }
+  }
+
+  /* Solution radicale pour éliminer tout espace résiduel */
+  body::before {
+    content: '';
+    display: block;
+    height: 0;
+    width: 100%;
+    overflow: hidden;
+  }
    
   </style>
 </head>
