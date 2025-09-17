@@ -1326,17 +1326,56 @@
 }
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
-/* Correction spécifique pour iOS */
-    @supports (-webkit-touch-callout: none) {
-      body {
-        height: -webkit-fill-available;
-      }
+{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      position: relative;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: sans-serif; 
+      background-color: #f5f5f5;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* HEADER - Correction pour mobile */
+    header {
+      position: relative;
+      width: 100%;
+      padding: 12px 0;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      z-index: 1000;
+      margin: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+    
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      padding: 0;
+      line-height: 1.2;
     }
     
     /* Pour les très petits écrans */
     @media (max-width: 360px) {
       header {
-        padding: 10px 5px;
+        padding: 10px 0;
       }
       
       header h1 {
@@ -1344,9 +1383,21 @@
       }
     }
     
-    /* Pour Safari iOS spécifiquement */
-    _::-webkit-full-page-media, _:future, :root body {
-      height: 100%;
+    /* Correction spécifique pour Safari iOS */
+    @supports (-webkit-touch-callout: none) {
+      html, body {
+        height: 100%;
+        position: fixed;
+        overflow: hidden;
+      }
+    }
+    
+    /* Solution radicale pour éliminer tout espace */
+    body::before {
+      content: '';
+      display: block;
+      height: 0;
+      width: 100%;
     }
   </style>
 </head>
@@ -3372,7 +3423,7 @@ const recommendations = {
       ]
     },
     "18:00-23:30": ["Snack Tetouan", "Snack Mounir", "Mangez Moi"],  
-    "23:30-00:00": ["Snak Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
+    "23:30-00:00": ["Snack Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
   },
   jeudi: {
     "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
