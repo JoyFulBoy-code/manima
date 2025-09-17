@@ -1291,31 +1291,30 @@
 @media (max-width: 600px) {
   .warning-banner {
     position: fixed;
-    top: 80px;                /* position plus bas sur l'écran */
-    left: 50%;                /* centrage horizontal */
+    top: 120px;              /* distance depuis le haut */
+    left: 50%;               /* centrage horizontal */
     transform: translateX(-50%);
-    width: 300px;             /* largeur plus grande */
-    min-height: 60px;         /* hauteur minimale pour le texte */
-    padding: 10px 15px;       /* espace intérieur */
+    width: 280px;            /* largeur du rectangle */
+    min-height: 50px;        /* hauteur minimale */
+    padding: 10px 15px;
     font-size: 13px;
-    border-radius: 12px;      /* coins arrondis */
+    border-radius: 10px;
     background-color: #fff3cd;
     color: #856404;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     z-index: 10000;
-    overflow: visible;        /* le texte ne sera pas coupé */
+    overflow: visible;       /* le texte ne sera pas coupé */
   }
 
   .warning-banner p {
-    top:150px;
     margin: 0;
     line-height: 1.4;
-    word-break: break-word;   /* coupe les mots si nécessaire */
+    word-break: break-word;  /* coupe les mots si nécessaire */
   }
 
   .close-btn {
