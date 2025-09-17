@@ -1326,30 +1326,42 @@
 }
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
- body {
+html, body {
       margin: 0 !important;
       padding: 0 !important;
-      overflow-x: hidden;
+      overflow-x: hidden !important;
+      position: relative !important;
     }
     
-    html {
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    
+    /* Suppression de l'espace autour du header */
     header {
-      margin-top: 0 !important;
-      padding-top: 0 !important;
+      position: relative !important;
       top: 0 !important;
+      margin-top: 0 !important;
+      padding-top: 10px !important;
     }
     
-    /* Correction pour iOS Safari */
+    /* Cibler spécifiquement l'espace en haut sur iOS */
     @supports (-webkit-touch-callout: none) {
       body {
-        padding-top: constant(safe-area-inset-top) !important;
         padding-top: env(safe-area-inset-top) !important;
       }
+      
+      header {
+        margin-top: calc(-1 * env(safe-area-inset-top)) !important;
+      }
     }
+    
+    /* Correction pour les anciennes versions d'iOS */
+    @supports (padding-top: constant(safe-area-inset-top)) {
+      body {
+        padding-top: constant(safe-area-inset-top) !important;
+      }
+      
+      header {
+        margin-top: calc(-1 * constant(safe-area-inset-top)) !important;
+      }
+   
   </style>
 </head>
 <body>
