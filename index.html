@@ -1290,20 +1290,29 @@
 /* ✅ Version mobile du banner d'avertissement*/
 @media (max-width: 600px) {
   .warning-banner {
-    padding: 8px 12px;       /* moins de padding */
-    font-size: 12px;         /* taille globale plus petite */
-    flex-direction: column;  /* empile le texte et le bouton si trop étroit */
+    position: fixed;
+    bottom: 15px;              /* un peu au-dessus du bord */
+    left: 50%;                 /* point de départ au centre */
+    transform: translateX(-50%); /* pour centrer */
+    max-width: 90%;            /* largeur max relative à l’écran */
+    width: auto;               /* largeur s’adapte au contenu */
+    padding: 10px 15px;
+    font-size: 12px;
+    border-radius: 20px;       /* bulle arrondie */
+    flex-direction: row;       /* texte + bouton côte à côte */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   }
 
   .warning-banner p {
     font-size: 12px;
     line-height: 1.3;
+    margin: 0;
   }
 
   .close-btn {
-    font-size: 16px;        /* bouton plus petit */
-    margin-left: 0;         /* supprime le décalage horizontal */
-    margin-top: 5px;        /* espace au-dessus si empilé */
+    font-size: 14px;
+    margin-left: 8px;
+    margin-top: 0;
   }
 }
   </style>
