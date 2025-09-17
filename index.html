@@ -1326,27 +1326,29 @@
 }
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
-/* Correction spécifique pour iOS */
+ body {
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow-x: hidden;
+    }
+    
+    html {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    header {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      top: 0 !important;
+    }
+    
+    /* Correction pour iOS Safari */
     @supports (-webkit-touch-callout: none) {
       body {
-        height: -webkit-fill-available;
+        padding-top: constant(safe-area-inset-top) !important;
+        padding-top: env(safe-area-inset-top) !important;
       }
-    }
-    
-    /* Pour les très petits écrans */
-    @media (max-width: 360px) {
-      header {
-        padding: 10px 5px;
-      }
-      
-      header h1 {
-        font-size: 1.3rem;
-      }
-    }
-    
-    /* Pour Safari iOS spécifiquement */
-    _::-webkit-full-page-media, _:future, :root body {
-      height: 100%;
     }
   </style>
 </head>
@@ -3375,7 +3377,7 @@ const recommendations = {
     "23:30-00:00": ["Snack Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
   },
   jeudi: {
-    "00:00-01:00": ["CHIKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
+    "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
     "01:00-06:00": ["G LA DALLE LILLE"],
     "06:00-06:30": ["Aux Pains Dorés", "L'Aziza (Rue Jules Guesde)"],
     "06:30-11:00": ["Aux Merveilleux de Fred", "L'Aziza (Rue Jules Guesde)"],
