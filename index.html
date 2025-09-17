@@ -1325,57 +1325,27 @@
   }
 }
 /*correction mobile*/
-  /* Reset complet pour mobile */
+  /* Supprimer l'espace blanc en haut sur mobile */
 html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
   height: 100%;
   overflow-x: hidden;
-  overscroll-behavior-y: contain; /* empêche le “stretch” sur mobile */
+}
+
+body {
+  -webkit-overflow-scrolling: touch; /* scroll fluide iOS */
+  overscroll-behavior-y: contain;    /* empêche le rebond/space en haut */
 }
 
 /* Header fixe en haut */
 header {
-  position: sticky;      /* reste collé en haut */
+  position: sticky; /* reste collé en haut */
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background: #fff;      /* assure que le header couvre l’espace */
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-
-/* Pour iOS Safari, corriger le viewport “flexible” */
-@supports (-webkit-touch-callout: none) {
-  html, body {
-    height: -webkit-fill-available;
-  }
-
-  #map, main, .content-wrapper {
-    height: -webkit-fill-available;
-  }
-}
-
-/* Très petits écrans */
-@media (max-width: 360px) {
-  header {
-    padding: 10px 5px;
-  }
-
-  header h1 {
-    font-size: 1.3rem;
-  }
-}
-
-/* Empêche le scroll “rebond” sur iOS */
-body {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* S’assurer que rien ne crée d’espace en haut */
-* {
-  box-sizing: border-box;
+  background-color: #fff; /* éviter transparence */
 }
   </style>
 </head>
@@ -3401,7 +3371,7 @@ const recommendations = {
       ]
     },
     "18:00-23:30": ["Snack Tetouan", "Snack Mounir", "Mangez Moi"],  
-    "23:30-00:00": ["Snak Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
+    "23:30-00:00": ["Snack Tetouan", "Snack Mounir", "CHICKEN STREET NAAN AND FRIED CHICKEN LILLE"]
   },
   jeudi: {
     "00:00-01:00": ["CHICKEN STREET NAAN AND FRIED CHICKEN LILLE", "G LA DALLE LILLE"],
