@@ -1333,7 +1333,8 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #fff;
+    overflow: hidden; /* empêche le scroll qui révèle du blanc */
+    background-color: #4CAF50; /* même couleur que ton header = pas de contraste blanc */
   }
 
   header {
@@ -1343,27 +1344,26 @@
     width: 100%;
     z-index: 9999;
 
-    /* ajoute la zone safe-area automatiquement */
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
-
-    background: #4CAF50;
-    color: #fff;
+    padding: 12px 10px;
     box-sizing: border-box;
+
+    background-color: #4CAF50;
+    color: #fff;
   }
 
   .search-bar {
-    margin-top: 60px; /* pousse la barre en dessous du header */
+    margin-top: 60px; /* ajuste à la main selon la vraie hauteur du header */
     padding: 10px 0;
     text-align: center;
+    background: #fff;
   }
 
   #map {
+    position: absolute;
+    top: 100px; /* header (60px) + search (40px) */
+    left: 0;
     width: 100%;
-    height: calc(100dvh - (60px + 40px)); 
-    /* 60px = header approx, 40px = search bar approx */
+    height: calc(100dvh - 100px); /* occupe le reste de l’écran */
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
