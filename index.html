@@ -36,10 +36,6 @@
   <meta property="og:image" content="icons/icone-manima.png">
   <meta property="og:url" content="https://manima.vercel.app">
   <meta name="twitter:card" content="summary_large_image">
-  
-  <!--pour enlever l'espace en haut du header sur mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
   <!-- Remplacez l'ancien favicon par votre image -->
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icone-manima.png">
   <link rel="icon" type="image/png" href="icons/icone-manima.png">
@@ -1338,6 +1334,8 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden; /* évite le défilement fantôme */
+    background-color: #fff; /* évite l'effet "blanc" derrière */
   }
 
   /* Header collé au top et prend en compte safe-area */
@@ -1360,8 +1358,7 @@
   }
 
   #map {
-    height: calc(100vh - (12px + 12px + 10px + env(safe-area-inset-top, 0px))); 
-    /* ajuster selon la hauteur exacte du header + search-bar */
+    height: 100dvh; /* "dynamic viewport height" = sans le bug iOS */
     width: 100%;
   }
 }
