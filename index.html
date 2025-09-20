@@ -1599,7 +1599,12 @@
         tracerItineraire([center.lat, center.lng]);
       }).addTo(map);
   
-
+  function normaliserNomPourFirebase(nom) {
+  return nom.toLowerCase()
+    .replace(/'/g, '')   // Supprimer les apostrophes
+    .replace(/\s+/g, '_') // Remplacer les espaces par _
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Supprimer les accents
+}
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
     nomServiceActuel = nom;
@@ -1836,6 +1841,7 @@ let allFeatures = [];
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
+
   itineraireLayer.clearLayers();
   clusterLayer.clearLayers();
   const filtreMin = normalize(filtre);
@@ -2007,13 +2013,10 @@ function afficherServices(filtre = "") {
   }
 };
 
-// Normalisation du texte
-function normalize(str) {
-  if (!str) return "";
-  return str
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // supprime accents
-    .trim();
+function normaliserNomPourFirebase(nom) {
+  if (!nom) return "";
+  return nom.replace(/[.#$\[\]']/g, "_"); 
+  // on remplace tous les caractères interdits par "_"
 }
 
 function matchesFilter(props, filter) {
@@ -2037,6 +2040,8 @@ function matchesFilter(props, filter) {
 
 // Ajoutez cette fonction pour créer les marqueurs (évite la duplication de code)
 function createMarker(props, lat, lng) {
+  // Échapper les apostrophes dans le nom
+  const nomEchappe = props.name.replace(/'/g, "\\'");
   // Construction du contenu du popup
   let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
 
@@ -2048,7 +2053,8 @@ function createMarker(props, lat, lng) {
   // Bouton pour les horaires (avec formatage)
   if (props.opening_hours) {
     const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Horaires', \`${formattedHours}\`)">🕒 Horaires</button>`;
+    popupContent += `<button class="popup-btn" 
+  onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
   }
   
   // Bouton pour les tarifs (si disponible)
@@ -2074,6 +2080,7 @@ function createMarker(props, lat, lng) {
 
 // Nouvelle fonction pour afficher les détails dans une popup
 function afficherDetailsPopup(nom, type, contenu) {
+  nom = decodeURIComponent(nom);
   // Créer une fenêtre popup plus grande
   const popup = L.popup({ className: 'custom-popup', maxWidth: 400 })
     .setContent(`
@@ -2227,6 +2234,11 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     document.getElementById("liste-avis-modal").style.display = "block";
     document.getElementById("titre-liste-avis").innerText = "Avis sur " + nom;
 
+    
+    // Utilisez nomNormalise pour les requêtes Firebase
+    const nomNormalise = normaliserNomPourFirebase(nom);
+    db.ref('avis/' + nomNormalise).once('value')
+
     const contenuAvis = document.getElementById("contenu-avis");
     contenuAvis.innerHTML = "<div class='loading-dots'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>";
 
@@ -2338,18 +2350,19 @@ function fermerListeAvis() {
 }
 
     function supprimerAvis(nomService, avisId) {
-      if (confirm("Voulez-vous vraiment supprimer cet avis ?")) {
-        db.ref('avis/' + nomService + '/' + avisId).remove()
-          .then(() => {
-            alert("Avis supprimé.");
-            afficherAvis(nomService);  // Recharger les avis
-          })
-          .catch((error) => {
-            console.error("Erreur lors de la suppression :", error);
-            alert("Une erreur est survenue.");
-          });
-      }
-    }
+  const nomNormalise = normaliserNomPourFirebase(nomService);
+  if (confirm("Voulez-vous vraiment supprimer cet avis ?")) {
+    db.ref('avis/' + nomNormalise + '/' + avisId).remove()
+      .then(() => {
+        alert("Avis supprimé.");
+        afficherAvis(nomService);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la suppression :", error);
+        alert("Une erreur est survenue.");
+      });
+  }
+}
     function envoyerEmailBadge(email, nom, badgeType) {
         console.log("envoyerEmailBadge appelé avec :", email, nom, badgeType);
         if (!email || !email.includes('@')) {
