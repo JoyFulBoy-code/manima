@@ -1841,7 +1841,6 @@ let allFeatures = [];
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
-
   itineraireLayer.clearLayers();
   clusterLayer.clearLayers();
   const filtreMin = normalize(filtre);
@@ -1849,6 +1848,7 @@ function afficherServices(filtre = "") {
   if (!allFeatures || allFeatures.length === 0) return;
 
   let count = 0;
+  let resultLatLngs = []; // Pour stocker les positions des services trouvés
 
   // Si le filtre est vide, on affiche tout
   if (!filtreMin) {
@@ -1868,12 +1868,8 @@ function afficherServices(filtre = "") {
 
   // Recherche intelligente : on cherche d'abord les mots-clés exacts
   let typesRecherches = [];
-  
-  // Vérifier si le filtre correspond exactement à un mot-clé
   for (const [keyword, types] of Object.entries(keywordToTypes)) {
     const normalizedKeyword = normalize(keyword);
-    
-    // Recherche exacte ou recherche par mot entier
     if (filtreMin === normalizedKeyword || 
         filtreMin.split(' ').some(word => word === normalizedKeyword) ||
         normalizedKeyword.split(' ').some(word => word === filtreMin)) {
@@ -1881,22 +1877,15 @@ function afficherServices(filtre = "") {
     }
   }
 
-  // Si on a trouvé des types par mot-clé, on les utilise
   if (typesRecherches.length > 0) {
-    console.log("Recherche par mot-clé:", typesRecherches);
-    
     allFeatures.forEach(f => {
       if (!f.geometry || f.geometry.type !== "Point") return;
       const props = f.properties;
-      const name = props.name;
-      if (!name || name.trim() === "") return;
-
       const type = props.type ? normalize(props.type) : '';
       const amenity = props.amenity ? normalize(props.amenity) : '';
       const leisure = props.leisure ? normalize(props.leisure) : '';
       const shop = props.shop ? normalize(props.shop) : '';
 
-      // Vérifier si le type correspond à un des types recherchés
       const match = typesRecherches.some(t => {
         const normalizedType = normalize(t);
         return type.includes(normalizedType) || 
@@ -1910,12 +1899,10 @@ function afficherServices(filtre = "") {
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
         count++;
+        resultLatLngs.push([lat, lng]);
       }
     });
   } else {
-    // Recherche textuelle classique
-    console.log("Recherche textuelle classique");
-    
     allFeatures.forEach(f => {
       if (!f.geometry || f.geometry.type !== "Point") return;
       const props = f.properties;
@@ -1930,22 +1917,29 @@ function afficherServices(filtre = "") {
         props.category,
         props.address,
         props.type
-      ] 
-      .filter(Boolean)
-      .map(normalize)
-      .join(" ");
+      ].filter(Boolean).map(normalize).join(" ");
 
       if (searchText.includes(filtreMin)) {
         const [lng, lat] = f.geometry.coordinates;
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
         count++;
+        resultLatLngs.push([lat, lng]);
       }
     });
   }
 
   console.log(`Total des services affichés: ${count}`);
+
+  // ✅ Centrer la carte si au moins un service correspond
+  if (resultLatLngs.length === 1) {
+    map.setView(resultLatLngs[0], 17);
+  } else if (resultLatLngs.length > 1) {
+    const bounds = L.latLngBounds(resultLatLngs);
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }
 }
+
 
       
 
