@@ -20,7 +20,6 @@
   <meta name="twitter:description" content="Découvrez et évaluez les services locaux sur notre carte interactive. Ajoutez votre commerce gratuitement.">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-
   <!-- Leaflet & Plugins -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -1331,34 +1330,23 @@
 /* Header mobile */
 @media (max-width: 768px) {
   header {
-    position: relative;  /* reste dans le flux normal */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 9999;
-    padding: 20px; /* seulement la hauteur du contenu */
-    background: #4CAF50;
-    color: #fff;
-    box-sizing: border-box;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
-  .search-bar {
-    margin-top: 0;
-    padding: 3px 0;
-    background: transparent;
-  }
+  /* couleur = ton header */
+  background: #4CAF50;
+  color: #fff;
+  z-index: 9999;
 
-  #map {
-    height: calc(100vh - 34px - 20px); 
-    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
-  }
+  /* padding normal + safe-area */
+  padding-top: calc(env(safe-area-inset-top) + 12px);
+  padding-bottom: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
 
-  html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  height:100%;
-  background: #4CAF50; /* couleur du header, pour voir si le blanc disparaît */
-  }
+  box-sizing: border-box;
 }
   /* Supprimer l'espace blanc en haut sur mobile */
 
