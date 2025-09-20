@@ -1327,21 +1327,26 @@
   }
 }
 /*correction mobile*/
-/* Header fixe sur mobile */
+/* Header mobile */
 @media (max-width: 768px) {
   header {
-    position: fixed;
+    position: relative; /* header reste dans le flux normal */
     top: 0;
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding: 10px 0; /* hauteur du header */
+    padding: 12px 10px; /* ajuste juste la hauteur du header */
     box-sizing: border-box;
   }
 
-  /* Contenu principal sous le header */
-  .search-bar, #map, main {
-    margin-top: calc(60px + env(safe-area-inset-top)); /* 60px = hauteur totale du header */
+  /* Barre de recherche sous le header */
+  .search-bar {
+    margin-top: 0; /* pas d’espace supplémentaire */
+    padding: 10px 0;
+  }
+
+  #map {
+    height: calc(100vh - 60px); /* hauteur header approximative */
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
