@@ -1327,6 +1327,7 @@
   }
 }
 /*correction mobile*/
+/* Header fixe sur mobile */
 @media (max-width: 768px) {
   header {
     position: fixed;
@@ -1334,12 +1335,13 @@
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding-top: env(safe-area-inset-top);
+    padding: 10px 0; /* hauteur du header */
+    box-sizing: border-box;
   }
 
-  /* On ajoute un espace équivalent à la hauteur du header pour le contenu */
-  main, .search-bar, #map {
-    margin-top: calc(50px + env(safe-area-inset-top)); /* ajuste 50px à la hauteur réelle de ton header */
+  /* Contenu principal sous le header */
+  .search-bar, #map, main {
+    margin-top: calc(60px + env(safe-area-inset-top)); /* 60px = hauteur totale du header */
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
