@@ -1330,29 +1330,27 @@
 /* Header mobile */
 @media (max-width: 768px) {
   header {
-    position: relative; /* header reste dans le flux normal */
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding: 12px 10px; /* ajuste juste la hauteur du header */
+    /* padding total = safe area + hauteur désirée pour le contenu du header */
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 10px 12px 10px;
     box-sizing: border-box;
   }
 
   /* Barre de recherche sous le header */
   .search-bar {
-    margin-top: 0; /* pas d’espace supplémentaire */
+    margin-top: 0;
     padding: 10px 0;
   }
 
   #map {
-    height: calc(100vh - 60px); /* hauteur header approximative */
+    height: calc(100vh - (12px + 12px + 10px + env(safe-area-inset-top, 0px))); 
+    /* soustrait la hauteur totale du header + barre de recherche si besoin */
   }
-  /* Header collé en haut même sur iPhone avec notch */
-  header {
-    padding-top: env(safe-area-inset-top, 0px); /* prend en compte l’encoche */
-    box-sizing: border-box;
-  }
+
   body, html {
     margin: 0;
     padding: 0;
