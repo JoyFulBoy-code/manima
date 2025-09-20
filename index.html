@@ -18,7 +18,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Manima - Carte Interactive des Services">
   <meta name="twitter:description" content="Découvrez et évaluez les services locaux sur notre carte interactive. Ajoutez votre commerce gratuitement.">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 
   <!-- Leaflet & Plugins -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
@@ -1330,23 +1330,30 @@
 /* Header mobile */
 @media (max-width: 768px) {
   header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+    position: relative;  /* reste dans le flux normal */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding: 12px 10px 12px 10px; /* seulement la hauteur du contenu */
+    box-sizing: border-box;
+  }
 
-  /* couleur = ton header */
-  background: #4CAF50;
-  color: #fff;
-  z-index: 9999;
+  .search-bar {
+    margin-top: 0;
+    padding: 3px 0;
+    background: transparent;
+  }
 
-  /* padding normal + safe-area */
-  padding-top: calc(env(safe-area-inset-top) + 12px);
-  padding-bottom: 12px;
-  padding-left: 10px;
-  padding-right: 10px;
+  #map {
+    height: calc(100vh - 34px - 20px); 
+    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
+  }
 
-  box-sizing: border-box;
+  body, html {
+    margin: 0;
+    padding: 0;
+  }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
 
