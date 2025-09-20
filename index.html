@@ -36,6 +36,10 @@
   <meta property="og:image" content="icons/icone-manima.png">
   <meta property="og:url" content="https://manima.vercel.app">
   <meta name="twitter:card" content="summary_large_image">
+  
+  <!--pour enlever l'espace en haut du header sur mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <!-- Remplacez l'ancien favicon par votre image -->
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icone-manima.png">
   <link rel="icon" type="image/png" href="icons/icone-manima.png">
@@ -1334,32 +1338,43 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* évite le défilement fantôme */
-    background-color: #fff; /* évite l'effet "blanc" derrière */
+    overflow: hidden; /* Pour éviter le défilement global */
   }
 
   /* Header collé au top et prend en compte safe-area */
   header {
-    position: fixed; /* fixe en haut de l'écran */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: env(safe-area-inset-top, 0px) 10px 12px 10px; /* top = safe area */
+    padding: env(safe-area-inset-top, 0px) 10px 12px 10px;
     box-sizing: border-box;
     background-color: #4CAF50;
     color: white;
     z-index: 9999;
+    /* Ajoutez un box-shadow pour éviter de voir le contenu derrière lors du défilement */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
   }
 
   .search-bar {
-    margin-top: calc(12px + env(safe-area-inset-top, 0px)); /* juste en dessous du header */
-    padding: 10px 0;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 60px); /* Ajustez cette valeur en fonction de la hauteur de votre header */
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: white; /* Ajoutez un fond pour que la carte ne soit pas visible en dessous */
+    z-index: 9998;
     text-align: center;
   }
 
   #map {
-    height: 100dvh; /* "dynamic viewport height" = sans le bug iOS */
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 60px + 50px); /* Hauteur du header + hauteur de la search-bar */
+    left: 0;
     width: 100%;
+    height: calc(100% - (env(safe-area-inset-top, 0px) + 60px + 50px));
+    z-index: 1;
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
