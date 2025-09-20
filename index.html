@@ -1333,7 +1333,6 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* évite le défilement blanc derrière */
     background: #fff;
   }
 
@@ -1343,30 +1342,28 @@
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding: calc(env(safe-area-inset-top, 0px) + 12px) 10px 12px 10px;
-    box-sizing: border-box;
+
+    /* ajoute la zone safe-area automatiquement */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+
     background: #4CAF50;
     color: #fff;
+    box-sizing: border-box;
   }
 
   .search-bar {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 48px); /* header height auto + safe area */
-    left: 0;
-    width: 100%;
+    margin-top: 60px; /* pousse la barre en dessous du header */
     padding: 10px 0;
     text-align: center;
-    background: #fff;
-    z-index: 9998;
   }
 
   #map {
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 48px + 40px); 
-    /* header (≈48px) + search-bar (≈40px) + safe-area */
-    left: 0;
     width: 100%;
-    height: calc(100dvh - (env(safe-area-inset-top, 0px) + 48px + 40px));
+    height: calc(100dvh - (60px + 40px)); 
+    /* 60px = header approx, 40px = search bar approx */
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
