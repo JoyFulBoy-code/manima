@@ -1329,25 +1329,17 @@
 /*correction mobile*/
 @media (max-width: 768px) {
   header {
-    position: fixed;      /* colle le header en haut */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding-top: env(safe-area-inset-top); /* iPhone notch */
-    padding:5px;
+    padding-top: env(safe-area-inset-top);
   }
 
-  .seo-links {
-    display: none;       /* cacher les liens SEO en haut sur mobile */
-  }
-
-  .warning-banner {
-    top: auto;           /* si tu veux qu’il reste en bas */
-  }
-
-  body {
-    margin: 0;
+  /* On ajoute un espace équivalent à la hauteur du header pour le contenu */
+  main, .search-bar, #map {
+    margin-top: calc(50px + env(safe-area-inset-top)); /* ajuste 50px à la hauteur réelle de ton header */
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
