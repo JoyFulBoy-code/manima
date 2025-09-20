@@ -1338,42 +1338,39 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Pour éviter le défilement global */
+    overflow: hidden; /* Empêche le défilement du body */
   }
 
-  /* Header collé au top et prend en compte safe-area */
-  header {
+  /* Conteneur pour le header et la barre de recherche */
+  .header-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    z-index: 9999;
+  }
+
+  header {
     padding: env(safe-area-inset-top, 0px) 10px 12px 10px;
-    box-sizing: border-box;
     background-color: #4CAF50;
     color: white;
-    z-index: 9999;
-    /* Ajoutez un box-shadow pour éviter de voir le contenu derrière lors du défilement */
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-sizing: border-box;
   }
 
   .search-bar {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 60px); /* Ajustez cette valeur en fonction de la hauteur de votre header */
-    left: 0;
-    width: 100%;
     padding: 10px;
-    box-sizing: border-box;
-    background-color: white; /* Ajoutez un fond pour que la carte ne soit pas visible en dessous */
-    z-index: 9998;
     text-align: center;
+    background-color: #f1f1f1; /* Ajout d'un fond pour la barre de recherche */
   }
 
   #map {
     position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 60px + 50px); /* Hauteur du header + hauteur de la search-bar */
+    top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - (env(safe-area-inset-top, 0px) + 60px + 50px));
+    height: 100%;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 60px + 40px); /* Ajustez 60px et 40px selon la hauteur réelle de votre header et search-bar */
+    box-sizing: border-box;
     z-index: 1;
   }
 }
