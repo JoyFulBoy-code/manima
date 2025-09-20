@@ -1334,6 +1334,8 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden; /* évite le défilement fantôme */
+    background-color: #fff; /* évite l'effet "blanc" derrière */
   }
 
   /* Header collé au top et prend en compte safe-area */
@@ -1356,8 +1358,7 @@
   }
 
   #map {
-    height: calc(100vh - (12px + 12px + 10px + env(safe-area-inset-top, 0px))); 
-    /* ajuster selon la hauteur exacte du header + search-bar */
+    height: 100dvh; /* "dynamic viewport height" = sans le bug iOS */
     width: 100%;
   }
 }
