@@ -1336,7 +1336,7 @@
     width: 100%;
     z-index: 9999;
     /* padding total = safe area + hauteur désirée pour le contenu du header */
-    padding: calc(30px + env(safe-area-inset-top, 0px)) 10px 12px 10px;
+    padding: env(safe-area-inset-top, 0px) 10px 12px 10px; /* seulement safe-area en top */
     box-sizing: border-box;
   }
 
