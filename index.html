@@ -1329,29 +1329,44 @@
 /*correction mobile*/
 /* Header mobile */
 @media (max-width: 768px) {
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* évite le défilement blanc derrière */
+    background: #fff;
+  }
+
   header {
-    position: relative;  /* reste dans le flux normal */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding: 12px 10px 12px 10px; /* seulement la hauteur du contenu */
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 10px 12px 10px;
     box-sizing: border-box;
+    background: #4CAF50;
+    color: #fff;
   }
 
   .search-bar {
-    margin-top: 15;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 48px); /* header height auto + safe area */
+    left: 0;
+    width: 100%;
     padding: 10px 0;
+    text-align: center;
+    background: #fff;
+    z-index: 9998;
   }
 
   #map {
-    height: calc(100vh - 34px - 20px); 
-    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
-  }
-
-  body, html {
-    margin: 0;
-    padding: 0;
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 48px + 40px); 
+    /* header (≈48px) + search-bar (≈40px) + safe-area */
+    left: 0;
+    width: 100%;
+    height: calc(100dvh - (env(safe-area-inset-top, 0px) + 48px + 40px));
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
