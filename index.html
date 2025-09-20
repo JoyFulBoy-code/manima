@@ -1327,7 +1327,28 @@
   }
 }
 /*correction mobile*/
+@media (max-width: 768px) {
+  header {
+    position: fixed;      /* colle le header en haut */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding-top: env(safe-area-inset-top); /* iPhone notch */
+  }
 
+  .seo-links {
+    display: none;       /* cacher les liens SEO en haut sur mobile */
+  }
+
+  .warning-banner {
+    top: auto;           /* si tu veux qu’il reste en bas */
+  }
+
+  body {
+    margin: 0;
+  }
+}
   /* Supprimer l'espace blanc en haut sur mobile */
 
   </style>
