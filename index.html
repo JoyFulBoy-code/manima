@@ -1599,12 +1599,7 @@
         tracerItineraire([center.lat, center.lng]);
       }).addTo(map);
   
-  function normaliserNomPourFirebase(nom) {
-  return nom.toLowerCase()
-    .replace(/'/g, '')   // Supprimer les apostrophes
-    .replace(/\s+/g, '_') // Remplacer les espaces par _
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Supprimer les accents
-}
+  
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
     nomServiceActuel = nom;
