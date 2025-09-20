@@ -1330,25 +1330,23 @@
 /* Header mobile */
 @media (max-width: 768px) {
   header {
-    position: relative;
+    position: relative;  /* reste dans le flux normal */
     top: 0;
     left: 0;
     width: 100%;
     z-index: 9999;
-    /* padding total = safe area + hauteur désirée pour le contenu du header */
-    padding: env(safe-area-inset-top, 0px) 10px 12px 10px; /* seulement safe-area en top */
+    padding: 12px 10px 12px 10px; /* seulement la hauteur du contenu */
     box-sizing: border-box;
   }
 
-  /* Barre de recherche sous le header */
   .search-bar {
     margin-top: 0;
     padding: 10px 0;
   }
 
   #map {
-    height: calc(100vh - (12px + 12px + 10px + env(safe-area-inset-top, 0px))); 
-    /* soustrait la hauteur totale du header + barre de recherche si besoin */
+    height: calc(100vh - 34px - 20px); 
+    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
   }
 
   body, html {
