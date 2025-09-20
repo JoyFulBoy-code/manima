@@ -1348,6 +1348,15 @@
   #map {
     height: calc(100vh - 60px); /* hauteur header approximative */
   }
+  /* Header collé en haut même sur iPhone avec notch */
+  header {
+    padding-top: env(safe-area-inset-top, 0px); /* prend en compte l’encoche */
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0;
+    padding: 0;
+  }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
 
