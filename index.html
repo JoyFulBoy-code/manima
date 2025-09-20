@@ -1329,45 +1329,30 @@
 /*correction mobile*/
 /* Header mobile */
 @media (max-width: 768px) {
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden; /* empêche le scroll qui révèle le blanc */
-    background-color: #4CAF50; /* même couleur que ton header */
-  }
-
   header {
-    position: fixed;
+    position: relative;  /* reste dans le flux normal */
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
-
-    /* tient compte du safe-area */
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
-
-    background-color: #4CAF50;
-    color: #fff;
+    z-index: 9999;
+    padding: 12px 10px 12px 10px; /* seulement la hauteur du contenu */
     box-sizing: border-box;
   }
 
   .search-bar {
-    margin-top: 60px; /* ajuste selon la hauteur de ton header */
-    background: #fff;
-    padding: 10px;
-    text-align: center;
+    margin-top: 0;
+    padding: 3px 0;
+    background: transparent;
   }
 
   #map {
-    position: absolute;
-    top: 110px; /* header + search-bar (ajuste si besoin) */
-    left: 0;
-    width: 100%;
-    height: calc(100dvh - 110px); /* occupe le reste de l’écran */
+    height: calc(100vh - 34px - 20px); 
+    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
   }
 }
   /* Supprimer l'espace blanc en haut sur mobile */
