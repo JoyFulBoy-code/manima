@@ -1717,89 +1717,37 @@
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-async function tracerItineraire(dest) {
-    if (!userLocation) {
-        alert("Localisation non disponible");
-        return;
-    }
+async function tracerItineraireDirect(dest) {
+    if (!userLocation) return alert("Localisation non disponible");
 
-    // Reset des couches et intervalle
     itineraireLayer.clearLayers();
-    if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
-        routeUpdateInterval = null;
-    }
-
-    // Créer ou récupérer le container d'infos
-    let infoContainer = document.getElementById("itineraire-infos");
-    if (!infoContainer) {
-        infoContainer = document.createElement("div");
-        Object.assign(infoContainer.style, {
-            padding: "10px",
-            background: "#fff",
-            position: "absolute",
-            bottom: "450px",
-            left: "10px",
-            zIndex: "999",
-            borderRadius: "8px",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.2)"
-        });
-        infoContainer.id = "itineraire-infos";
-        map.getContainer().appendChild(infoContainer);
-    }
-
-    const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api';
+    
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
-
+    
     try {
-        infoContainer.innerHTML = "<div>Calcul de l'itinéraire...</div>";
+        const url = `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`;
+        const response = await fetch(url);
         
-        const res = await fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`);
+        if (!response.ok) throw new Error(`Erreur OSRM: ${response.status}`);
         
-        if (!res.ok) {
-            const errorData = await res.json().catch(() => ({ error: "Erreur serveur" }));
-            throw new Error(`Erreur ${res.status}: ${errorData.error || res.statusText}`);
-        }
-
-        const data = await res.json();
+        const data = await response.json();
         
         if (!data.routes || data.routes.length === 0) {
-            infoContainer.innerHTML = "<div style='color: orange;'>Aucun itinéraire disponible pour cette destination</div>";
+            alert("Aucun itinéraire trouvé");
             return;
         }
-
+        
         const route = data.routes[0];
-        const durationMin = Math.round(route.duration / 60);
-        const distanceKm = (route.distance / 1000).toFixed(2);
-
-        // Affichage de la route
-        routeCoords = route.geometry.coordinates;
-        currentRoute = L.geoJSON(route.geometry, { 
-            style: { color: 'red', weight: 4 }
+        L.geoJSON(route.geometry, { 
+            style: { color: 'blue', weight: 4 }
         }).addTo(itineraireLayer);
-
-        map.setView(userLocation, 17);
-        infoContainer.innerHTML = `
-            <div>
-                <strong>🚗 En voiture</strong>: ${durationMin} min (${distanceKm} km)
-                <button onclick="arreterItineraire()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">
-                    ✖ Arrêter
-                </button>
-            </div>
-        `;
-
-        startRouteTracking(dest);
-        suiviItineraire = true;
-
+        
+        map.fitBounds(itineraireLayer.getBounds());
+        
     } catch (err) {
-        console.error("Erreur itinéraire:", err);
-        infoContainer.innerHTML = `
-            <div style="color: red;">
-                ❌ Impossible de calculer l'itinéraire
-                <br><small>${err.message}</small>
-            </div>
-        `;
+        console.error("Erreur itinéraire direct:", err);
+        alert("Erreur de calcul d'itinéraire: " + err.message);
     }
 }
 
