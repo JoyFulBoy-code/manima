@@ -1740,20 +1740,19 @@ function tracerItineraire(dest) {
     }
     infoContainer.innerHTML = "";
 
-    // ✅ Déclare BACKEND_URL ici
-    const BACKEND_URL = 'https://manima-backend-532zre4j4-joyfulboy-codes-projects.vercel.app';
+    // ✅ Nouvelle URL backend
+    const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app';
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
-    const url = `${BACKEND_URL}/route?start=${start}&end=${end}`;
-
-    fetch(url)
+    
+    // Itinéraire
+    fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`)
         .then(res => res.json())
         .then(data => {
             if (!data.routes || data.routes.length === 0) return;
 
             const route = data.routes[0];
             const durationMin = Math.round(route.duration / 60);
-            const durationFormatted = formaterDuree(durationMin);
             const distanceKm = (route.distance / 1000).toFixed(2);
 
             routeCoords = route.geometry.coordinates;
@@ -1764,22 +1763,18 @@ function tracerItineraire(dest) {
 
             map.setView(userLocation, 17);
 
-            const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            const line = `<div><strong>🚗 En voiture</strong> : ${durationMin} min (${distanceKm} km)</div>`;
             infoContainer.innerHTML += line;
 
             startRouteTracking(dest);
         })
-        .catch(err => {
-            console.error("Erreur itinéraire via backend :", err);
-        });
+        .catch(err => console.error("Erreur itinéraire via backend :", err));
 
-    // Si tu as besoin de la météo ailleurs
+    // Météo (facultatif)
     fetch(`${BACKEND_URL}/weather`)
         .then(res => res.json())
-        .then(data => {
-            console.log("Météo via backend :", data);
-        })
-        .catch(err => console.error(err));
+        .then(data => console.log("Météo via backend :", data))
+        .catch(err => console.error("Erreur météo :", err));
 
     suiviItineraire = true;
 }
