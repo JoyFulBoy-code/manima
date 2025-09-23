@@ -1587,6 +1587,15 @@
   'religion': ['mosquée', 'église', 'temple', 'lieu de culte'],
   'urgence': ['police', 'pompiers', 'urgences', 'hôpital urgence']
 };
+    // Variables globales
+let map, clusterLayer, itineraireLayer, userLocation, userMarker;
+let routeUpdateInterval = null;
+let suiviItineraire = false;
+let currentRoute = null;
+let routeCoords = [];
+let allFeatures = [];
+let utilisateurConnecte = null;
+
     const firebaseConfig = {
       apiKey: "AIzaSyAid2_e5G6nk7_rAgn_G2M9gMYpGv9TyVc",
       authDomain: "manima-7e23a.firebaseapp.com",
@@ -1641,7 +1650,104 @@
         map.setView(center, 17);
         tracerItineraire([center.lat, center.lng]);
       }).addTo(map);
-  
+    // === INITIALISATION DE LA CARTE ET DES LAYERS ===
+function initialiserCarte() {
+    // Création de la carte
+    map = L.map('map').setView([50.6292, 3.0573], 13);
+    
+    // Ajout des tuiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ✅ INITIALISATION DE clusterLayer (TRÈS IMPORTANT)
+    clusterLayer = L.markerClusterGroup().addTo(map);
+    
+    // Initialisation des autres layers
+    itineraireLayer = L.layerGroup().addTo(map);
+
+    // Géocoder
+    const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
+        .on('markgeocode', function(e) {
+            const center = e.geocode.center;
+            map.setView(center, 17);
+            tracerItineraire([center.lat, center.lng]);
+        }).addTo(map);
+
+    // Géolocalisation
+    initialiserGeolocalisation();
+}
+
+// === INITIALISATION DE LA GÉOLOCALISATION ===
+function initialiserGeolocalisation() {
+    if (!navigator.geolocation) {
+        console.error("Géolocalisation non supportée");
+        return;
+    }
+
+    const arrowIcon = L.divIcon({ 
+        className: 'arrow-icon', 
+        iconSize: [50, 50], 
+        iconAnchor: [25, 25] 
+    });
+
+    navigator.geolocation.watchPosition(
+        pos => {
+            userLocation = [pos.coords.latitude, pos.coords.longitude];
+            const heading = pos.coords.heading || 0;
+
+            if (userMarker) {
+                userMarker.setLatLng(userLocation);
+                userMarker.setRotationAngle(heading);
+            } else {
+                userMarker = L.marker(userLocation, {
+                    icon: arrowIcon,
+                    rotationAngle: heading,
+                    rotationOrigin: 'center center'
+                }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
+                map.setView(userLocation, 17);
+            }
+
+            if (suiviItineraire) {
+                map.setView(userLocation, 17);
+            }
+
+            document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
+        },
+        err => console.error("Erreur de géolocalisation :", err),
+        {
+            enableHighAccuracy: false,
+            maximumAge: 1000,
+            timeout: 100000
+        }
+    );
+}
+
+// === CHARGEMENT DES DONNÉES ===
+function chargerDonnees() {
+    fetch('te.geojson')
+        .then(res => res.json())
+        .then(data => {
+            allFeatures = data.features;
+            afficherServices("");
+            console.log("Données chargées:", allFeatures.length, "features");
+        })
+        .catch(error => {
+            console.error("Erreur de chargement des données:", error);
+        });
+}
+
+// === INITIALISATION AU CHARGEMENT DE LA PAGE ===
+document.addEventListener('DOMContentLoaded', function() {
+    initialiserCarte();
+    chargerDonnees();
+    
+    // Écouteur de la barre de recherche
+    document.getElementById("search-bar").addEventListener("input", (e) => {
+        afficherServices(e.target.value);
+    });
+});
   
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
@@ -1706,7 +1812,7 @@
       maximumAge: 1000,
       timeout: 100000
     });
-    
+
 
     function formaterDuree(minutes) {
       const h = Math.floor(minutes / 60);
