@@ -1718,13 +1718,19 @@ let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
 async function tracerItineraire(dest) {
-    if (!userLocation) return alert("Localisation non disponible");
+    if (!userLocation) {
+        alert("Localisation non disponible");
+        return;
+    }
 
     // Reset des couches et intervalle
     itineraireLayer.clearLayers();
-    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
+    if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
+        routeUpdateInterval = null;
+    }
 
-    // Créer ou récupérer le container d’infos
+    // Créer ou récupérer le container d'infos
     let infoContainer = document.getElementById("itineraire-infos");
     if (!infoContainer) {
         infoContainer = document.createElement("div");
@@ -1741,19 +1747,25 @@ async function tracerItineraire(dest) {
         infoContainer.id = "itineraire-infos";
         map.getContainer().appendChild(infoContainer);
     }
-    infoContainer.innerHTML = "";
 
     const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api';
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
 
     try {
+        infoContainer.innerHTML = "<div>Calcul de l'itinéraire...</div>";
+        
         const res = await fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`);
-        if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+        
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ error: "Erreur serveur" }));
+            throw new Error(`Erreur ${res.status}: ${errorData.error || res.statusText}`);
+        }
 
         const data = await res.json();
+        
         if (!data.routes || data.routes.length === 0) {
-            infoContainer.innerHTML = "<div>Aucun itinéraire disponible</div>";
+            infoContainer.innerHTML = "<div style='color: orange;'>Aucun itinéraire disponible pour cette destination</div>";
             return;
         }
 
@@ -1763,18 +1775,51 @@ async function tracerItineraire(dest) {
 
         // Affichage de la route
         routeCoords = route.geometry.coordinates;
-        currentRoute = L.geoJSON(route.geometry, { style: { color: 'red', weight: 4 } })
-                         .addTo(itineraireLayer);
+        currentRoute = L.geoJSON(route.geometry, { 
+            style: { color: 'red', weight: 4 }
+        }).addTo(itineraireLayer);
 
         map.setView(userLocation, 17);
-        infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationMin} min (${distanceKm} km)</div>`;
+        infoContainer.innerHTML = `
+            <div>
+                <strong>🚗 En voiture</strong>: ${durationMin} min (${distanceKm} km)
+                <button onclick="arreterItineraire()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">
+                    ✖ Arrêter
+                </button>
+            </div>
+        `;
 
         startRouteTracking(dest);
         suiviItineraire = true;
 
     } catch (err) {
-        console.error("Erreur itinéraire via backend :", err);
-        infoContainer.innerHTML = `<div style="color:red;">Erreur lors de la récupération de l’itinéraire</div>`;
+        console.error("Erreur itinéraire:", err);
+        infoContainer.innerHTML = `
+            <div style="color: red;">
+                ❌ Impossible de calculer l'itinéraire
+                <br><small>${err.message}</small>
+            </div>
+        `;
+    }
+}
+
+// Fonction pour arrêter l'itinéraire
+function arreterItineraire() {
+    itineraireLayer.clearLayers();
+    if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
+        routeUpdateInterval = null;
+    }
+    suiviItineraire = false;
+    
+    const infoContainer = document.getElementById("itineraire-infos");
+    if (infoContainer) {
+        infoContainer.innerHTML = "<div>Itinéraire arrêté</div>";
+        setTimeout(() => {
+            if (infoContainer.parentNode) {
+                infoContainer.parentNode.removeChild(infoContainer);
+            }
+        }, 2000);
     }
 }
 
