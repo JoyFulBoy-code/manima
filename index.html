@@ -1671,7 +1671,26 @@
 
   // Ton code existant continue ici...
 
-    
+    // 1. Initialisation de la carte
+const map = L.map('map').setView([50.6292, 3.0573], 13);
+
+// 2. Ajout des tuiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// 3. Initialisation des layers
+const clusterLayer = L.markerClusterGroup().addTo(map);
+let itineraireLayer = L.layerGroup().addTo(map);
+
+// 4. Géocoder et autres initialisations
+const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
+  .on('markgeocode', function(e) {
+    const center = e.geocode.center;
+    map.setView(center, 17);
+    tracerItineraire([center.lat, center.lng]);
+  }).addTo(map);
 
     let itineraireLayer = L.layerGroup().addTo(map);
     let userLocation = null;
