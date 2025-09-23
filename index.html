@@ -12,7 +12,7 @@
   <meta property="og:title" content="Manima | Carte Interactive des Services Locaux">
   <meta property="og:description" content="Trouvez les meilleurs services autour de vous avec la carte Manima - Taxis, chauffeurs, garages, pharmacies et plus encore.">
   <meta property="og:image" content="icone-manima.png">
-  <meta property="og:url" content="https://manima.vercel.app">
+  <meta property="og:url" content="https://votre-site.com">
   <meta property="og:type" content="website">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -27,18 +27,17 @@
 
   <!-- Sitemap et robots.txt -->
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-  <link rel="canonical" href="https://manima.vercel.app">
+  <link rel="canonical" href="https://votre-site.com">
 
   <!-- Balises pour les résultats Google -->
   <meta name="description" content="Manima - Carte interactive des services à Lille">
   <meta property="og:title" content="Manima - Carte interactive">
   <meta property="og:description" content="Trouvez les services autour de vous avec Manima">
-  <meta property="og:image" content="icons/icone-manima.png">
-  <meta property="og:url" content="https://manima.vercel.app">
+  <meta property="og:image" content="icone-manima.PNG">
+  <meta property="og:url" content="https://votre-site.com">
   <meta name="twitter:card" content="summary_large_image">
   <!-- Remplacez l'ancien favicon par votre image -->
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icone-manima.png">
-  <link rel="icon" type="image/png" href="icons/icone-manima.png">
+  <link rel="icon" type="image/png" href="icone-manima.png">
   <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -92,7 +91,7 @@
     body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; }
     header, footer {
       text-align: center;
-      padding:15px;
+      padding: 10px;
       background-color: #4CAF50;
       color: white;
     }
@@ -1249,21 +1248,7 @@
     overflow-y: auto !important;
     z-index: 1000 !important;
   }
-  /*sauf*/
-  @media (min-width: 769px) {
-  #market-container {
-    width: 190px !important;
-    height: 100px !important;
-    left: 10px !important;
-    right: auto !important;
-    bottom: 125px !important; /* tout en bas */
-    position: fixed !important;
-    padding: 5px !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important;
-    z-index: 1000 !important;
-  }
-}
+
   #recommandation-container {
     bottom: 15px !important; /* juste au-dessus */
     left: 10px !important;
@@ -1341,34 +1326,6 @@
   }
 }
 /*correction mobile*/
-/* Header mobile */
-@media (max-width: 768px) {
-  header {
-    position: relative;  /* reste dans le flux normal */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 9999;
-    padding: 12px 10px 12px 10px; /* seulement la hauteur du contenu */
-    box-sizing: border-box;
-  }
-
-  .search-bar {
-    margin-top: 0;
-    padding: 3px 0;
-    background: transparent;
-  }
-
-  #map {
-    height: calc(100vh - 34px - 20px); 
-    /* 34px = padding vertical header (12+12+10?), 20px = padding search-bar */
-  }
-
-  body, html {
-    margin: 0;
-    padding: 0;
-  }
-}
   /* Supprimer l'espace blanc en haut sur mobile */
 
   </style>
@@ -1446,7 +1403,7 @@
 </div>
 
 <!-- Ajoutez ceci après votre conteneur de recommandations existant -->
-<div id="market-container" style="display: none; position: fixed; bottom: 155px; right: 1120px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #e74c3c; width: 250px; padding: 15px; z-index: 1000; font-family: Arial, sans-serif;">
+<div id="market-container" style="display: none; position: fixed; bottom: 390px; right: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #e74c3c; width: 250px; padding: 15px; z-index: 1000; font-family: Arial, sans-serif;">
   <div id="market-title" style="font-weight: bold; color: #e74c3c; font-size: 18px; margin-bottom: 10px; text-align: center;"></div>
   <div id="market-service"></div>
 </div>
@@ -1587,15 +1544,6 @@
   'religion': ['mosquée', 'église', 'temple', 'lieu de culte'],
   'urgence': ['police', 'pompiers', 'urgences', 'hôpital urgence']
 };
-    // Variables globales
-let map, clusterLayer, itineraireLayer, userLocation, userMarker;
-let routeUpdateInterval = null;
-let suiviItineraire = false;
-let currentRoute = null;
-let routeCoords = [];
-let allFeatures = [];
-let utilisateurConnecte = null;
-
     const firebaseConfig = {
       apiKey: "AIzaSyAid2_e5G6nk7_rAgn_G2M9gMYpGv9TyVc",
       authDomain: "manima-7e23a.firebaseapp.com",
@@ -1650,105 +1598,13 @@ let utilisateurConnecte = null;
         map.setView(center, 17);
         tracerItineraire([center.lat, center.lng]);
       }).addTo(map);
-    // === INITIALISATION DE LA CARTE ET DES LAYERS ===
-function initialiserCarte() {
-    // Création de la carte
-    map = L.map('map').setView([50.6292, 3.0573], 13);
-    
-    // Ajout des tuiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // ✅ INITIALISATION DE clusterLayer (TRÈS IMPORTANT)
-    clusterLayer = L.markerClusterGroup().addTo(map);
-    
-    // Initialisation des autres layers
-    itineraireLayer = L.layerGroup().addTo(map);
-
-    // Géocoder
-    const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
-        .on('markgeocode', function(e) {
-            const center = e.geocode.center;
-            map.setView(center, 17);
-            tracerItineraire([center.lat, center.lng]);
-        }).addTo(map);
-
-    // Géolocalisation
-    initialiserGeolocalisation();
-}
-
-// === INITIALISATION DE LA GÉOLOCALISATION ===
-function initialiserGeolocalisation() {
-    if (!navigator.geolocation) {
-        console.error("Géolocalisation non supportée");
-        return;
-    }
-
-    const arrowIcon = L.divIcon({ 
-        className: 'arrow-icon', 
-        iconSize: [50, 50], 
-        iconAnchor: [25, 25] 
-    });
-
-    navigator.geolocation.watchPosition(
-        pos => {
-            userLocation = [pos.coords.latitude, pos.coords.longitude];
-            const heading = pos.coords.heading || 0;
-
-            if (userMarker) {
-                userMarker.setLatLng(userLocation);
-                userMarker.setRotationAngle(heading);
-            } else {
-                userMarker = L.marker(userLocation, {
-                    icon: arrowIcon,
-                    rotationAngle: heading,
-                    rotationOrigin: 'center center'
-                }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
-                map.setView(userLocation, 17);
-            }
-
-            if (suiviItineraire) {
-                map.setView(userLocation, 17);
-            }
-
-            document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
-        },
-        err => console.error("Erreur de géolocalisation :", err),
-        {
-            enableHighAccuracy: false,
-            maximumAge: 1000,
-            timeout: 100000
-        }
-    );
-}
-
-// === CHARGEMENT DES DONNÉES ===
-function chargerDonnees() {
-    fetch('te.geojson')
-        .then(res => res.json())
-        .then(data => {
-            allFeatures = data.features;
-            afficherServices("");
-            console.log("Données chargées:", allFeatures.length, "features");
-        })
-        .catch(error => {
-            console.error("Erreur de chargement des données:", error);
-        });
-}
-
-// === INITIALISATION AU CHARGEMENT DE LA PAGE ===
-document.addEventListener('DOMContentLoaded', function() {
-    initialiserCarte();
-    chargerDonnees();
-    
-    // Écouteur de la barre de recherche
-    document.getElementById("search-bar").addEventListener("input", (e) => {
-        afficherServices(e.target.value);
-    });
-});
   
+  function normaliserNomPourFirebase(nom) {
+  return nom.toLowerCase()
+    .replace(/'/g, '')   // Supprimer les apostrophes
+    .replace(/\s+/g, '_') // Remplacer les espaces par _
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Supprimer les accents
+}
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
     nomServiceActuel = nom;
@@ -1813,7 +1669,6 @@ document.addEventListener('DOMContentLoaded', function() {
       timeout: 100000
     });
 
-
     function formaterDuree(minutes) {
       const h = Math.floor(minutes / 60);
       const m = Math.round(minutes % 60);
@@ -1824,93 +1679,70 @@ document.addEventListener('DOMContentLoaded', function() {
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-// Fonction principale pour tracer l'itinéraire (celle appelée par vos boutons)
-async function tracerItineraire(dest) {
-    if (!userLocation) {
-        alert("Localisation non disponible");
-        return;
-    }
-
-    // Reset des couches
+function tracerItineraire(dest) {
+    if (!userLocation) return alert("Localisation non disponible");
+    
+    // Nettoyage des éléments précédents
     itineraireLayer.clearLayers();
-    if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
-        routeUpdateInterval = null;
-    }
-
-    // Créer le container d'infos
-    let infoContainer = document.getElementById("itineraire-infos");
+    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
+    
+    // Création du conteneur d'informations
+    const infoContainerId = "itineraire-infos";
+    let infoContainer = document.getElementById(infoContainerId);
     if (!infoContainer) {
         infoContainer = document.createElement("div");
-        Object.assign(infoContainer.style, {
-            padding: "10px",
-            background: "#fff",
-            position: "absolute",
-            bottom: "450px",
-            left: "10px",
-            zIndex: "999",
-            borderRadius: "8px",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-            fontSize: "14px"
-        });
-        infoContainer.id = "itineraire-infos";
+        infoContainer.id = infoContainerId;
+        infoContainer.style.padding = "10px";
+        infoContainer.style.background = "#fff";
+        infoContainer.style.position = "absolute";
+        infoContainer.style.bottom = "450px";
+        infoContainer.style.left = "10px";
+        infoContainer.style.zIndex = "999";
+        infoContainer.style.borderRadius = "8px";
+        infoContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
         map.getContainer().appendChild(infoContainer);
     }
+    infoContainer.innerHTML = "";
 
-    const start = `${userLocation[1]},${userLocation[0]}`;
-    const end = `${dest[1]},${dest[0]}`;
-    
-    try {
-        infoContainer.innerHTML = "<div>🔄 Calcul de l'itinéraire...</div>";
-        
-        const url = `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`;
-        const response = await fetch(url);
-        
-        if (!response.ok) throw new Error(`Erreur OSRM: ${response.status}`);
-        
-        const data = await response.json();
-        
-        if (!data.routes || data.routes.length === 0) {
-            infoContainer.innerHTML = "<div style='color: orange;'>⚠️ Aucun itinéraire trouvé</div>";
-            return;
-        }
-        
-        const route = data.routes[0];
-        const durationMin = Math.round(route.duration / 60);
-        const distanceKm = (route.distance / 1000).toFixed(2);
+    const mode = 'driving';
+    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
 
-        // Afficher la route
-        routeCoords = route.geometry.coordinates;
-        currentRoute = L.geoJSON(route.geometry, { 
-            style: { color: 'red', weight: 4 }
-        }).addTo(itineraireLayer);
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.routes || data.routes.length === 0) return;
 
-        map.setView(userLocation, 17);
-        infoContainer.innerHTML = `
-            <div>
-                <strong>🚗 Itinéraire</strong>: ${durationMin} min (${distanceKm} km)
-                <button onclick="arreterItineraire()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px; background: #ff4444; color: white; border: none; border-radius: 3px; cursor: pointer;">
-                    ✖ Arrêter
-                </button>
-            </div>
-        `;
+            const route = data.routes[0];
+            const durationMin = Math.round(route.duration / 60);
+            const durationFormatted = formaterDuree(durationMin);
+            const distanceKm = (route.distance / 1000).toFixed(2);
 
-        startRouteTracking(dest);
-        suiviItineraire = true;
+            // Stocke les coordonnées complètes de l'itinéraire
+            routeCoords = route.geometry.coordinates;
+            
+            // Trace l'itinéraire complet initialement
+            currentRoute = L.geoJSON(route.geometry, {
+                style: { color: 'red', weight: 4 }
+            }).addTo(itineraireLayer);
+            
+            map.setView(userLocation, 17);
 
-    } catch (err) {
-        console.error("Erreur itinéraire:", err);
-        infoContainer.innerHTML = `
-            <div style="color: red;">
-                ❌ Erreur: ${err.message}
-            </div>
-        `;
-    }
+            // Affiche les infos d'itinéraire
+            const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            infoContainer.innerHTML += line;
+
+            // Démarrer le suivi progressif
+            startRouteTracking(dest);
+        })
+        .catch(err => {
+            console.error(`Erreur itinéraire voiture :`, err);
+        });
+
+    suiviItineraire = true;
 }
 
-// Fonction pour le tracking en temps réel (complétez votre fonction)
 function startRouteTracking(destination) {
-    // Vérifie toutes les 3 secondes la position
+    // Vérifie toutes les 3 secondes la position et met à jour l'itinéraire
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
@@ -1926,7 +1758,7 @@ function startRouteTracking(destination) {
             }
         });
 
-        // Garde seulement la partie non parcourue
+        // Garde seulement la partie non parcourue (avec un peu d'avance pour un meilleur visuel)
         const remainingCoords = routeCoords.slice(Math.max(0, closestIndex - 3));
         
         // Met à jour la ligne visible
@@ -1938,36 +1770,26 @@ function startRouteTracking(destination) {
             style: { color: 'red', weight: 4 }
         }).addTo(itineraireLayer);
 
-        // Vérifie si arrivé à destination (à moins de 50m)
+        // Vérifie si on est arrivé à destination (à moins de 50m)
         if (L.latLng(userLocation).distanceTo(destination) < 50) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
             suiviItineraire = false;
-            
-            const infoContainer = document.getElementById("itineraire-infos");
-            if (infoContainer) {
-                infoContainer.innerHTML = "<div style='color: green;'>✅ Destination atteinte!</div>";
-                setTimeout(() => infoContainer.remove(), 3000);
-            }
         }
-    }, 3000);
+    }, 3000); // Mise à jour toutes les 3 secondes
 }
 
-// Fonction pour arrêter l'itinéraire
-function arreterItineraire() {
-    itineraireLayer.clearLayers();
-    if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
-        routeUpdateInterval = null;
-    }
-    suiviItineraire = false;
-    
-    const infoContainer = document.getElementById("itineraire-infos");
-    if (infoContainer) {
-        infoContainer.innerHTML = "<div>Itinéraire arrêté</div>";
-        setTimeout(() => infoContainer.remove(), 2000);
-    }
-} 
+// Initialisation des clusters et services (conservé tel quel)
+const clusterLayer = L.markerClusterGroup().addTo(map);
+let allFeatures = [];
+
+// Charger uniquement votre fichier lille.geojson
+    fetch('te.geojson')
+      .then(res => res.json())
+      .then(data => {
+        allFeatures = data.features;
+        afficherServices("");
+      }) 
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     }
@@ -2016,14 +1838,10 @@ function arreterItineraire() {
       return icon("default.png");
     }
 
+    // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
-  // Vérifier que clusterLayer est bien défini
-  if (!clusterLayer) {
-    console.error("clusterLayer n'est pas défini");
-    return;
-  }
-  
+
   itineraireLayer.clearLayers();
   clusterLayer.clearLayers();
   const filtreMin = normalize(filtre);
@@ -2031,7 +1849,6 @@ function afficherServices(filtre = "") {
   if (!allFeatures || allFeatures.length === 0) return;
 
   let count = 0;
-  let resultLatLngs = [];
 
   // Si le filtre est vide, on affiche tout
   if (!filtreMin) {
@@ -2049,10 +1866,14 @@ function afficherServices(filtre = "") {
     return;
   }
 
-  // Recherche intelligente
+  // Recherche intelligente : on cherche d'abord les mots-clés exacts
   let typesRecherches = [];
+  
+  // Vérifier si le filtre correspond exactement à un mot-clé
   for (const [keyword, types] of Object.entries(keywordToTypes)) {
     const normalizedKeyword = normalize(keyword);
+    
+    // Recherche exacte ou recherche par mot entier
     if (filtreMin === normalizedKeyword || 
         filtreMin.split(' ').some(word => word === normalizedKeyword) ||
         normalizedKeyword.split(' ').some(word => word === filtreMin)) {
@@ -2060,15 +1881,22 @@ function afficherServices(filtre = "") {
     }
   }
 
+  // Si on a trouvé des types par mot-clé, on les utilise
   if (typesRecherches.length > 0) {
+    console.log("Recherche par mot-clé:", typesRecherches);
+    
     allFeatures.forEach(f => {
       if (!f.geometry || f.geometry.type !== "Point") return;
       const props = f.properties;
+      const name = props.name;
+      if (!name || name.trim() === "") return;
+
       const type = props.type ? normalize(props.type) : '';
       const amenity = props.amenity ? normalize(props.amenity) : '';
       const leisure = props.leisure ? normalize(props.leisure) : '';
       const shop = props.shop ? normalize(props.shop) : '';
 
+      // Vérifier si le type correspond à un des types recherchés
       const match = typesRecherches.some(t => {
         const normalizedType = normalize(t);
         return type.includes(normalizedType) || 
@@ -2082,10 +1910,12 @@ function afficherServices(filtre = "") {
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
         count++;
-        resultLatLngs.push([lat, lng]);
       }
     });
   } else {
+    // Recherche textuelle classique
+    console.log("Recherche textuelle classique");
+    
     allFeatures.forEach(f => {
       if (!f.geometry || f.geometry.type !== "Point") return;
       const props = f.properties;
@@ -2100,28 +1930,89 @@ function afficherServices(filtre = "") {
         props.category,
         props.address,
         props.type
-      ].filter(Boolean).map(normalize).join(" ");
+      ] 
+      .filter(Boolean)
+      .map(normalize)
+      .join(" ");
 
       if (searchText.includes(filtreMin)) {
         const [lng, lat] = f.geometry.coordinates;
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
         count++;
-        resultLatLngs.push([lat, lng]);
       }
     });
   }
 
   console.log(`Total des services affichés: ${count}`);
-
-  // Centrer la carte si au moins un service correspond
-  if (resultLatLngs.length === 1) {
-    map.setView(resultLatLngs[0], 17);
-  } else if (resultLatLngs.length > 1) {
-    const bounds = L.latLngBounds(resultLatLngs);
-    map.fitBounds(bounds, { padding: [50, 50] });
-  }
 }
+
+
+      
+
+    document.getElementById("search-bar").addEventListener("input", (e) => {
+      afficherServices(e.target.value);
+    });
+
+    let nomServiceActuel = "";
+
+    document.getElementById("avis-form").onsubmit = async function(e) {
+  e.preventDefault();
+  
+  if (!utilisateurConnecte) {
+    alert("Vous devez être connecté avec Google pour soumettre un avis.");
+    return;
+  }
+  // Créer le profil utilisateur avec les permissions minimales
+  try {
+      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/pseudo`).set(utilisateurConnecte.displayName);
+      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/email`).set(utilisateurConnecte.email);
+  } catch (error) {
+        console.error("Erreur création profil utilisateur:", error);
+  }
+
+  // 1. D'abord vérifier si c'est le premier avis
+  const estPremierAvis = await verifierPremierAvis(utilisateurConnecte.uid);
+  
+  // 2. Ensuite préparer l'objet avis
+  const avis = {
+    pseudo: utilisateurConnecte.displayName,
+    text: document.getElementById("text-avis").value.trim() || "(aucun commentaire)",
+    date: new Date().toLocaleDateString(),
+    uid: utilisateurConnecte.uid
+  };
+
+  // 3. Upload des médias si présents
+  try {
+    const photoFile = document.getElementById("photo-avis").files[0];
+    const videoFile = document.getElementById("video-avis").files[0];
+
+    if (photoFile) {
+      avis.photoUrl = await uploadToCloudinary(photoFile, 'image');
+    }
+    if (videoFile) {
+      avis.videoUrl = await uploadToCloudinary(videoFile, 'video');
+    }
+
+    // 4. Maintenant enregistrer l'avis
+    await db.ref('avis/' + nomServiceActuel).push(avis);
+
+    // 5. Si c'était le premier avis, envoyer l'email
+    if (estPremierAvis) {
+      console.log("✅ Premier avis - Envoi de l'email");
+      envoyerEmailPremierAvis(utilisateurConnecte.email, utilisateurConnecte.displayName);
+    }
+
+    // 6. Fermer le modal et réinitialiser
+    fermerModal();
+    afficherAvis(nomServiceActuel);
+    document.getElementById("avis-form").reset();
+
+  } catch (error) {
+    alert("Erreur lors de l'envoi de l'avis.");
+    console.error(error);
+  }
+};
 
 function normaliserNomPourFirebase(nom) {
   if (!nom) return "";
