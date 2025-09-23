@@ -1249,7 +1249,21 @@
     overflow-y: auto !important;
     z-index: 1000 !important;
   }
-
+  /*sauf*/
+  @media (min-width: 769px) {
+  #market-container {
+    width: 190px !important;
+    height: 100px !important;
+    left: 10px !important;
+    right: auto !important;
+    bottom: 125px !important; /* tout en bas */
+    position: fixed !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    z-index: 1000 !important;
+  }
+}
   #recommandation-container {
     bottom: 15px !important; /* juste au-dessus */
     left: 10px !important;
@@ -1706,11 +1720,9 @@ let routeUpdateInterval = null; // Intervalle de mise à jour
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
     
-    // Nettoyage des éléments précédents
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
     
-    // Création du conteneur d'informations
     const infoContainerId = "itineraire-infos";
     let infoContainer = document.getElementById(infoContainerId);
     if (!infoContainer) {
@@ -1728,8 +1740,10 @@ function tracerItineraire(dest) {
     }
     infoContainer.innerHTML = "";
 
-    const mode = 'driving';
-    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
+    // Construire l'URL vers TON backend Vercel
+    const start = `${userLocation[1]},${userLocation[0]}`;
+    const end = `${dest[1]},${dest[0]}`;
+    const url = `https://manima-backend-532zre4j4-joyfulboy-codes-projects.vercel.app/route?start=${start}&end=${end}`;
 
     fetch(url)
         .then(res => res.json())
@@ -1741,25 +1755,21 @@ function tracerItineraire(dest) {
             const durationFormatted = formaterDuree(durationMin);
             const distanceKm = (route.distance / 1000).toFixed(2);
 
-            // Stocke les coordonnées complètes de l'itinéraire
             routeCoords = route.geometry.coordinates;
             
-            // Trace l'itinéraire complet initialement
             currentRoute = L.geoJSON(route.geometry, {
                 style: { color: 'red', weight: 4 }
             }).addTo(itineraireLayer);
             
             map.setView(userLocation, 17);
 
-            // Affiche les infos d'itinéraire
             const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
             infoContainer.innerHTML += line;
 
-            // Démarrer le suivi progressif
             startRouteTracking(dest);
         })
         .catch(err => {
-            console.error(`Erreur itinéraire voiture :`, err);
+            console.error("Erreur itinéraire via backend :", err);
         });
 
     suiviItineraire = true;
