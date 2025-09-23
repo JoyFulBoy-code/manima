@@ -1717,59 +1717,65 @@
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-function tracerItineraire(dest) {
+async function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
 
+    // Reset des couches et intervalle
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    const infoContainerId = "itineraire-infos";
-    let infoContainer = document.getElementById(infoContainerId);
+    // Créer ou récupérer le container d’infos
+    let infoContainer = document.getElementById("itineraire-infos");
     if (!infoContainer) {
         infoContainer = document.createElement("div");
-        infoContainer.id = infoContainerId;
-        infoContainer.style.padding = "10px";
-        infoContainer.style.background = "#fff";
-        infoContainer.style.position = "absolute";
-        infoContainer.style.bottom = "450px";
-        infoContainer.style.left = "10px";
-        infoContainer.style.zIndex = "999";
-        infoContainer.style.borderRadius = "8px";
-        infoContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
+        Object.assign(infoContainer.style, {
+            padding: "10px",
+            background: "#fff",
+            position: "absolute",
+            bottom: "450px",
+            left: "10px",
+            zIndex: "999",
+            borderRadius: "8px",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.2)"
+        });
+        infoContainer.id = "itineraire-infos";
         map.getContainer().appendChild(infoContainer);
     }
     infoContainer.innerHTML = "";
 
-    // ✅ Nouvelle URL backend avec /api
     const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api';
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
 
-    fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`)
-        .then(res => res.json())
-        .then(data => {
-            if (!data.routes || data.routes.length === 0) return;
+    try {
+        const res = await fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`);
+        if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
 
-            const route = data.routes[0];
-            const durationMin = Math.round(route.duration / 60);
-            const distanceKm = (route.distance / 1000).toFixed(2);
+        const data = await res.json();
+        if (!data.routes || data.routes.length === 0) {
+            infoContainer.innerHTML = "<div>Aucun itinéraire disponible</div>";
+            return;
+        }
 
-            routeCoords = route.geometry.coordinates;
+        const route = data.routes[0];
+        const durationMin = Math.round(route.duration / 60);
+        const distanceKm = (route.distance / 1000).toFixed(2);
 
-            currentRoute = L.geoJSON(route.geometry, {
-                style: { color: 'red', weight: 4 }
-            }).addTo(itineraireLayer);
+        // Affichage de la route
+        routeCoords = route.geometry.coordinates;
+        currentRoute = L.geoJSON(route.geometry, { style: { color: 'red', weight: 4 } })
+                         .addTo(itineraireLayer);
 
-            map.setView(userLocation, 17);
+        map.setView(userLocation, 17);
+        infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationMin} min (${distanceKm} km)</div>`;
 
-            const line = `<div><strong>🚗 En voiture</strong> : ${durationMin} min (${distanceKm} km)</div>`;
-            infoContainer.innerHTML += line;
+        startRouteTracking(dest);
+        suiviItineraire = true;
 
-            startRouteTracking(dest);
-        })
-        .catch(err => console.error("Erreur itinéraire via backend :", err));
-
-    suiviItineraire = true;
+    } catch (err) {
+        console.error("Erreur itinéraire via backend :", err);
+        infoContainer.innerHTML = `<div style="color:red;">Erreur lors de la récupération de l’itinéraire</div>`;
+    }
 }
 
 function startRouteTracking(destination) {
