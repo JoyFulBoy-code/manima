@@ -1717,9 +1717,9 @@
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-// Déclare l'URL de ton backend Vercel
 const BACKEND_URL = 'https://manima-backend-532zre4j4-joyfulboy-codes-projects.vercel.app';
-
+fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`);
+fetch(`${BACKEND_URL}/weather`);
 // Exemple pour tracer l'itinéraire
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
