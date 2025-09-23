@@ -1717,15 +1717,45 @@
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-async function tracerItineraireDirect(dest) {
-    if (!userLocation) return alert("Localisation non disponible");
+// Fonction principale pour tracer l'itinéraire (celle appelée par vos boutons)
+async function tracerItineraire(dest) {
+    if (!userLocation) {
+        alert("Localisation non disponible");
+        return;
+    }
 
+    // Reset des couches
     itineraireLayer.clearLayers();
-    
+    if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
+        routeUpdateInterval = null;
+    }
+
+    // Créer le container d'infos
+    let infoContainer = document.getElementById("itineraire-infos");
+    if (!infoContainer) {
+        infoContainer = document.createElement("div");
+        Object.assign(infoContainer.style, {
+            padding: "10px",
+            background: "#fff",
+            position: "absolute",
+            bottom: "450px",
+            left: "10px",
+            zIndex: "999",
+            borderRadius: "8px",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+            fontSize: "14px"
+        });
+        infoContainer.id = "itineraire-infos";
+        map.getContainer().appendChild(infoContainer);
+    }
+
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
     
     try {
+        infoContainer.innerHTML = "<div>🔄 Calcul de l'itinéraire...</div>";
+        
         const url = `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`;
         const response = await fetch(url);
         
@@ -1734,45 +1764,46 @@ async function tracerItineraireDirect(dest) {
         const data = await response.json();
         
         if (!data.routes || data.routes.length === 0) {
-            alert("Aucun itinéraire trouvé");
+            infoContainer.innerHTML = "<div style='color: orange;'>⚠️ Aucun itinéraire trouvé</div>";
             return;
         }
         
         const route = data.routes[0];
-        L.geoJSON(route.geometry, { 
-            style: { color: 'blue', weight: 4 }
+        const durationMin = Math.round(route.duration / 60);
+        const distanceKm = (route.distance / 1000).toFixed(2);
+
+        // Afficher la route
+        routeCoords = route.geometry.coordinates;
+        currentRoute = L.geoJSON(route.geometry, { 
+            style: { color: 'red', weight: 4 }
         }).addTo(itineraireLayer);
-        
-        map.fitBounds(itineraireLayer.getBounds());
-        
+
+        map.setView(userLocation, 17);
+        infoContainer.innerHTML = `
+            <div>
+                <strong>🚗 Itinéraire</strong>: ${durationMin} min (${distanceKm} km)
+                <button onclick="arreterItineraire()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px; background: #ff4444; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                    ✖ Arrêter
+                </button>
+            </div>
+        `;
+
+        startRouteTracking(dest);
+        suiviItineraire = true;
+
     } catch (err) {
-        console.error("Erreur itinéraire direct:", err);
-        alert("Erreur de calcul d'itinéraire: " + err.message);
+        console.error("Erreur itinéraire:", err);
+        infoContainer.innerHTML = `
+            <div style="color: red;">
+                ❌ Erreur: ${err.message}
+            </div>
+        `;
     }
 }
 
-// Fonction pour arrêter l'itinéraire
-function arreterItineraire() {
-    itineraireLayer.clearLayers();
-    if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
-        routeUpdateInterval = null;
-    }
-    suiviItineraire = false;
-    
-    const infoContainer = document.getElementById("itineraire-infos");
-    if (infoContainer) {
-        infoContainer.innerHTML = "<div>Itinéraire arrêté</div>";
-        setTimeout(() => {
-            if (infoContainer.parentNode) {
-                infoContainer.parentNode.removeChild(infoContainer);
-            }
-        }, 2000);
-    }
-}
-
+// Fonction pour le tracking en temps réel (complétez votre fonction)
 function startRouteTracking(destination) {
-    // Vérifie toutes les 3 secondes la position et met à jour l'itinéraire
+    // Vérifie toutes les 3 secondes la position
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
@@ -1788,7 +1819,7 @@ function startRouteTracking(destination) {
             }
         });
 
-        // Garde seulement la partie non parcourue (avec un peu d'avance pour un meilleur visuel)
+        // Garde seulement la partie non parcourue
         const remainingCoords = routeCoords.slice(Math.max(0, closestIndex - 3));
         
         // Met à jour la ligne visible
@@ -1800,26 +1831,36 @@ function startRouteTracking(destination) {
             style: { color: 'red', weight: 4 }
         }).addTo(itineraireLayer);
 
-        // Vérifie si on est arrivé à destination (à moins de 50m)
+        // Vérifie si arrivé à destination (à moins de 50m)
         if (L.latLng(userLocation).distanceTo(destination) < 50) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
             suiviItineraire = false;
+            
+            const infoContainer = document.getElementById("itineraire-infos");
+            if (infoContainer) {
+                infoContainer.innerHTML = "<div style='color: green;'>✅ Destination atteinte!</div>";
+                setTimeout(() => infoContainer.remove(), 3000);
+            }
         }
-    }, 3000); // Mise à jour toutes les 3 secondes
+    }, 3000);
 }
 
-// Initialisation des clusters et services (conservé tel quel)
-const clusterLayer = L.markerClusterGroup().addTo(map);
-let allFeatures = [];
-
-// Charger uniquement votre fichier lille.geojson
-    fetch('te.geojson')
-      .then(res => res.json())
-      .then(data => {
-        allFeatures = data.features;
-        afficherServices("");
-      }) 
+// Fonction pour arrêter l'itinéraire
+function arreterItineraire() {
+    itineraireLayer.clearLayers();
+    if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
+        routeUpdateInterval = null;
+    }
+    suiviItineraire = false;
+    
+    const infoContainer = document.getElementById("itineraire-infos");
+    if (infoContainer) {
+        infoContainer.innerHTML = "<div>Itinéraire arrêté</div>";
+        setTimeout(() => infoContainer.remove(), 2000);
+    }
+} 
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     }
@@ -2089,8 +2130,7 @@ function createMarker(props, lat, lng) {
   }
   
   // Boutons communs
-  popupContent += `
-    <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
+  popupContent += `<button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
     <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
     <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
     <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
