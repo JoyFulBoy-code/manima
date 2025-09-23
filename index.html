@@ -1740,12 +1740,11 @@ function tracerItineraire(dest) {
     }
     infoContainer.innerHTML = "";
 
-    // ✅ Nouvelle URL backend
-    const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app';
+    // ✅ Nouvelle URL backend avec /api
+    const BACKEND_URL = 'https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api';
     const start = `${userLocation[1]},${userLocation[0]}`;
     const end = `${dest[1]},${dest[0]}`;
-    
-    // Itinéraire
+
     fetch(`${BACKEND_URL}/route?start=${start}&end=${end}`)
         .then(res => res.json())
         .then(data => {
@@ -1769,12 +1768,6 @@ function tracerItineraire(dest) {
             startRouteTracking(dest);
         })
         .catch(err => console.error("Erreur itinéraire via backend :", err));
-
-    // Météo (facultatif)
-    fetch(`${BACKEND_URL}/weather`)
-        .then(res => res.json())
-        .then(data => console.log("Météo via backend :", data))
-        .catch(err => console.error("Erreur météo :", err));
 
     suiviItineraire = true;
 }
