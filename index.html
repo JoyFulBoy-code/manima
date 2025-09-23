@@ -1909,9 +1909,14 @@ function arreterItineraire() {
       return icon("default.png");
     }
 
-    // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
+  // Vérifier que clusterLayer est bien défini
+  if (!clusterLayer) {
+    console.error("clusterLayer n'est pas défini");
+    return;
+  }
+  
   itineraireLayer.clearLayers();
   clusterLayer.clearLayers();
   const filtreMin = normalize(filtre);
@@ -1919,7 +1924,7 @@ function afficherServices(filtre = "") {
   if (!allFeatures || allFeatures.length === 0) return;
 
   let count = 0;
-  let resultLatLngs = []; // Pour stocker les positions des services trouvés
+  let resultLatLngs = [];
 
   // Si le filtre est vide, on affiche tout
   if (!filtreMin) {
@@ -1937,7 +1942,7 @@ function afficherServices(filtre = "") {
     return;
   }
 
-  // Recherche intelligente : on cherche d'abord les mots-clés exacts
+  // Recherche intelligente
   let typesRecherches = [];
   for (const [keyword, types] of Object.entries(keywordToTypes)) {
     const normalizedKeyword = normalize(keyword);
@@ -2002,7 +2007,7 @@ function afficherServices(filtre = "") {
 
   console.log(`Total des services affichés: ${count}`);
 
-  // ✅ Centrer la carte si au moins un service correspond
+  // Centrer la carte si au moins un service correspond
   if (resultLatLngs.length === 1) {
     map.setView(resultLatLngs[0], 17);
   } else if (resultLatLngs.length > 1) {
@@ -2010,73 +2015,6 @@ function afficherServices(filtre = "") {
     map.fitBounds(bounds, { padding: [50, 50] });
   }
 }
-
-
-      
-
-    document.getElementById("search-bar").addEventListener("input", (e) => {
-      afficherServices(e.target.value);
-    });
-
-    let nomServiceActuel = "";
-
-    document.getElementById("avis-form").onsubmit = async function(e) {
-  e.preventDefault();
-  
-  if (!utilisateurConnecte) {
-    alert("Vous devez être connecté avec Google pour soumettre un avis.");
-    return;
-  }
-  // Créer le profil utilisateur avec les permissions minimales
-  try {
-      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/pseudo`).set(utilisateurConnecte.displayName);
-      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/email`).set(utilisateurConnecte.email);
-  } catch (error) {
-        console.error("Erreur création profil utilisateur:", error);
-  }
-
-  // 1. D'abord vérifier si c'est le premier avis
-  const estPremierAvis = await verifierPremierAvis(utilisateurConnecte.uid);
-  
-  // 2. Ensuite préparer l'objet avis
-  const avis = {
-    pseudo: utilisateurConnecte.displayName,
-    text: document.getElementById("text-avis").value.trim() || "(aucun commentaire)",
-    date: new Date().toLocaleDateString(),
-    uid: utilisateurConnecte.uid
-  };
-
-  // 3. Upload des médias si présents
-  try {
-    const photoFile = document.getElementById("photo-avis").files[0];
-    const videoFile = document.getElementById("video-avis").files[0];
-
-    if (photoFile) {
-      avis.photoUrl = await uploadToCloudinary(photoFile, 'image');
-    }
-    if (videoFile) {
-      avis.videoUrl = await uploadToCloudinary(videoFile, 'video');
-    }
-
-    // 4. Maintenant enregistrer l'avis
-    await db.ref('avis/' + nomServiceActuel).push(avis);
-
-    // 5. Si c'était le premier avis, envoyer l'email
-    if (estPremierAvis) {
-      console.log("✅ Premier avis - Envoi de l'email");
-      envoyerEmailPremierAvis(utilisateurConnecte.email, utilisateurConnecte.displayName);
-    }
-
-    // 6. Fermer le modal et réinitialiser
-    fermerModal();
-    afficherAvis(nomServiceActuel);
-    document.getElementById("avis-form").reset();
-
-  } catch (error) {
-    alert("Erreur lors de l'envoi de l'avis.");
-    console.error(error);
-  }
-};
 
 function normaliserNomPourFirebase(nom) {
   if (!nom) return "";
