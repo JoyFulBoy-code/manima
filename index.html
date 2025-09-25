@@ -1702,167 +1702,51 @@ function tracerItineraire(dest) {
         infoContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
         map.getContainer().appendChild(infoContainer);
     }
-    infoContainer.innerHTML = "<div>Calcul de l'itinéraire...</div>";
+    infoContainer.innerHTML = "";
 
-    // URL de votre backend
-    const backendUrl = `https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api/route?start=${userLocation[1]},${userLocation[0]}&end=${dest[1]},${dest[0]}`;
-    
-    // Tentative avec votre backend d'abord
-    fetch(backendUrl)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Backend error: ${res.status}`);
-            }
-            return res.json();
-        })
+    const mode = 'driving';
+     // UTILISEZ VOTRE BACKEND MAINTENANT
+    const url = `https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api/route?start=${userLocation[1]},${userLocation[0]}&end=${dest[1]},${dest[0]}`;
+    fetch(url)
+        .then(res => res.json())
         .then(data => {
-            // Vérifier si le backend a retourné une erreur
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            
-            if (!data.routes || data.routes.length === 0) {
-                infoContainer.innerHTML = "<div style='color: red;'>Aucun itinéraire trouvé</div>";
-                return;
-            }
+            if (!data.routes || data.routes.length === 0) return;
 
-            traiterItineraire(data, dest, infoContainer, "backend");
+            const route = data.routes[0];
+            const durationMin = Math.round(route.duration / 60);
+            const durationFormatted = formaterDuree(durationMin);
+            const distanceKm = (route.distance / 1000).toFixed(2);
+
+            // Stocke les coordonnées complètes de l'itinéraire
+            routeCoords = route.geometry.coordinates;
+            
+            // Trace l'itinéraire complet initialement
+            currentRoute = L.geoJSON(route.geometry, {
+                style: { color: 'red', weight: 4 }
+            }).addTo(itineraireLayer);
+            
+            map.setView(userLocation, 17);
+
+            // Affiche les infos d'itinéraire
+            const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            infoContainer.innerHTML += line;
+
+            // Démarrer le suivi progressif
+            startRouteTracking(dest);
         })
         .catch(err => {
-            console.error("Erreur avec le backend, tentative avec OSRM direct:", err);
-            
-            // Fallback vers OSRM direct
-            const mode = 'driving';
-            const osrmUrl = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
-            
-            fetch(osrmUrl)
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error(`OSRM direct error: ${res.status}`);
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    if (!data.routes || data.routes.length === 0) {
-                        infoContainer.innerHTML = "<div style='color: red;'>Aucun itinéraire trouvé (fallback)</div>";
-                        return;
-                    }
-                    
-                    traiterItineraire(data, dest, infoContainer, "osrm_direct");
-                })
-                .catch(err2 => {
-                    console.error("Erreur aussi avec OSRM direct:", err2);
-                    infoContainer.innerHTML = `
-                        <div style='color: red;'>
-                            Service d'itinéraire indisponible<br>
-                            <small>${err.message || err2.message}</small>
-                        </div>
-                    `;
-                    
-                    // Tracer une ligne droite en dernier recours
-                    tracerLigneDroiteFallback(userLocation, dest, infoContainer);
-                });
+            console.error(`Erreur itinéraire voiture :`, err);
         });
 
     suiviItineraire = true;
 }
 
-// Fonction pour traiter les données d'itinéraire (commun au backend et fallback)
-function traiterItineraire(data, dest, infoContainer, source) {
-    console.log(`Itinéraire calculé via: ${source}`);
-    
-    const route = data.routes[0];
-    const durationMin = Math.round(route.duration / 60);
-    const durationFormatted = formaterDuree(durationMin);
-    const distanceKm = (route.distance / 1000).toFixed(2);
-
-    // Stocke les coordonnées complètes de l'itinéraire
-    routeCoords = route.geometry.coordinates;
-    
-    // Trace l'itinéraire complet
-    currentRoute = L.geoJSON(route.geometry, {
-        style: { 
-            color: source === "backend" ? 'red' : 'blue',
-            weight: 4,
-            opacity: 0.7
-        }
-    }).addTo(itineraireLayer);
-    
-    // Ajuste la vue pour voir tout l'itinéraire
-    const bounds = L.geoJSON(route.geometry).getBounds();
-    map.fitBounds(bounds, { padding: [20, 20] });
-
-    // Affiche les infos d'itinéraire avec indication de la source
-    const sourceInfo = source === "backend" ? "" : " <small>(mode secours)</small>";
-    infoContainer.innerHTML = `
-        <div><strong>🚗 Itinéraire</strong>${sourceInfo}</div>
-        <div>⏱️ ${durationFormatted}</div>
-        <div>📏 ${distanceKm} km</div>
-        <div><small>Source: ${source}</small></div>
-        <button onclick="arreterItineraire()" style="margin-top: 5px; padding: 5px; font-size: 12px;">
-            ✖️ Arrêter le suivi
-        </button>
-    `;
-
-    // Démarrer le suivi progressif
-    startRouteTracking(dest);
-}
-
-// Fonction de dernier recours : ligne droite
-function tracerLigneDroiteFallback(start, end, infoContainer) {
-    const ligneDroite = {
-        type: "LineString",
-        coordinates: [
-            [start[1], start[0]], // [lng, lat]
-            [end[1], end[0]]
-        ]
-    };
-    
-    L.geoJSON(ligneDroite, {
-        style: { color: 'orange', weight: 3, dashArray: '5,5' }
-    }).addTo(itineraireLayer);
-    
-    // Calcul distance approximative
-    const distance = calculerDistance(start[0], start[1], end[0], end[1]);
-    
-    infoContainer.innerHTML = `
-        <div style='color: orange;'>
-            <strong>⚠️ Itinéraire approximatif</strong><br>
-            📏 ${distance.toFixed(1)} km (ligne droite)<br>
-            <small>Service temporairement indisponible</small>
-        </div>
-    `;
-    
-    // Centrer sur les deux points
-    const bounds = L.latLngBounds([start, end]);
-    map.fitBounds(bounds, { padding: [50, 50] });
-}
-
-// Fonction pour arrêter le suivi d'itinéraire
-function arreterItineraire() {
-    suiviItineraire = false;
-    if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
-        routeUpdateInterval = null;
-    }
-    itineraireLayer.clearLayers();
-    
-    const infoContainer = document.getElementById("itineraire-infos");
-    if (infoContainer) {
-        infoContainer.innerHTML = "<div>Itinéraire arrêté</div>";
-        setTimeout(() => {
-            if (infoContainer.parentNode) {
-                infoContainer.parentNode.removeChild(infoContainer);
-            }
-        }, 2000);
-    }
-}
-
-// Votre fonction startRouteTracking existante (conservée)
 function startRouteTracking(destination) {
+    // Vérifie toutes les 3 secondes la position et met à jour l'itinéraire
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
+        // Trouve le point le plus proche sur l'itinéraire
         let closestIndex = 0;
         let minDistance = Infinity;
         
@@ -1874,8 +1758,10 @@ function startRouteTracking(destination) {
             }
         });
 
+        // Garde seulement la partie non parcourue (avec un peu d'avance pour un meilleur visuel)
         const remainingCoords = routeCoords.slice(Math.max(0, closestIndex - 3));
         
+        // Met à jour la ligne visible
         itineraireLayer.clearLayers();
         currentRoute = L.geoJSON({
             type: "LineString",
@@ -1884,16 +1770,26 @@ function startRouteTracking(destination) {
             style: { color: 'red', weight: 4 }
         }).addTo(itineraireLayer);
 
-        // Arrivée à destination (à moins de 50m)
+        // Vérifie si on est arrivé à destination (à moins de 50m)
         if (L.latLng(userLocation).distanceTo(destination) < 50) {
-            arreterItineraire();
-            const infoContainer = document.getElementById("itineraire-infos");
-            if (infoContainer) {
-                infoContainer.innerHTML = "<div style='color: green;'>🎉 Destination atteinte !</div>";
-            }
+            clearInterval(routeUpdateInterval);
+            itineraireLayer.clearLayers();
+            suiviItineraire = false;
         }
-    }, 3000);
-} 
+    }, 3000); // Mise à jour toutes les 3 secondes
+}
+
+// Initialisation des clusters et services (conservé tel quel)
+const clusterLayer = L.markerClusterGroup().addTo(map);
+let allFeatures = [];
+
+// Charger uniquement votre fichier lille.geojson
+    fetch('te.geojson')
+      .then(res => res.json())
+      .then(data => {
+        allFeatures = data.features;
+        afficherServices("");
+      }) 
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     }
