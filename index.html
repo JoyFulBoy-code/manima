@@ -1705,7 +1705,7 @@ function tracerItineraire(dest) {
     infoContainer.innerHTML = "";
 
     const mode = 'driving';
-    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
+    const url = `https://manima-backend.vercel.app/api/route?start=${userLocation[1]},${userLocation[0]}&end=${dest[1]},${dest[0]}`;
 
     fetch(url)
         .then(res => res.json())
