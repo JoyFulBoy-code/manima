@@ -1841,7 +1841,6 @@ let allFeatures = [];
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
-
   itineraireLayer.clearLayers();
   clusterLayer.clearLayers();
   const filtreMin = normalize(filtre);
@@ -1849,8 +1848,9 @@ function afficherServices(filtre = "") {
   if (!allFeatures || allFeatures.length === 0) return;
 
   let count = 0;
+  let servicesTrouves = [];
 
-  // Si le filtre est vide, on affiche tout
+  // Si le filtre est vide, on affiche tout et on centre sur la localisation
   if (!filtreMin) {
     allFeatures.forEach(f => {
       if (!f.geometry || f.geometry.type !== "Point") return;
@@ -1862,18 +1862,22 @@ function afficherServices(filtre = "") {
       clusterLayer.addLayer(marker);
       count++;
     });
+    
+    // Centrer sur la localisation utilisateur si disponible
+    if (userLocation) {
+      map.setView(userLocation, 15);
+    }
+    
     console.log(`Total des services affichés: ${count}`);
     return;
   }
 
-  // Recherche intelligente : on cherche d'abord les mots-clés exacts
+  // Recherche intelligente
   let typesRecherches = [];
   
-  // Vérifier si le filtre correspond exactement à un mot-clé
   for (const [keyword, types] of Object.entries(keywordToTypes)) {
     const normalizedKeyword = normalize(keyword);
     
-    // Recherche exacte ou recherche par mot entier
     if (filtreMin === normalizedKeyword || 
         filtreMin.split(' ').some(word => word === normalizedKeyword) ||
         normalizedKeyword.split(' ').some(word => word === filtreMin)) {
@@ -1896,24 +1900,25 @@ function afficherServices(filtre = "") {
       const leisure = props.leisure ? normalize(props.leisure) : '';
       const shop = props.shop ? normalize(props.shop) : '';
 
-      // Vérifier si le type correspond à un des types recherchés
       const match = typesRecherches.some(t => {
         const normalizedType = normalize(t);
         return type.includes(normalizedType) || 
                amenity.includes(normalizedType) || 
                leisure.includes(normalizedType) || 
-               shop.includes(normalizedType);
+               shop.includes(normalizedType) ||
+               name.includes(normalizedType); // Ajout important : recherche aussi dans le nom
       });
 
       if (match) {
         const [lng, lat] = f.geometry.coordinates;
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
+        servicesTrouves.push({ lat, lng, name: props.name });
         count++;
       }
     });
   } else {
-    // Recherche textuelle classique
+    // Recherche textuelle classique - CORRECTION ICI
     console.log("Recherche textuelle classique");
     
     allFeatures.forEach(f => {
@@ -1922,97 +1927,87 @@ function afficherServices(filtre = "") {
       const name = props.name;
       if (!name || name.trim() === "") return;
 
+      // Recherche dans tous les champs pertinents
       const searchText = [
-        props.name, 
-        props.amenity, 
-        props.shop, 
-        props.leisure,
-        props.category,
-        props.address,
-        props.type
+        props.name || '', 
+        props.amenity || '', 
+        props.shop || '', 
+        props.leisure || '',
+        props.category || '',
+        props.address || '',
+        props.type || '',
+        props.description || '' // Ajout du champ description
       ] 
-      .filter(Boolean)
       .map(normalize)
       .join(" ");
 
+      // Vérifier si le filtre correspond à n'importe quelle partie du texte
       if (searchText.includes(filtreMin)) {
         const [lng, lat] = f.geometry.coordinates;
         const marker = createMarker(props, lat, lng);
         clusterLayer.addLayer(marker);
+        servicesTrouves.push({ lat, lng, name: props.name });
         count++;
       }
     });
   }
 
+  // GESTION DU CENTRAGE DE LA CAMÉRA
+  if (servicesTrouves.length > 0) {
+    if (servicesTrouves.length === 1) {
+      // Un seul service trouvé : centrer directement sur lui
+      const service = servicesTrouves[0];
+      map.setView([service.lat, service.lng], 16);
+    } else {
+      // Plusieurs services trouvés : centrer sur le plus proche de l'utilisateur
+      centrerSurPlusProche(servicesTrouves);
+    }
+  } else {
+    // Aucun service trouvé : centrer sur la localisation utilisateur
+    if (userLocation) {
+      map.setView(userLocation, 15);
+    }
+  }
+
   console.log(`Total des services affichés: ${count}`);
+  console.log(`Services trouvés:`, servicesTrouves.map(s => s.name));
+}
+document.getElementById("search-bar").addEventListener("input", (e) => {
+  afficherServices(e.target.value);
+});
+
+function centrerSurPlusProche(services) {
+  if (!userLocation || services.length === 0) return;
+  
+  let serviceLePlusProche = services[0];
+  let distanceMinimale = calculerDistance(userLocation[0], userLocation[1], services[0].lat, services[0].lng);
+  
+  // Trouver le service le plus proche
+  for (let i = 1; i < services.length; i++) {
+    const service = services[i];
+    const distance = calculerDistance(userLocation[0], userLocation[1], service.lat, service.lng);
+    
+    if (distance < distanceMinimale) {
+      distanceMinimale = distance;
+      serviceLePlusProche = service;
+    }
+  }
+  
+  // Centrer sur le service le plus proche
+  map.setView([serviceLePlusProche.lat, serviceLePlusProche.lng], 15);
 }
 
-
-      
-
-    document.getElementById("search-bar").addEventListener("input", (e) => {
-      afficherServices(e.target.value);
-    });
-
-    let nomServiceActuel = "";
-
-    document.getElementById("avis-form").onsubmit = async function(e) {
-  e.preventDefault();
-  
-  if (!utilisateurConnecte) {
-    alert("Vous devez être connecté avec Google pour soumettre un avis.");
-    return;
-  }
-  // Créer le profil utilisateur avec les permissions minimales
-  try {
-      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/pseudo`).set(utilisateurConnecte.displayName);
-      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/email`).set(utilisateurConnecte.email);
-  } catch (error) {
-        console.error("Erreur création profil utilisateur:", error);
-  }
-
-  // 1. D'abord vérifier si c'est le premier avis
-  const estPremierAvis = await verifierPremierAvis(utilisateurConnecte.uid);
-  
-  // 2. Ensuite préparer l'objet avis
-  const avis = {
-    pseudo: utilisateurConnecte.displayName,
-    text: document.getElementById("text-avis").value.trim() || "(aucun commentaire)",
-    date: new Date().toLocaleDateString(),
-    uid: utilisateurConnecte.uid
-  };
-
-  // 3. Upload des médias si présents
-  try {
-    const photoFile = document.getElementById("photo-avis").files[0];
-    const videoFile = document.getElementById("video-avis").files[0];
-
-    if (photoFile) {
-      avis.photoUrl = await uploadToCloudinary(photoFile, 'image');
-    }
-    if (videoFile) {
-      avis.videoUrl = await uploadToCloudinary(videoFile, 'video');
-    }
-
-    // 4. Maintenant enregistrer l'avis
-    await db.ref('avis/' + nomServiceActuel).push(avis);
-
-    // 5. Si c'était le premier avis, envoyer l'email
-    if (estPremierAvis) {
-      console.log("✅ Premier avis - Envoi de l'email");
-      envoyerEmailPremierAvis(utilisateurConnecte.email, utilisateurConnecte.displayName);
-    }
-
-    // 6. Fermer le modal et réinitialiser
-    fermerModal();
-    afficherAvis(nomServiceActuel);
-    document.getElementById("avis-form").reset();
-
-  } catch (error) {
-    alert("Erreur lors de l'envoi de l'avis.");
-    console.error(error);
-  }
-};
+function calculerDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Rayon de la Terre en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
 
 function normaliserNomPourFirebase(nom) {
   if (!nom) return "";
