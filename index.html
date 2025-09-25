@@ -1705,8 +1705,8 @@ function tracerItineraire(dest) {
     infoContainer.innerHTML = "";
 
     const mode = 'driving';
-     // UTILISEZ VOTRE BACKEND MAINTENANT
-    const url = `https://manima-backend-bkc2ojzq4-joyfulboy-codes-projects.vercel.app/api/route?start=${userLocation[1]},${userLocation[0]}&end=${dest[1]},${dest[0]}`;
+    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
+
     fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -1972,9 +1972,7 @@ function afficherServices(filtre = "") {
   console.log(`Total des services affichés: ${count}`);
   console.log(`Services trouvés:`, servicesTrouves.map(s => s.name));
 }
-document.getElementById("search-bar").addEventListener("input", (e) => {
-  afficherServices(e.target.value);
-});
+
 
 function centrerSurPlusProche(services) {
   if (!userLocation || services.length === 0) return;
