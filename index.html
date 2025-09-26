@@ -3635,13 +3635,13 @@ async function getServicesForTimeSlot() {
     function isMarketDay() {
       const day = new Date().getDay(); // 0 = dimanche, 1 = lundi, etc.
       // Les jours de marché sont mardi, jeudi et dimanche
-      return day === 0 || day === 2 || day === 5; // Dimanche, Mardi, Jeudi
+      return day === 0 || day === 2 || day === 4; // Dimanche, Mardi, Jeudi
     }
     // Fonction pour vérifier si l'heure est entre 6h et 11h
     function isMarketTime() {
       const now = new Date();
       const hour = now.getHours();
-      return hour >= 6 && hour < 23;
+      return hour >= 6 && hour < 14;
     }
 
 
@@ -3814,7 +3814,7 @@ function isJumuaTime() {
   const day = now.getDay(); // 0 = dimanche, 5 = vendredi
   const hour = now.getHours();
   
-  return day === 5 && hour >= 10 && hour < 23;
+  return day === 5 && hour >= 10 && hour < 14;
 }
 
 // Fonction pour afficher les mosquées pour Jumua
