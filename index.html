@@ -1235,42 +1235,81 @@
     margin: 3px 0;
   }
 }
+/* Règles par défaut pour tous les écrans (grand écran compris) */
+#market-container {
+  position: fixed;
+  bottom: 20px;
+  right: 320px;
+  width: 250px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #e74c3c;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+#recommandation-container {
+  position: fixed;
+  bottom: 150px;
+  right: 20px;
+  width: 280px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #4CAF50;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+#jumua-container {
+  position: fixed;
+  bottom: 220px;
+  right: 20px;
+  width: 250px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #4CAF50;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+#chauffeurs-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+/* Media query pour les écrans <= 768px (mobiles) */
 @media (max-width: 768px) {
-  #market-container {
+  #market-container, #recommandation-container, #jumua-container {
+    left: 10px !important;
+    right: auto !important;
     width: 190px !important;
     height: 100px !important;
-    left: 10px !important;
-    right: auto !important;
-    bottom: 125px !important; /* tout en bas */
-    position: fixed !important;
     padding: 5px !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important;
-    z-index: 1000 !important;
   }
 
-  #recommandation-container {
-    bottom: 15px !important; /* juste au-dessus */
-    left: 10px !important;
-    right: auto !important;
-    height:100px !important;
-  }
+  #market-container { bottom: 20px !important; }
+  #recommandation-container { bottom: 15px !important; }
+  #jumua-container { bottom: 125px !important; }
 
-  #jumua-container {
-    bottom: 125px !important; /* au-dessus */
-    left: 10px !important;
-    right: auto !important;
-    width:190px !important;
-    height:100px !important;
-  }
   #chauffeurs-btn {
-    position: fixed !important;
-    bottom: 80px !important;  /* juste au-dessus du bouton ajouter commerce */
-    right: 1px !important;   /* aligné à droite */
-    left: auto !important;     /* désactive le left si nécessaire */
+    bottom: 80px !important;
+    right: 1px !important;
+    left: auto !important;
     padding: 8px 12px !important;
     font-size: 13px !important;
-    z-index: 1 !important; /* au-dessus des autres éléments */
   }
 }
 
