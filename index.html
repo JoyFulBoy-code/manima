@@ -1720,11 +1720,11 @@ let routeUpdateInterval = null; // Intervalle de mise à jour
 
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
-    
+
     // Nettoyage des éléments précédents
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
-    
+
     // Création du conteneur d'informations
     const infoContainerId = "itineraire-infos";
     let infoContainer = document.getElementById(infoContainerId);
@@ -1744,7 +1744,7 @@ function tracerItineraire(dest) {
     infoContainer.innerHTML = "";
 
     const mode = 'driving';
-    const url = `https://router.project-osrm.org/route/v1/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?overview=full&geometries=geojson`;
+    const url = `https://api.mapbox.com/directions/v5/mapbox/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?geometries=geojson&overview=full&access_token=pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g`;
 
     fetch(url)
         .then(res => res.json())
@@ -1758,15 +1758,15 @@ function tracerItineraire(dest) {
 
             // Stocke les coordonnées complètes de l'itinéraire
             routeCoords = route.geometry.coordinates;
-            
-            // Trace l'itinéraire complet initialement
+
+            // Trace l'itinéraire complet
             currentRoute = L.geoJSON(route.geometry, {
-                style: { color: 'red', weight: 4 }
+                style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
-            
+
             map.setView(userLocation, 17);
 
-            // Affiche les infos d'itinéraire
+            // Affiche les infos
             const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
             infoContainer.innerHTML += line;
 
@@ -1774,7 +1774,7 @@ function tracerItineraire(dest) {
             startRouteTracking(dest);
         })
         .catch(err => {
-            console.error(`Erreur itinéraire voiture :`, err);
+            console.error(`Erreur itinéraire Mapbox :`, err);
         });
 
     suiviItineraire = true;
@@ -1806,7 +1806,7 @@ function startRouteTracking(destination) {
             type: "LineString",
             coordinates: remainingCoords
         }, {
-            style: { color: 'red', weight: 4 }
+            style: { color: 'blue', weight: 4 }
         }).addTo(itineraireLayer);
 
         // Vérifie si on est arrivé à destination (à moins de 50m)
