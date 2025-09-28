@@ -43,11 +43,11 @@
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   <script src="https://unpkg.com/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
   
-  <!-- Prechargement des ressources critiques -->
-  <link rel="preload" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" as="style">
-  <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" as="style">
-  <link rel="preconnect" href="https://www.gstatic.com">
-  <link rel="dns-prefetch" href="https://firebasedatabase.app">
+  <!-- REMPLACEZ Leaflet par Mapbox GL JS -->
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css' />
   <!-- Données structurées Schema.org -->
 
   <script type="application/ld+json">
@@ -1687,22 +1687,21 @@
 
     if (userMarker) {
         userMarker.setLatLng(userLocation);
-        userMarker.setRotationAngle(heading); // La flèche tourne seule
+        // LA FLÈCHE NE TOURNE PLUS - elle pointe toujours vers le haut
     } else {
         userMarker = L.marker(userLocation, {
             icon: arrowIcon,
-            rotationAngle: heading,
-            rotationOrigin: 'center center'
+            // PAS de rotationAngle - la flèche est fixe
         }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
         map.setView(userLocation, 17);
     }
 
-    // SUPPRIMÉ : la rotation de la carte
-    // document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
-
-    // Pendant le suivi d'itinéraire, la carte suit la position
+    // Pendant le suivi d'itinéraire, on fait tourner la carte
     if (suiviItineraire) {
-        map.setView(userLocation, 17); // Juste le centrage, pas de rotation
+        // 🔥 C'EST ÇA LE SECRET : on fait tourner la carte autour de votre position
+        map.setView(userLocation, 17);
+        // La carte s'oriente selon votre direction
+        map.setBearing(-heading); // Si Leaflet peut gérer la rotation
     }
 
 }, err => console.error("Erreur de géolocalisation :", err), {
@@ -1785,6 +1784,9 @@ function tracerItineraire(dest) {
 }
 
 function startRouteTracking(destination) {
+    let lastRecalculation = Date.now();
+    const recalculationInterval = 10000; // Recalcul toutes les 10 secondes
+
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
@@ -1793,13 +1795,19 @@ function startRouteTracking(destination) {
             map.setView(userLocation, 17);
         }
 
-        // Vérifie si arrivé à destination (à moins de 25m)
-        if (L.latLng(userLocation).distanceTo(destination) < 25) {
+        // Recalcul de l'itinéraire si nécessaire (toutes les 10 secondes ou si on s'éloigne)
+        const now = Date.now();
+        if (now - lastRecalculation > recalculationInterval) {
+            recalculerItineraire(destination);
+            lastRecalculation = now;
+        }
+
+        // Vérifie si arrivé à destination (à moins de 50m)
+        if (L.latLng(userLocation).distanceTo(destination) < 50) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
             suiviItineraire = false;
             
-            // Supprime aussi l'info de trajet à l'arrivée
             const infoContainer = document.getElementById("itineraire-infos");
             if (infoContainer) {
                 infoContainer.remove();
@@ -1807,7 +1815,7 @@ function startRouteTracking(destination) {
             
             alert("🎉 Vous êtes arrivé à destination !");
         }
-    }, 3000); // Mise à jour toutes les 3 secondes
+    }, 3000); // Mise à jour position toutes les 3 secondes
 }
 
 // Initialisation des clusters et services (conservé tel quel)
