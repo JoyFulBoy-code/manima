@@ -104,7 +104,7 @@ body {
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
 }
-    body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; }
+    
     header, footer {
       text-align: center;
       padding: 10px;
@@ -1380,6 +1380,14 @@ body {
     font-size: 14px;
     margin-top: 5px;
   }
+}
+header {
+  position: fixed;    /* toujours collé en haut */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #4CAF50; /* vert */
+  z-index: 10000;     /* au-dessus de tout */
 }
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
