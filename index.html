@@ -1682,31 +1682,34 @@
     const arrowIcon = L.divIcon({ className: 'arrow-icon', iconSize: [50, 50], iconAnchor: [25, 25] });
 
     navigator.geolocation.watchPosition(pos => {
-      userLocation = [pos.coords.latitude, pos.coords.longitude];
-      const heading = pos.coords.heading || 0;
+    userLocation = [pos.coords.latitude, pos.coords.longitude];
+    const heading = pos.coords.heading || 0;
 
-      if (userMarker) {
+    if (userMarker) {
         userMarker.setLatLng(userLocation);
-        userMarker.setRotationAngle(heading);
-      } else {
+        userMarker.setRotationAngle(heading); // La flèche tourne seule
+    } else {
         userMarker = L.marker(userLocation, {
-          icon: arrowIcon,
-          rotationAngle: heading,
-          rotationOrigin: 'center center'
+            icon: arrowIcon,
+            rotationAngle: heading,
+            rotationOrigin: 'center center'
         }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
         map.setView(userLocation, 17);
-      }
+    }
 
-      if (suiviItineraire) {
-        map.setView(userLocation, 17);
-      }
+    // SUPPRIMÉ : la rotation de la carte
+    // document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
 
-      document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
-    }, err => console.error("Erreur de géolocalisation :", err), {
-      enableHighAccuracy: false,
-      maximumAge: 1000,
-      timeout: 100000
-    });
+    // Pendant le suivi d'itinéraire, la carte suit la position
+    if (suiviItineraire) {
+        map.setView(userLocation, 17); // Juste le centrage, pas de rotation
+    }
+
+}, err => console.error("Erreur de géolocalisation :", err), {
+    enableHighAccuracy: true,
+    maximumAge: 1000,
+    timeout: 5000
+});
 
     function formaterDuree(minutes) {
       const h = Math.floor(minutes / 60);
@@ -1725,7 +1728,7 @@ function tracerItineraire(dest) {
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    // Création du conteneur d'informations
+    // Création du conteneur d'informations (CONSERVÉ)
     const infoContainerId = "itineraire-infos";
     let infoContainer = document.getElementById(infoContainerId);
     if (!infoContainer) {
@@ -1766,9 +1769,12 @@ function tracerItineraire(dest) {
 
             map.setView(userLocation, 17);
 
-            // Affiche les infos
+            // Affiche les infos (CONSERVÉ)
             const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
             infoContainer.innerHTML += line;
+
+            // Active le suivi automatique
+            suiviItineraire = true;
 
             // Démarrer le suivi progressif
             startRouteTracking(dest);
@@ -1776,44 +1782,30 @@ function tracerItineraire(dest) {
         .catch(err => {
             console.error(`Erreur itinéraire Mapbox :`, err);
         });
-
-    suiviItineraire = true;
 }
 
 function startRouteTracking(destination) {
-    // Vérifie toutes les 3 secondes la position et met à jour l'itinéraire
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
-        // Trouve le point le plus proche sur l'itinéraire
-        let closestIndex = 0;
-        let minDistance = Infinity;
-        
-        routeCoords.forEach((coord, index) => {
-            const distance = L.latLng(userLocation).distanceTo([coord[1], coord[0]]);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = index;
-            }
-        });
+        // Met à jour la position sur la carte automatiquement pendant le suivi
+        if (suiviItineraire) {
+            map.setView(userLocation, 17);
+        }
 
-        // Garde seulement la partie non parcourue (avec un peu d'avance pour un meilleur visuel)
-        const remainingCoords = routeCoords.slice(Math.max(0, closestIndex - 3));
-        
-        // Met à jour la ligne visible
-        itineraireLayer.clearLayers();
-        currentRoute = L.geoJSON({
-            type: "LineString",
-            coordinates: remainingCoords
-        }, {
-            style: { color: 'blue', weight: 4 }
-        }).addTo(itineraireLayer);
-
-        // Vérifie si on est arrivé à destination (à moins de 50m)
-        if (L.latLng(userLocation).distanceTo(destination) < 50) {
+        // Vérifie si arrivé à destination (à moins de 25m)
+        if (L.latLng(userLocation).distanceTo(destination) < 25) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
             suiviItineraire = false;
+            
+            // Supprime aussi l'info de trajet à l'arrivée
+            const infoContainer = document.getElementById("itineraire-infos");
+            if (infoContainer) {
+                infoContainer.remove();
+            }
+            
+            alert("🎉 Vous êtes arrivé à destination !");
         }
     }, 3000); // Mise à jour toutes les 3 secondes
 }
