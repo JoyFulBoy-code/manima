@@ -88,6 +88,22 @@
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
   <style>
+    /* Reset global — à mettre tout en haut de ton CSS */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  background: #fff; /* couleur de ton site */
+}
+
+/* Gestion des encoches (iPhone, Android) */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
     body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; }
     header, footer {
       text-align: center;
@@ -1313,22 +1329,7 @@
   }
   
 }
-/* Reset global — à mettre tout en haut de ton CSS */
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100% !important;
-  width: 100% !important;
-  background: #fff; /* couleur de ton site */
-}
 
-/* Gestion des encoches (iPhone, Android) */
-body {
-  padding-top: env(safe-area-inset-top);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: env(safe-area-inset-bottom);
-}
 /* Très petits écrans */
 @media (max-width: 480px) {
   header h1 { font-size: 1.5rem; }
