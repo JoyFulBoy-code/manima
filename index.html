@@ -48,6 +48,29 @@
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js'></script>
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css' />
+<!-- REMPLACEZ tout le code Leaflet par ça -->
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js'></script>
+
+<div id="map"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g';
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [3.0573, 50.6292],
+    zoom: 13
+});
+
+// 🔥 Ça c'est la magie - ça fait EXACTEMENT Waze
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: { enableHighAccuracy: true },
+    trackUserLocation: true,
+    showUserHeading: true // La flèche pointe toujours vers le haut + carte tourne
+}));
+</script>
   <!-- Données structurées Schema.org -->
 
   <script type="application/ld+json">
@@ -1705,7 +1728,7 @@ body {
 
     if (userMarker) {
         userMarker.setLatLng(userLocation);
-        userMarker.setRotationAngle(heading); // La flèche tourne seule
+        userMarker.setRotationAngle(heading);
     } else {
         userMarker = L.marker(userLocation, {
             icon: arrowIcon,
@@ -1715,12 +1738,18 @@ body {
         map.setView(userLocation, 17);
     }
 
-    // SUPPRIMÉ : la rotation de la carte
-    // document.getElementById("map").style.transform = `rotate(${-heading}deg)`;
-
-    // Pendant le suivi d'itinéraire, la carte suit la position
+    // 🔥 Pendant le suivi d'itinéraire, on "simule" la rotation Waze
     if (suiviItineraire) {
-        map.setView(userLocation, 17); // Juste le centrage, pas de rotation
+        map.setView(userLocation, 17);
+        
+        // Technique simple pour orienter la vue vers l'avant
+        // On décale légèrement le centre pour voir devant soi
+        const bearing = heading * Math.PI / 180;
+        const offset = 0.002; // Petit décalage
+        const newLat = userLocation[0] + (Math.cos(bearing) * offset);
+        const newLng = userLocation[1] + (Math.sin(bearing) * offset);
+        
+        map.setView([newLat, newLng], 17);
     }
 
 }, err => console.error("Erreur de géolocalisation :", err), {
@@ -1803,6 +1832,9 @@ function tracerItineraire(dest) {
 }
 
 function startRouteTracking(destination) {
+    let lastRecalculation = Date.now();
+    const recalculationInterval = 15000; // Recalcul toutes les 15 secondes
+
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
@@ -1811,13 +1843,19 @@ function startRouteTracking(destination) {
             map.setView(userLocation, 17);
         }
 
+        // 🔥 RECALCUL AUTOMATIQUE de l'itinéraire
+        const now = Date.now();
+        if (now - lastRecalculation > recalculationInterval) {
+            recalculerItineraire(destination);
+            lastRecalculation = now;
+        }
+
         // Vérifie si arrivé à destination (à moins de 25m)
         if (L.latLng(userLocation).distanceTo(destination) < 25) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
             suiviItineraire = false;
             
-            // Supprime aussi l'info de trajet à l'arrivée
             const infoContainer = document.getElementById("itineraire-infos");
             if (infoContainer) {
                 infoContainer.remove();
@@ -1825,7 +1863,7 @@ function startRouteTracking(destination) {
             
             alert("🎉 Vous êtes arrivé à destination !");
         }
-    }, 3000); // Mise à jour toutes les 3 secondes
+    }, 3000);
 }
 
 // Initialisation des clusters et services (conservé tel quel)
@@ -1839,6 +1877,43 @@ let allFeatures = [];
         allFeatures = data.features;
         afficherServices("");
       }) 
+    function recalculerItineraire(destination) {
+    if (!userLocation) return;
+
+    const mode = 'driving';
+    const url = `https://api.mapbox.com/directions/v5/mapbox/${mode}/${userLocation[1]},${userLocation[0]};${destination[1]},${destination[0]}?geometries=geojson&overview=full&access_token=pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g`;
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.routes || data.routes.length === 0) return;
+
+            const route = data.routes[0];
+            const durationMin = Math.round(route.duration / 60);
+            const durationFormatted = formaterDuree(durationMin);
+            const distanceKm = (route.distance / 1000).toFixed(2);
+
+            // Stocke les nouvelles coordonnées
+            routeCoords = route.geometry.coordinates;
+
+            // Met à jour l'affichage de l'itinéraire
+            itineraireLayer.clearLayers();
+            currentRoute = L.geoJSON(route.geometry, {
+                style: { color: 'blue', weight: 4 }
+            }).addTo(itineraireLayer);
+
+            // Met à jour les infos de temps
+            const infoContainer = document.getElementById("itineraire-infos");
+            if (infoContainer) {
+                infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            }
+
+            console.log("Itinéraire recalculé ! Nouveau temps : " + durationFormatted);
+        })
+        .catch(err => {
+            console.error(`Erreur recalcul itinéraire :`, err);
+        });
+}
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     }
