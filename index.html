@@ -1272,10 +1272,10 @@ body {
   bottom: 100px !important;
   left: 20px !important;        /* collé à gauche */
   right: auto !important;       /* on désactive le "right" */
-  padding: 6px 7px !important;
+  padding: 8px 12px !important;
   font-size: 13px !important;
-  min-width: 59px !important;   
-  min-height: 20px !important;  
+  min-width: unset !important;   /* supprime la largeur minimale */
+  max-width: unset !important;
   border-radius: 6px !important;
 }
 
@@ -1344,11 +1344,12 @@ body {
   bottom: 10px !important;
   right: 10px !important;
   left: auto !important;
-  padding: 6px 7px !important;
+  padding: 8px 12px !important;
   font-size: 13px !important;
-  min-width: 80px !important;   /* largeur minimale */
-  max-width: 120px !important;  /* largeur maximale */
   border-radius: 8px !important; /* arrondi sympa */
+  width: auto !important;        /* largeur auto comme chauffeur */
+  min-width: unset !important;   /* supprime la largeur minimale */
+  max-width: unset !important;   /* supprime la largeur maximale */
 }
   
 }
