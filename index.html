@@ -1739,18 +1739,9 @@ body {
         map.setView(userLocation, 17);
     }
 
-    // 🔥 Pendant le suivi d'itinéraire, on "simule" la rotation Waze
+    // Pendant le suivi d'itinéraire, la carte s'oriente vers l'avant
     if (suiviItineraire) {
-        map.setView(userLocation, 17);
-        
-        // Technique simple pour orienter la vue vers l'avant
-        // On décale légèrement le centre pour voir devant soi
-        const bearing = heading * Math.PI / 180;
-        const offset = 0.002; // Petit décalage
-        const newLat = userLocation[0] + (Math.cos(bearing) * offset);
-        const newLng = userLocation[1] + (Math.sin(bearing) * offset);
-        
-        map.setView([newLat, newLng], 17);
+        orienterCarteVersDirection(heading);
     }
 
 }, err => console.error("Erreur de géolocalisation :", err), {
@@ -1834,24 +1825,21 @@ function tracerItineraire(dest) {
 
 function startRouteTracking(destination) {
     let lastRecalculation = Date.now();
-    const recalculationInterval = 15000; // Recalcul toutes les 15 secondes
+    const recalculationInterval = 15000;
 
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
-        // Met à jour la position sur la carte automatiquement pendant le suivi
-        if (suiviItineraire) {
-            map.setView(userLocation, 17);
-        }
+        // 🔥 PLUS BESOIN de map.setView ici car c'est géré par le watcher
 
-        // 🔥 RECALCUL AUTOMATIQUE de l'itinéraire
+        // RECALCUL AUTOMATIQUE de l'itinéraire
         const now = Date.now();
         if (now - lastRecalculation > recalculationInterval) {
             recalculerItineraire(destination);
             lastRecalculation = now;
         }
 
-        // Vérifie si arrivé à destination (à moins de 25m)
+        // Vérifie si arrivé à destination
         if (L.latLng(userLocation).distanceTo(destination) < 25) {
             clearInterval(routeUpdateInterval);
             itineraireLayer.clearLayers();
@@ -1878,6 +1866,25 @@ let allFeatures = [];
         allFeatures = data.features;
         afficherServices("");
       }) 
+    function orienterCarteVersDirection(heading) {
+    // Calcule un point "devant" vous pour orienter la vue
+    const bearing = (heading * Math.PI) / 180;
+    const distance = 0.001; // Environ 100m devant
+    
+    const latOffset = Math.cos(bearing) * distance;
+    const lngOffset = Math.sin(bearing) * distance;
+    
+    const pointDevant = [
+        userLocation[0] + latOffset,
+        userLocation[1] + lngOffset
+    ];
+    
+    // Centre la carte entre votre position et le point devant
+    const centerLat = (userLocation[0] + pointDevant[0]) / 2;
+    const centerLng = (userLocation[1] + pointDevant[1]) / 2;
+    
+    map.setView([centerLat, centerLng], 17);
+}
     function recalculerItineraire(destination) {
     if (!userLocation) return;
 
