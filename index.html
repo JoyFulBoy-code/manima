@@ -1610,22 +1610,27 @@ body {
 
     // Ajoutez cet objet de mapping des mots-clés au début de votre script, après les constantes
     const keywordToTypes = {
-  'pompe essence': ['pompe','station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station'],
-  'pompe a essence': ['pompe','station-service', 'station essence', 'carburant'], // ajout pour sécurité
-  'station service': ['station essence', 'station-service', 'carburant'],       // ajout pour sécurité
-  'station essence': ['station-service', 'pompe essence', 'carburant', 'total', 'esso', 'leclerc station'],
-  'essence': ['station-service', 'pompe essence', 'carburant'],
-  'restaurant': ['restaurant', 'fast food', 'café', 'bar', 'bistrot', 'resto', 'snack'],
-  'nourriture': ['boulangerie', 'supermarché', 'épicerie', 'market', 'alimentation'],
-  'santé': ['pharmacie', 'hôpital', 'clinique', 'médecin', 'dentiste'],
-  'transport': ['metro','métro','transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train'],
-  'metro': ['transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train'],
-  'shopping': ['magasin', 'centre commercial', 'boutique', 'commerce'],
-  'loisirs': ['cinéma', 'musée', 'parc', 'jardin', 'zoo', 'attraction'],
-  'éducation': ['école', 'université', 'bibliothèque', 'école de conduite'],
-  'hébergement': ['hôtel', 'motel', 'auberge', 'chambre d’hôte'],
-  'religion': ['mosquée', 'église', 'temple', 'lieu de culte'],
-  'urgence': ['police', 'pompiers', 'urgences', 'hôpital urgence']
+  'pompe essence': ['pompe','station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station', 'fuel', 'gas', 'gasoline', 'petrol'],
+  'pompe a essence': ['pompe','station-service', 'station essence', 'carburant', 'fuel', 'gas', 'gasoline', 'petrol'],
+  'station service': ['station essence', 'station-service', 'carburant', 'fuel station', 'gas station', 'petrol station'],
+  'station essence': ['station-service', 'pompe essence', 'carburant', 'total', 'esso', 'leclerc station', 'fuel', 'gas', 'gasoline', 'petrol'],
+  'essence': ['station-service', 'pompe essence', 'carburant', 'fuel', 'gas', 'gasoline', 'petrol'],
+  'fuel': ['essence', 'carburant', 'pompe essence', 'station-service', 'station essence', 'gas station', 'petrol'],
+  'gas': ['essence', 'carburant', 'pompe essence', 'station-service', 'station essence', 'fuel', 'gasoline', 'petrol'],
+  'gasoline': ['essence', 'carburant', 'pompe essence', 'station-service', 'station essence', 'fuel', 'petrol'],
+  'petrol': ['essence', 'carburant', 'pompe essence', 'station-service', 'station essence', 'fuel', 'gasoline'],
+
+  'restaurant': ['restaurant', 'fast food', 'café', 'bar', 'bistrot', 'resto', 'snack', 'food', 'eatery', 'dining'],
+  'nourriture': ['boulangerie', 'supermarché', 'épicerie', 'market', 'alimentation', 'food', 'grocery', 'supermarket'],
+  'santé': ['pharmacie', 'hôpital', 'clinique', 'médecin', 'dentiste', 'health', 'hospital', 'clinic', 'doctor', 'pharmacy'],
+  'transport': ['metro','métro','transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train', 'transportation', 'public transport'],
+  'metro': ['transport', 'station-service', 'taxi', 'vtc', 'bus', 'tram', 'train', 'subway', 'underground'],
+  'shopping': ['magasin', 'centre commercial', 'boutique', 'commerce', 'shop', 'mall', 'store'],
+  'loisirs': ['cinéma', 'musée', 'parc', 'jardin', 'zoo', 'attraction', 'leisure', 'entertainment', 'park', 'museum'],
+  'éducation': ['école', 'université', 'bibliothèque', 'école de conduite', 'education', 'school', 'university', 'library'],
+  'hébergement': ['hôtel', 'motel', 'auberge', 'chambre d’hôte', 'hotel', 'hostel', 'lodging', 'bnb'],
+  'religion': ['mosquée', 'église', 'temple', 'lieu de culte', 'church', 'mosque', 'temple', 'religion', 'worship'],
+  'urgence': ['police', 'pompiers', 'urgences', 'hôpital urgence', 'emergency', 'hospital emergency', 'firefighters', 'police station']
 };
     const firebaseConfig = {
       apiKey: "AIzaSyAid2_e5G6nk7_rAgn_G2M9gMYpGv9TyVc",
@@ -1750,10 +1755,8 @@ body {
         map.setView(userLocation, 17);
     }
 
-    // Pendant le suivi d'itinéraire, la carte s'oriente vers l'avant
-    if (suiviItineraire) {
-        orienterCarteVersDirection(heading);
-    }
+    // TOUJOURS orienter la carte vers la direction, pas seulement pendant l'itinéraire
+    orienterCarteVersDirection(heading);
 
 }, err => console.error("Erreur de géolocalisation :", err), {
     enableHighAccuracy: true,
@@ -1877,24 +1880,37 @@ let allFeatures = [];
         allFeatures = data.features;
         afficherServices("");
       }) 
+    function reinitialiserOrientationCarte() {
+    // Remet le nord vers le haut
+    map.setBearing(0);
+    suiviItineraire = false;
+}
+
+// Appeler cette fonction quand on arrête un itinéraire
+function arreterItineraire() {
+    clearInterval(routeUpdateInterval);
+    itineraireLayer.clearLayers();
+    suiviItineraire = false;
+    reinitialiserOrientationCarte();
+    
+    const infoContainer = document.getElementById("itineraire-infos");
+    if (infoContainer) {
+        infoContainer.remove();
+    }
+}
     function orienterCarteVersDirection(heading) {
-    // Calcule un point "devant" vous pour orienter la vue
-    const bearing = (heading * Math.PI) / 180;
-    const distance = 0.001; // Environ 100m devant
+    // Oriente la carte selon la direction du mouvement (heading)
+    // heading = 0° = Nord, 90° = Est, 180° = Sud, 270° = Ouest
     
-    const latOffset = Math.cos(bearing) * distance;
-    const lngOffset = Math.sin(bearing) * distance;
+    // Pour que le nord soit toujours vers le haut de l'écran, on utilise le bearing
+    map.setBearing(-heading);
     
-    const pointDevant = [
-        userLocation[0] + latOffset,
-        userLocation[1] + lngOffset
-    ];
-    
-    // Centre la carte entre votre position et le point devant
-    const centerLat = (userLocation[0] + pointDevant[0]) / 2;
-    const centerLng = (userLocation[1] + pointDevant[1]) / 2;
-    
-    map.setView([centerLat, centerLng], 17);
+    // Conserver le centrage sur votre position
+    if (userLocation) {
+        map.setView(userLocation, map.getZoom(), {
+            animate: false
+        });
+    }
 }
     function recalculerItineraire(destination) {
     if (!userLocation) return;
@@ -1987,10 +2003,11 @@ let allFeatures = [];
 // CORRECTION DE LA RECHERCHE INTELLIGENTE - Version améliorée
 function afficherServices(filtre = "") {
     console.log("🧠 Recherche intelligente:", filtre);
-    
+
+    // Nettoyage des layers
     itineraireLayer.clearLayers();
     clusterLayer.clearLayers();
-    
+
     if (!allFeatures || allFeatures.length === 0) {
         console.log("❌ Aucune donnée chargée");
         return;
@@ -2008,34 +2025,31 @@ function afficherServices(filtre = "") {
             const props = f.properties;
             const name = props.name;
             if (!name || name.trim() === "") return;
-            
+
             const [lng, lat] = f.geometry.coordinates;
             const marker = createMarker(props, lat, lng);
             clusterLayer.addLayer(marker);
             count++;
         });
-        
-        if (userLocation) {
-            map.setView(userLocation, 15);
-        }
-        
+
+        if (userLocation) map.setView(userLocation, 15);
         console.log(`📊 Total services: ${count}`);
         return;
     }
 
     // 🔥 RECHERCHE INTELLIGENTE AVEC SYNONYMES
     let typesRecherches = new Set();
-    
+
     for (const [keyword, types] of Object.entries(keywordToTypes)) {
         const normalizedKeyword = normalize(keyword);
 
-        // ✅ Match si la recherche contient un morceau du mot-clé ou inverse
+        // Match si la recherche contient un morceau du mot-clé ou inverse
         if (filtreMin.includes(normalizedKeyword) || normalizedKeyword.includes(filtreMin)) {
             types.forEach(type => typesRecherches.add(type));
             continue;
         }
 
-        // ✅ Match partiel : chaque mot du filtre est comparé
+        // Match partiel : chaque mot du filtre est comparé
         const motsFiltre = filtreMin.split(/\s+/);
         for (const mot of motsFiltre) {
             if (mot.length > 2 && (normalizedKeyword.includes(mot) || mot.includes(normalizedKeyword))) {
@@ -2051,7 +2065,6 @@ function afficherServices(filtre = "") {
         const name = props.name;
         if (!name || name.trim() === "") return;
 
-        // Champs de recherche
         const searchFields = [
             props.name || '',
             props.amenity || '',
@@ -2072,15 +2085,15 @@ function afficherServices(filtre = "") {
             const shop = props.shop ? normalize(props.shop) : '';
 
             match = Array.from(typesRecherches).some(typeRecherche => {
-                return type.includes(typeRecherche) || 
-                       amenity.includes(typeRecherche) || 
-                       leisure.includes(typeRecherche) || 
+                return type.includes(typeRecherche) ||
+                       amenity.includes(typeRecherche) ||
+                       leisure.includes(typeRecherche) ||
                        shop.includes(typeRecherche) ||
                        normalize(name).includes(typeRecherche);
             });
         }
 
-        // Si pas de match intelligent, recherche textuelle
+        // Si pas de match intelligent, recherche textuelle simple
         if (!match) {
             const motsRecherche = filtreMin.split(/\s+/);
             match = motsRecherche.every(mot => searchFields.includes(mot));
@@ -2110,10 +2123,8 @@ function afficherServices(filtre = "") {
             });
             map.fitBounds(group.getBounds(), { padding: [20, 20], maxZoom: 15 });
         }
-    } else {
-        if (userLocation) {
-            map.setView(userLocation, 15);
-        }
+    } else if (userLocation) {
+        map.setView(userLocation, 15);
     }
 
     console.log(`📊 Total affiché: ${count}`);
