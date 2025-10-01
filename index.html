@@ -1634,6 +1634,15 @@ body {
       messagingSenderId: "135877962056",
       appId: "1:135877962056:web:06da5bcc6901a352ccab7d"
     };
+    // 2. NOUVEAU CODE - écouteur de recherche
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchBar = document.getElementById('search-bar');
+        searchBar.addEventListener('input', function(e) {
+            const filtre = e.target.value.trim();
+            console.log("Recherche:", filtre);
+            afficherServices(filtre);
+        });
+    });
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/duea4ynnh/upload';
@@ -1973,136 +1982,115 @@ let allFeatures = [];
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
 function afficherServices(filtre = "") {
-  itineraireLayer.clearLayers();
-  clusterLayer.clearLayers();
-  const filtreMin = normalize(filtre);
-
-  if (!allFeatures || allFeatures.length === 0) return;
-
-  let count = 0;
-  let servicesTrouves = [];
-
-  // Si le filtre est vide, on affiche tout et on centre sur la localisation
-  if (!filtreMin) {
-    allFeatures.forEach(f => {
-      if (!f.geometry || f.geometry.type !== "Point") return;
-      const props = f.properties;
-      const name = props.name;
-      if (!name || name.trim() === "") return;
-      const [lng, lat] = f.geometry.coordinates;
-      const marker = createMarker(props, lat, lng);
-      clusterLayer.addLayer(marker);
-      count++;
-    });
+    console.log("🔍 Filtrage avec:", filtre);
     
-    // Centrer sur la localisation utilisateur si disponible
-    if (userLocation) {
-      map.setView(userLocation, 15);
+    itineraireLayer.clearLayers();
+    clusterLayer.clearLayers();
+    
+    if (!allFeatures || allFeatures.length === 0) {
+        console.log("❌ Aucune donnée chargée");
+        return;
     }
-    
-    console.log(`Total des services affichés: ${count}`);
-    return;
-  }
 
-  // Recherche intelligente
-  let typesRecherches = [];
-  
-  for (const [keyword, types] of Object.entries(keywordToTypes)) {
-    const normalizedKeyword = normalize(keyword);
-    
-    if (filtreMin === normalizedKeyword || 
-        filtreMin.split(' ').some(word => word === normalizedKeyword) ||
-        normalizedKeyword.split(' ').some(word => word === filtreMin)) {
-      typesRecherches = typesRecherches.concat(types);
+    let count = 0;
+    let servicesTrouves = [];
+
+    // Si le filtre est vide, on affiche tout
+    if (!filtre) {
+        console.log("✅ Filtre vide - Affichage de tous les services");
+        allFeatures.forEach(f => {
+            if (!f.geometry || f.geometry.type !== "Point") return;
+            const props = f.properties;
+            const name = props.name;
+            if (!name || name.trim() === "") return;
+            
+            const [lng, lat] = f.geometry.coordinates;
+            const marker = createMarker(props, lat, lng);
+            clusterLayer.addLayer(marker);
+            count++;
+        });
+        
+        // Centrer sur la localisation utilisateur si disponible
+        if (userLocation) {
+            map.setView(userLocation, 15);
+        } else {
+            // Fallback sur Lille
+            map.setView([50.6292, 3.0573], 13);
+        }
+        
+        console.log(`📊 Total des services affichés: ${count}`);
+        return;
     }
-  }
 
-  // Si on a trouvé des types par mot-clé, on les utilise
-  if (typesRecherches.length > 0) {
-    console.log("Recherche par mot-clé:", typesRecherches);
-    
+    // RECHERCHE AVEC FILTRE
+    const filtreMin = normalize(filtre);
+    console.log(`🔎 Recherche normalisée: "${filtreMin}"`);
+
     allFeatures.forEach(f => {
-      if (!f.geometry || f.geometry.type !== "Point") return;
-      const props = f.properties;
-      const name = props.name;
-      if (!name || name.trim() === "") return;
+        if (!f.geometry || f.geometry.type !== "Point") return;
+        const props = f.properties;
+        const name = props.name;
+        if (!name || name.trim() === "") return;
 
-      const type = props.type ? normalize(props.type) : '';
-      const amenity = props.amenity ? normalize(props.amenity) : '';
-      const leisure = props.leisure ? normalize(props.leisure) : '';
-      const shop = props.shop ? normalize(props.shop) : '';
+        // Recherche dans tous les champs pertinents
+        const searchText = [
+            props.name || '', 
+            props.amenity || '', 
+            props.shop || '', 
+            props.leisure || '',
+            props.category || '',
+            props.type || ''
+        ].map(normalize).join(" ");
 
-      const match = typesRecherches.some(t => {
-        const normalizedType = normalize(t);
-        return type.includes(normalizedType) || 
-               amenity.includes(normalizedType) || 
-               leisure.includes(normalizedType) || 
-               shop.includes(normalizedType) ||
-               name.includes(normalizedType); // Ajout important : recherche aussi dans le nom
-      });
-
-      if (match) {
-        const [lng, lat] = f.geometry.coordinates;
-        const marker = createMarker(props, lat, lng);
-        clusterLayer.addLayer(marker);
-        servicesTrouves.push({ lat, lng, name: props.name });
-        count++;
-      }
+        // Vérifier si le filtre correspond
+        if (searchText.includes(filtreMin)) {
+            const [lng, lat] = f.geometry.coordinates;
+            const marker = createMarker(props, lat, lng);
+            clusterLayer.addLayer(marker);
+            servicesTrouves.push({ lat, lng, name: props.name });
+            count++;
+        }
     });
-  } else {
-    // Recherche textuelle classique - CORRECTION ICI
-    console.log("Recherche textuelle classique");
-    
-    allFeatures.forEach(f => {
-      if (!f.geometry || f.geometry.type !== "Point") return;
-      const props = f.properties;
-      const name = props.name;
-      if (!name || name.trim() === "") return;
 
-      // Recherche dans tous les champs pertinents
-      const searchText = [
-        props.name || '', 
-        props.amenity || '', 
-        props.shop || '', 
-        props.leisure || '',
-        props.category || '',
-        props.address || '',
-        props.type || '',
-        props.description || '' // Ajout du champ description
-      ] 
-      .map(normalize)
-      .join(" ");
+    console.log(`✅ Services trouvés: ${servicesTrouves.length}`, servicesTrouves);
 
-      // Vérifier si le filtre correspond à n'importe quelle partie du texte
-      if (searchText.includes(filtreMin)) {
-        const [lng, lat] = f.geometry.coordinates;
-        const marker = createMarker(props, lat, lng);
-        clusterLayer.addLayer(marker);
-        servicesTrouves.push({ lat, lng, name: props.name });
-        count++;
-      }
-    });
-  }
-
-  // GESTION DU CENTRAGE DE LA CAMÉRA
-  if (servicesTrouves.length > 0) {
-    if (servicesTrouves.length === 1) {
-      // Un seul service trouvé : centrer directement sur lui
-      const service = servicesTrouves[0];
-      map.setView([service.lat, service.lng], 16);
+    // GESTION DU CENTRAGE
+    if (servicesTrouves.length > 0) {
+        if (servicesTrouves.length === 1) {
+            // Un seul service trouvé
+            const service = servicesTrouves[0];
+            console.log(`🎯 Centrage sur service unique: ${service.name}`);
+            map.setView([service.lat, service.lng], 16);
+        } else {
+            // Plusieurs services trouvés
+            console.log(`🎯 Centrage sur ${servicesTrouves.length} services`);
+            const group = new L.featureGroup();
+            
+            servicesTrouves.forEach(service => {
+                group.addLayer(L.marker([service.lat, service.lng]));
+            });
+            
+            map.fitBounds(group.getBounds(), { 
+                padding: [20, 20],
+                maxZoom: 15
+            });
+        }
     } else {
-      // Plusieurs services trouvés : centrer sur le plus proche de l'utilisateur
-      centrerSurPlusProche(servicesTrouves);
+        // Aucun service trouvé
+        console.log("❌ Aucun service trouvé");
+        if (userLocation) {
+            map.setView(userLocation, 15);
+        } else {
+            map.setView([50.6292, 3.0573], 13);
+        }
+        
+        // Message d'alerte
+        setTimeout(() => {
+            alert(`Aucun service trouvé pour "${filtre}". Essayez avec d'autres mots-clés.`);
+        }, 500);
     }
-  } else {
-    // Aucun service trouvé : centrer sur la localisation utilisateur
-    if (userLocation) {
-      map.setView(userLocation, 15);
-    }
-  }
 
-  console.log(`Total des services affichés: ${count}`);
-  console.log(`Services trouvés:`, servicesTrouves.map(s => s.name));
+    console.log(`📊 Total des services affichés: ${count}`);
 }
 
 
