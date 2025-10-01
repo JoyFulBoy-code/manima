@@ -1610,7 +1610,9 @@ body {
 
     // Ajoutez cet objet de mapping des mots-clés au début de votre script, après les constantes
     const keywordToTypes = {
-  'pompe essence': ['station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station'],
+  'pompe essence': ['pompe','station-service', 'station essence', 'carburant', 'total', 'esso', 'leclerc station'],
+  'pompe a essence': ['pompe','station-service', 'station essence', 'carburant'], // ajout pour sécurité
+  'station service': ['station essence', 'station-service', 'carburant'],       // ajout pour sécurité
   'station essence': ['station-service', 'pompe essence', 'carburant', 'total', 'esso', 'leclerc station'],
   'essence': ['station-service', 'pompe essence', 'carburant'],
   'restaurant': ['restaurant', 'fast food', 'café', 'bar', 'bistrot', 'resto', 'snack'],
@@ -1981,8 +1983,10 @@ let allFeatures = [];
 
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
+// FONCTION DE RECHERCHE ULTRA-INTELLIGENTE
+// CORRECTION DE LA RECHERCHE INTELLIGENTE - Version améliorée
 function afficherServices(filtre = "") {
-    console.log("🔍 Filtrage avec:", filtre);
+    console.log("🧠 Recherche intelligente:", filtre);
     
     itineraireLayer.clearLayers();
     clusterLayer.clearLayers();
@@ -1994,10 +1998,11 @@ function afficherServices(filtre = "") {
 
     let count = 0;
     let servicesTrouves = [];
+    const filtreMin = normalize(filtre);
 
-    // Si le filtre est vide, on affiche tout
-    if (!filtre) {
-        console.log("✅ Filtre vide - Affichage de tous les services");
+    // Si recherche vide, on affiche tout
+    if (!filtreMin) {
+        console.log("✅ Affichage de tous les services");
         allFeatures.forEach(f => {
             if (!f.geometry || f.geometry.type !== "Point") return;
             const props = f.properties;
@@ -2010,40 +2015,78 @@ function afficherServices(filtre = "") {
             count++;
         });
         
-        // Centrer sur la localisation utilisateur si disponible
         if (userLocation) {
             map.setView(userLocation, 15);
-        } else {
-            // Fallback sur Lille
-            map.setView([50.6292, 3.0573], 13);
         }
         
-        console.log(`📊 Total des services affichés: ${count}`);
+        console.log(`📊 Total services: ${count}`);
         return;
     }
 
-    // RECHERCHE AVEC FILTRE
-    const filtreMin = normalize(filtre);
-    console.log(`🔎 Recherche normalisée: "${filtreMin}"`);
+    // 🔥 RECHERCHE INTELLIGENTE AVEC SYNONYMES
+    let typesRecherches = new Set();
+    
+    for (const [keyword, types] of Object.entries(keywordToTypes)) {
+        const normalizedKeyword = normalize(keyword);
 
+        // ✅ Match si la recherche contient un morceau du mot-clé ou inverse
+        if (filtreMin.includes(normalizedKeyword) || normalizedKeyword.includes(filtreMin)) {
+            types.forEach(type => typesRecherches.add(type));
+            continue;
+        }
+
+        // ✅ Match partiel : chaque mot du filtre est comparé
+        const motsFiltre = filtreMin.split(/\s+/);
+        for (const mot of motsFiltre) {
+            if (mot.length > 2 && (normalizedKeyword.includes(mot) || mot.includes(normalizedKeyword))) {
+                types.forEach(type => typesRecherches.add(type));
+            }
+        }
+    }
+
+    // 2. Recherche textuelle directe
     allFeatures.forEach(f => {
         if (!f.geometry || f.geometry.type !== "Point") return;
         const props = f.properties;
         const name = props.name;
         if (!name || name.trim() === "") return;
 
-        // Recherche dans tous les champs pertinents
-        const searchText = [
-            props.name || '', 
-            props.amenity || '', 
-            props.shop || '', 
+        // Champs de recherche
+        const searchFields = [
+            props.name || '',
+            props.amenity || '',
+            props.shop || '',
             props.leisure || '',
             props.category || '',
-            props.type || ''
-        ].map(normalize).join(" ");
+            props.type || '',
+            props.description || ''
+        ].map(normalize).join(' ');
 
-        // Vérifier si le filtre correspond
-        if (searchText.includes(filtreMin)) {
+        let match = false;
+
+        // Match par types si recherche intelligente a trouvé
+        if (typesRecherches.size > 0) {
+            const type = props.type ? normalize(props.type) : '';
+            const amenity = props.amenity ? normalize(props.amenity) : '';
+            const leisure = props.leisure ? normalize(props.leisure) : '';
+            const shop = props.shop ? normalize(props.shop) : '';
+
+            match = Array.from(typesRecherches).some(typeRecherche => {
+                return type.includes(typeRecherche) || 
+                       amenity.includes(typeRecherche) || 
+                       leisure.includes(typeRecherche) || 
+                       shop.includes(typeRecherche) ||
+                       normalize(name).includes(typeRecherche);
+            });
+        }
+
+        // Si pas de match intelligent, recherche textuelle
+        if (!match) {
+            const motsRecherche = filtreMin.split(/\s+/);
+            match = motsRecherche.every(mot => searchFields.includes(mot));
+        }
+
+        if (match) {
             const [lng, lat] = f.geometry.coordinates;
             const marker = createMarker(props, lat, lng);
             clusterLayer.addLayer(marker);
@@ -2052,46 +2095,50 @@ function afficherServices(filtre = "") {
         }
     });
 
-    console.log(`✅ Services trouvés: ${servicesTrouves.length}`, servicesTrouves);
+    console.log(`🎯 Services trouvés: ${servicesTrouves.length}`);
+    console.log("Types recherchés:", Array.from(typesRecherches));
 
-    // GESTION DU CENTRAGE
+    // CENTRAGE INTELLIGENT
     if (servicesTrouves.length > 0) {
         if (servicesTrouves.length === 1) {
-            // Un seul service trouvé
             const service = servicesTrouves[0];
-            console.log(`🎯 Centrage sur service unique: ${service.name}`);
             map.setView([service.lat, service.lng], 16);
         } else {
-            // Plusieurs services trouvés
-            console.log(`🎯 Centrage sur ${servicesTrouves.length} services`);
             const group = new L.featureGroup();
-            
             servicesTrouves.forEach(service => {
                 group.addLayer(L.marker([service.lat, service.lng]));
             });
-            
-            map.fitBounds(group.getBounds(), { 
-                padding: [20, 20],
-                maxZoom: 15
-            });
+            map.fitBounds(group.getBounds(), { padding: [20, 20], maxZoom: 15 });
         }
     } else {
-        // Aucun service trouvé
-        console.log("❌ Aucun service trouvé");
         if (userLocation) {
             map.setView(userLocation, 15);
-        } else {
-            map.setView([50.6292, 3.0573], 13);
         }
-        
-        // Message d'alerte
-        setTimeout(() => {
-            alert(`Aucun service trouvé pour "${filtre}". Essayez avec d'autres mots-clés.`);
-        }, 500);
     }
 
-    console.log(`📊 Total des services affichés: ${count}`);
+    console.log(`📊 Total affiché: ${count}`);
 }
+
+// FONCTION NORMALISATION AMÉLIORÉE
+function normalize(str) {
+    return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// Écouteur de recherche
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBar = document.getElementById('search-bar');
+    searchBar.addEventListener('input', function(e) {
+        const filtre = e.target.value.trim();
+        console.log("Recherche:", filtre);
+        afficherServices(filtre);
+    });
+});
 
 
 function centrerSurPlusProche(services) {
