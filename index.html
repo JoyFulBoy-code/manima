@@ -1742,49 +1742,100 @@ body {
 
     
 
-    // Variables globales
+    // ===== SYSTÈME DE NAVIGATION GPS =====
 let itineraireLayer = L.layerGroup().addTo(map);
 let userLocation = null;
 let userMarker = null;
-let suiviItineraire = false;
+let suiviActif = false;
 let dernierHeading = 0;
-let dernierRecalcul = null;
 
 
-
-
+// Icône flèche qui tournera
 const arrowIcon = L.divIcon({ 
     className: 'arrow-icon', 
     iconSize: [40, 40], 
     iconAnchor: [20, 20] 
 });
 
-// Géolocalisation avec suivi automatique COMPLET
+// GÉOLOCALISATION AVEC SUIVI AUTOMATIQUE
 navigator.geolocation.watchPosition(pos => {
     userLocation = [pos.coords.latitude, pos.coords.longitude];
     const heading = pos.coords.heading || dernierHeading;
     dernierHeading = heading;
 
-    // Mettre à jour la position ET la rotation du marqueur
+    // Mettre à jour le marqueur utilisateur
     if (userMarker) {
         userMarker.setLatLng(userLocation);
-        userMarker.setRotationAngle(heading); // ⬅️ LA FLÈCHE TOURNE
+        userMarker.setRotationAngle(heading); // Flèche tourne selon la direction
     } else {
         userMarker = L.marker(userLocation, {
             icon: arrowIcon,
-            rotationAngle: heading // ⬅️ LA FLÈCHE TOURNE
+            rotationAngle: heading
         }).addTo(map).bindPopup("📍 Vous êtes ici");
+        
+        // Premier centrage
+        centrerSurPosition(userLocation, heading);
     }
 
-    // SUIVI AUTOMATIQUE TOUJOURS ACTIF - LA CARTE S'ORIENTE
-    orienterCarteGPS(userLocation, heading);
+    // SUIVI AUTOMATIQUE TOUJOURS ACTIF
+    if (suiviActif) {
+        centrerSurPosition(userLocation, heading);
+    }
 
-}, err => console.error("Erreur de géolocalisation :", err), {
+}, err => console.error("Erreur géolocalisation:", err), {
     enableHighAccuracy: true,
     maximumAge: 1000,
     timeout: 5000
 });
+// FONCTION DE CENTRAGE INTELLIGENT (comme Waze)
+function centrerSurPosition(position, heading) {
+    const distanceDevant = 0.002; // Distance de prévisualisation
+    
+    // Calculer un point devant l'utilisateur
+    const bearing = (heading * Math.PI) / 180;
+    const latOffset = Math.cos(bearing) * distanceDevant;
+    const lngOffset = Math.sin(bearing) * distanceDevant;
+    
+    const pointDevant = [
+        position[0] + latOffset,
+        position[1] + lngOffset
+    ];
+    
+    // Créer une zone de vue qui inclut la position et le point devant
+    const bounds = L.latLngBounds([position, pointDevant]);
+    
+    // Ajuster la vue pour voir devant soi
+    map.fitBounds(bounds, {
+        padding: [100, 100],
+        maxZoom: 18,
+        animate: true,
+        duration: 0.5
+    });
+}
+// BOUTON POUR ARRÊTER L'ITINÉRAIRE (ajoutez-le dans votre HTML)
+function ajouterBoutonArret() {
+    const btn = document.createElement('button');
+    btn.id = 'stop-itineraire-btn';
+    btn.innerHTML = '🛑 Arrêter navigation';
+    btn.style.cssText = `
+        position: fixed; 
+        bottom: 160px; 
+        right: 20px; 
+        z-index: 1000; 
+        padding: 12px; 
+        background: #f44336; 
+        color: white; 
+        border: none; 
+        border-radius: 30px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: none;
+    `;
+    btn.onclick = arreterItineraire;
+    document.body.appendChild(btn);
+}
 
+// Initialiser le bouton
+ajouterBoutonArret();
 // Fonction d'orientation style GPS (Waze/Google Maps) POUR LEAFLET
 function orienterCarteGPS(position, heading) {
     // Pour Leaflet avec rotation, on utilise setView avec option bearing
@@ -1820,16 +1871,16 @@ function orienterCarteGPS(position, heading) {
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
-// Fonction d'itinéraire
+// FONCTION ITINÉRAIRE SIMPLIFIÉE
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
 
-    // Nettoyage des éléments précédents
+    // Nettoyer l'ancien itinéraire
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    // Activer le suivi automatique
-    suiviItineraire = true;
+    // Activer le suivi
+    suiviActif = true;
 
     const mode = 'driving';
     const url = `https://api.mapbox.com/directions/v5/mapbox/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?geometries=geojson&overview=full&access_token=pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g`;
@@ -1840,22 +1891,27 @@ function tracerItineraire(dest) {
             if (!data.routes || data.routes.length === 0) return;
 
             const route = data.routes[0];
-            routeCoords = route.geometry.coordinates;
-
-            // Trace l'itinéraire
-            currentRoute = L.geoJSON(route.geometry, {
+            
+            // Tracer l'itinéraire
+            L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
 
-            // Centrer immédiatement avec orientation
-            orienterCarteGPS(userLocation, dernierHeading);
+            // Centrer immédiatement
+            centrerSurPosition(userLocation, dernierHeading);
 
             // Démarrer le suivi
-            startRouteTracking(dest);
+            routeUpdateInterval = setInterval(() => {
+                if (!userLocation) return;
+
+                // Vérifier si arrivé à destination
+                if (L.latLng(userLocation).distanceTo(dest) < 50) {
+                    arreterItineraire();
+                    alert("🎉 Vous êtes arrivé à destination !");
+                }
+            }, 3000);
         })
-        .catch(err => {
-            console.error(`Erreur itinéraire Mapbox :`, err);
-        });
+        .catch(err => console.error("Erreur itinéraire:", err));
 }
 
 function startRouteTracking(destination) {
@@ -1936,19 +1992,15 @@ function recalculerItineraire(destination) {
             console.error(`Erreur recalcul itinéraire :`, err);
         });
 }
+// ARRÊTER L'ITINÉRAIRE
 function arreterItineraire() {
     clearInterval(routeUpdateInterval);
     itineraireLayer.clearLayers();
-    suiviItineraire = false;
+    suiviActif = false;
     
-    // Recentrer simplement sans orientation spéciale
+    // Recentrer simplement
     if (userLocation) {
         map.setView(userLocation, 16);
-    }
-    
-    const infoContainer = document.getElementById("itineraire-infos");
-    if (infoContainer) {
-        infoContainer.remove();
     }
 }
 
@@ -2242,8 +2294,6 @@ function matchesFilter(props, filter) {
 
 // Ajoutez cette fonction pour créer les marqueurs (évite la duplication de code)
 function createMarker(props, lat, lng) {
-  // Échapper les apostrophes dans le nom
-  const nomEchappe = props.name.replace(/'/g, "\\'");
   // Construction du contenu du popup
   let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
 
@@ -2252,27 +2302,17 @@ function createMarker(props, lat, lng) {
     ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
     ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
   
-  // Bouton pour les horaires (avec formatage)
+  // Bouton pour les horaires
   if (props.opening_hours) {
     const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" 
-  onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
+    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
   }
   
-  // Bouton pour les tarifs (si disponible)
-  if (props.price || props.tarifs) {
-    const tarifs = props.price || props.tarifs;
-    const formattedTarifs = tarifs.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
-  }
-  
-  // Boutons communs
+  // BOUTON ITINÉRAIRE AMÉLIORÉ
   popupContent += `
-    <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
+    <button class="popup-btn" onclick="demarrerNavigation([${lat}, ${lng}])">🚗 Navigation GPS</button>
     <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
     <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
-    <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
-    <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
   `;
 
   return L.marker([lat, lng], {
@@ -2280,22 +2320,13 @@ function createMarker(props, lat, lng) {
   }).bindPopup(popupContent);
 }
 
-// Nouvelle fonction pour afficher les détails dans une popup
-function afficherDetailsPopup(nom, type, contenu) {
-  nom = decodeURIComponent(nom);
-  // Créer une fenêtre popup plus grande
-  const popup = L.popup({ className: 'custom-popup', maxWidth: 400 })
-    .setContent(`
-      <div class="details-header">
-        <h3>${nom}</h3>
-        <h4>${type}</h4>
-      </div>
-      <div class="details-content">
-        ${contenu}
-      </div>
-    `)
-    .setLatLng(map.getCenter())
-    .openOn(map);
+// FONCTION POUR DÉMARRER LA NAVIGATION
+function demarrerNavigation(destination) {
+    // Afficher le bouton d'arrêt
+    document.getElementById('stop-itineraire-btn').style.display = 'block';
+    
+    // Lancer l'itinéraire
+    tracerItineraire(destination);
 }
 
 
