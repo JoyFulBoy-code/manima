@@ -1744,25 +1744,21 @@ body {
 
     navigator.geolocation.watchPosition(pos => {
     userLocation = [pos.coords.latitude, pos.coords.longitude];
-    const heading = pos.coords.heading || 0;
+    const heading = pos.coords.heading || 0; // direction de déplacement
 
-    if (userMarker) {
-        userMarker.setLatLng(userLocation);
-        userMarker.setRotationAngle(heading);
-    } else {
+    if (!userMarker) {
         userMarker = L.marker(userLocation, {
-            icon: arrowIcon,
-            rotationAngle: heading,
-            rotationOrigin: 'center center'
-        }).addTo(map).bindPopup("📍 Vous êtes ici").openPopup();
-        map.setView(userLocation, 17);
+            icon: arrowIcon
+        }).addTo(map);
+    } else {
+        userMarker.setLatLng(userLocation);
     }
 
-    // Pendant le suivi d'itinéraire, la carte s'oriente vers l'avant
+    // Carte pivotée comme Waze
     if (suiviItineraire) {
-    map.setBearing(heading);   // fait pivoter la carte selon la direction
-    map.setView(userLocation, 17); // garde ta position au centre
-}
+        map.setView(userLocation, 17);     // centrage sur l'utilisateur
+        map.setBearing(heading);           // rotation de la carte
+    }
 
 }, err => console.error("Erreur de géolocalisation :", err), {
     enableHighAccuracy: true,
