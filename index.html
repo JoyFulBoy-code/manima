@@ -1736,30 +1736,41 @@ body {
     
 
     let itineraireLayer = L.layerGroup().addTo(map);
-    let userLocation = null;
-    let userMarker = null;
-    let suiviItineraire = false;
+let userLocation = null;
+let userMarker = null;
+let suiviItineraire = false;
 
-    const arrowIcon = L.divIcon({ className: 'arrow-icon', iconSize: [50, 50], iconAnchor: [25, 25] });
+const arrowIcon = L.divIcon({
+    className: 'arrow-icon',
+    iconSize: [50, 50],
+    iconAnchor: [25, 25]
+});
 
-    navigator.geolocation.watchPosition(pos => {
+// Watch GPS et orientation
+navigator.geolocation.watchPosition(pos => {
     userLocation = [pos.coords.latitude, pos.coords.longitude];
     const heading = pos.coords.heading || 0; // direction de déplacement
 
     if (!userMarker) {
-        userMarker = L.marker(userLocation, {
-            icon: arrowIcon
-        }).addTo(map);
+        // Crée le marker flèche
+        userMarker = L.marker(userLocation, { icon: arrowIcon }).addTo(map);
     } else {
         userMarker.setLatLng(userLocation);
     }
 
-    // Carte pivotée comme Waze
     if (suiviItineraire) {
-        map.setView(userLocation, 17);     // centrage sur l'utilisateur
-        map.setBearing(heading);           // rotation de la carte
-    }
+        // Centrer la carte sur l'utilisateur
+        map.setView(userLocation, 17, { animate: true });
 
+        // Faire tourner la carte sous la flèche
+        if (map.setRotationAngle) {
+            // Si Leaflet.Map.Rotate est bien chargé
+            map.setRotationAngle(-heading); // Waze: la route devant toi
+        } else {
+            // Sinon, tourner juste la flèche vers la direction du déplacement
+            userMarker.setRotationAngle(heading);
+        }
+    }
 }, err => console.error("Erreur de géolocalisation :", err), {
     enableHighAccuracy: true,
     maximumAge: 1000,
@@ -1772,31 +1783,33 @@ body {
       return h > 0 ? `${h}h${m > 0 ? ` ${m} min` : ''}` : `${m} min`;
     }
 
-    let currentRoute = null; // Stocke la ligne d'itinéraire actuelle
-let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
-let routeUpdateInterval = null; // Intervalle de mise à jour
+    let currentRoute = null;      // Ligne de l'itinéraire
+let routeCoords = [];         // Coordonnées complètes de l'itinéraire
+let routeUpdateInterval = null;
 
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
 
-    // Nettoyage des éléments précédents
+    // Nettoyage des anciens itinéraires
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    // Création du conteneur d'informations (CONSERVÉ)
+    // Créer le conteneur d'infos si nécessaire
     const infoContainerId = "itineraire-infos";
     let infoContainer = document.getElementById(infoContainerId);
     if (!infoContainer) {
         infoContainer = document.createElement("div");
         infoContainer.id = infoContainerId;
-        infoContainer.style.padding = "10px";
-        infoContainer.style.background = "#fff";
-        infoContainer.style.position = "absolute";
-        infoContainer.style.bottom = "450px";
-        infoContainer.style.left = "10px";
-        infoContainer.style.zIndex = "999";
-        infoContainer.style.borderRadius = "8px";
-        infoContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
+        infoContainer.style.cssText = `
+            padding:10px;
+            background:#fff;
+            position:absolute;
+            bottom:450px;
+            left:10px;
+            z-index:999;
+            border-radius:8px;
+            box-shadow:0 2px 5px rgba(0,0,0,0.2);
+        `;
         map.getContainer().appendChild(infoContainer);
     }
     infoContainer.innerHTML = "";
@@ -1814,30 +1827,58 @@ function tracerItineraire(dest) {
             const durationFormatted = formaterDuree(durationMin);
             const distanceKm = (route.distance / 1000).toFixed(2);
 
-            // Stocke les coordonnées complètes de l'itinéraire
             routeCoords = route.geometry.coordinates;
 
-            // Trace l'itinéraire complet
+            // Trace l'itinéraire sur la carte
             currentRoute = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
 
-            map.setView(userLocation, 17);
+            // Centrer sur l'utilisateur (flèche au centre)
+            if (userLocation) map.setView(userLocation, 17);
 
-            // Affiche les infos (CONSERVÉ)
-            const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
-            infoContainer.innerHTML += line;
+            // Infos itinéraire
+            infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
 
-            // Active le suivi automatique
+            // Activer le suivi Waze-like
             suiviItineraire = true;
 
-            // Démarrer le suivi progressif
+            // Lancer le suivi progressif
             startRouteTracking(dest);
         })
-        .catch(err => {
-            console.error(`Erreur itinéraire Mapbox :`, err);
-        });
+        .catch(err => console.error("Erreur itinéraire Mapbox :", err));
 }
+
+function startRouteTracking(destination) {
+    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
+    let lastRecalculation = Date.now();
+    const recalculationInterval = 15000; // toutes les 15s
+
+    routeUpdateInterval = setInterval(() => {
+        if (!userLocation || routeCoords.length < 2) return;
+
+        // Recalcul automatique
+        const now = Date.now();
+        if (now - lastRecalculation > recalculationInterval) {
+            recalculerItineraire(destination);
+            lastRecalculation = now;
+        }
+
+        // Arrivée à destination
+        if (L.latLng(userLocation).distanceTo(destination) < 25) {
+            clearInterval(routeUpdateInterval);
+            itineraireLayer.clearLayers();
+            suiviItineraire = false;
+
+            const infoContainer = document.getElementById("itineraire-infos");
+            if (infoContainer) infoContainer.remove();
+
+            alert("🎉 Vous êtes arrivé à destination !");
+        }
+    }, 1000); // rafraîchissement rapide pour la fluidité
+}
+
+
 
 function startRouteTracking(destination) {
     let lastRecalculation = Date.now();
@@ -1901,7 +1942,8 @@ let allFeatures = [];
     
     map.setView([centerLat, centerLng], 17);
 }
-    function recalculerItineraire(destination) {
+    // Recalcul de l'itinéraire en cas de déviation
+function recalculerItineraire(destination) {
     if (!userLocation) return;
 
     const mode = 'driving';
@@ -1911,32 +1953,16 @@ let allFeatures = [];
         .then(res => res.json())
         .then(data => {
             if (!data.routes || data.routes.length === 0) return;
-
             const route = data.routes[0];
-            const durationMin = Math.round(route.duration / 60);
-            const durationFormatted = formaterDuree(durationMin);
-            const distanceKm = (route.distance / 1000).toFixed(2);
-
-            // Stocke les nouvelles coordonnées
             routeCoords = route.geometry.coordinates;
 
-            // Met à jour l'affichage de l'itinéraire
+            // Met à jour l'itinéraire
             itineraireLayer.clearLayers();
             currentRoute = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
-
-            // Met à jour les infos de temps
-            const infoContainer = document.getElementById("itineraire-infos");
-            if (infoContainer) {
-                infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
-            }
-
-            console.log("Itinéraire recalculé ! Nouveau temps : " + durationFormatted);
         })
-        .catch(err => {
-            console.error(`Erreur recalcul itinéraire :`, err);
-        });
+        .catch(err => console.error("Erreur recalcul itinéraire :", err));
 }
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
