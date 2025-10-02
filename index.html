@@ -88,6 +88,9 @@
   <!-- Remplacez l'ancien import par celui-ci -->
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
+<script src="https://rawcdn.githack.com/bbecquet/Leaflet.RotatedMarker/master/leaflet.rotatedMarker.js"></script>
+
+<script src="https://rawcdn.githack.com/henrythasler/Leaflet.Map.Rotate/master/leaflet.rotatedMap.js"></script>
   <style>
     /* Reset global — à mettre tout en haut de ton CSS */
 html, body {
@@ -1757,8 +1760,9 @@ body {
 
     // Pendant le suivi d'itinéraire, la carte s'oriente vers l'avant
     if (suiviItineraire) {
-        orienterCarteVersDirection(heading);
-    }
+    map.setBearing(heading);   // fait pivoter la carte selon la direction
+    map.setView(userLocation, 17); // garde ta position au centre
+}
 
 }, err => console.error("Erreur de géolocalisation :", err), {
     enableHighAccuracy: true,
