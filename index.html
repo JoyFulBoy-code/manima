@@ -20,10 +20,8 @@
   <meta name="twitter:description" content="Découvrez et évaluez les services locaux sur notre carte interactive. Ajoutez votre commerce gratuitement.">
 
 
-  <!-- Leaflet & Plugins -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  
+  
 
   <!-- Sitemap et robots.txt -->
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
@@ -38,12 +36,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <!-- Remplacez l'ancien favicon par votre image -->
   <link rel="icon" type="image/png" href="icons/icone-manima.png">
-  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-  <script src="https://unpkg.com/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
   
-  <!-- REMPLACEZ Leaflet par Mapbox GL JS -->
+<!-- GARDEZ seulement Mapbox -->
 <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css' rel='stylesheet' />
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js'></script>
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js'></script>
@@ -88,9 +82,6 @@
   <!-- Remplacez l'ancien import par celui-ci -->
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
-<script src="https://rawcdn.githack.com/bbecquet/Leaflet.RotatedMarker/master/leaflet.rotatedMarker.js"></script>
-
-<script src="https://rawcdn.githack.com/henrythasler/Leaflet.Map.Rotate/master/leaflet.rotatedMap.js"></script>
   <style>
     /* Reset global — à mettre tout en haut de ton CSS */
 html, body {
@@ -1411,7 +1402,351 @@ body {
 
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
+.user-arrow {
+    width: 20px;
+    height: 20px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
 
+.user-arrow::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #4CAF50;
+}
+.custom-marker {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.custom-marker:hover {
+    transform: scale(1.1);
+}
+
+.custom-marker img {
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+/* Styles pour les popups Mapbox */
+.mapboxgl-popup-content {
+  border-radius: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.mapboxgl-popup-content .details-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.mapboxgl-popup-content .details-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.3em;
+  color: #2c3e50;
+}
+
+.mapboxgl-popup-content .details-header h4 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #3498db;
+  font-weight: normal;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.mapboxgl-popup-content .details-content {
+  font-size: 1em;
+  line-height: 1.6;
+}
+/* Amélioration des popups Mapbox */
+
+/* Ajustement corrigé de la position des popups Mapbox - Décalé vers la gauche */
+.mapboxgl-popup {
+  max-width: 300px !important;
+  z-index: 1000;
+  transform: translate(calc(50vw - 50% - 50px), 80px) !important; /* 50px vers la gauche depuis le centre */
+  left: 0 !important;
+}
+
+.mapboxgl-popup-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 15px;
+  margin-top: 0 !important;
+}
+
+.mapboxgl-popup-tip {
+  display: none !important;
+}
+
+/* Positionnement spécifique */
+.mapboxgl-popup-anchor-top .mapboxgl-popup {
+  transform: translate(calc(50vw - 50% - 50px), 100px) !important;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup {
+  transform: translate(calc(50vw - 50% - 50px), 120px) !important;
+}
+
+.mapboxgl-popup-anchor-center .mapboxgl-popup {
+  transform: translate(calc(50vw - 50% - 50px), 80px) !important;
+}
+/* Popup fixe en haut avec pointe vers le service */
+.mapboxgl-popup {
+  position: fixed !important;
+  top: 100px !important;
+  left: calc(50% - 50px) !important;
+  transform: translateX(-50%) !important;
+  z-index: 10000 !important;
+  max-width: 300px !important;
+}
+
+.mapboxgl-popup-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 15px;
+  position: relative;
+  background: white;
+}
+
+/* Création de la pointe personnalisée */
+.mapboxgl-popup-content::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
+.mapboxgl-popup-tip {
+  display: none !important; /* On cache la pointe par défaut */
+}
+
+/* Pointe personnalisée visible */
+.custom-popup-tip {
+  position: fixed !important;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid white;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  z-index: 9999;
+}
+/* Popup fixe avec pointe centrée */
+.mapboxgl-popup {
+  position: fixed !important;
+  top: 100px !important;
+  left: calc(50% - 50px) !important;
+  transform: translateX(-50%) !important;
+  z-index: 10000 !important;
+  max-width: 300px !important;
+}
+
+.mapboxgl-popup-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 15px;
+  background: white;
+  position: relative;
+}
+
+/* Pointe centrée en bas */
+.mapboxgl-popup-content::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+}
+
+/* Ombre pour la pointe */
+.mapboxgl-popup-content::before {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 11px solid rgba(0,0,0,0.1);
+  z-index: -1;
+}
+
+.mapboxgl-popup-tip {
+  display: none !important;
+}
+/*mobilepopup*/
+@media (max-width: 768px) {
+  .mapboxgl-popup-content {
+    margin-top: -80px !important; /* Encore plus haut sur mobile */
+    max-height: 60vh; /* Limiter la hauteur sur mobile */
+  }
+  
+  .mapboxgl-popup-anchor-top .mapboxgl-popup-content {
+    margin-top: -100px !important;
+  }
+  
+  .mapboxgl-popup-anchor-bottom .mapboxgl-popup-content {
+    margin-top: -40px !important;
+  }
+}
+/* Style pour les boutons des recommandations */
+#recommandation-service li {
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #f0f8ff;
+  border-left: 4px solid #4CAF50;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+#recommandation-service li:hover {
+  background-color: #d0e8ff;
+  transform: translateX(-5px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#recommandation-service li:active {
+  transform: translateX(-3px) scale(0.98);
+}
+/* Style pour le mode navigation */
+.gps-navigation-mode {
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+/* Bouton centrage manuel */
+#recenter-btn {
+    position: fixed;
+    bottom: 220px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 1000;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Flèche utilisateur améliorée pour la navigation */
+.user-arrow-navigation {
+    width: 25px;
+    height: 25px;
+    background-color: #4CAF50;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 3px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+/* Flèche utilisateur améliorée pour la navigation GPS */
+.user-arrow-navigation {
+    width: 25px;
+    height: 25px;
+    background-color: #4CAF50;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease;
+}
+
+/* Animation pour la flèche en mouvement */
+.user-arrow-navigation.moving {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: rotate(-45deg) scale(1); }
+    50% { transform: rotate(-45deg) scale(1.1); }
+    100% { transform: rotate(-45deg) scale(1); }
+}
+/* Style pour le mode navigation */
+.gps-navigation-mode {
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+}
+
+/* Animation pour la flèche en mouvement */
+.user-arrow-navigation.moving {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: rotate(-45deg) scale(1); }
+    50% { transform: rotate(-45deg) scale(1.1); }
+    100% { transform: rotate(-45deg) scale(1); }
+}
+
+/* Bouton arrêt navigation */
+#stop-navigation-btn {
+    position: fixed;
+    bottom: 160px;
+    right: 20px;
+    background-color: #ff4444;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#stop-navigation-btn:hover {
+    background-color: #cc0000;
+}
+/* Style pour le mode navigation active */
+.gps-active {
+    border: 3px solid #4CAF50 !important;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5) !important;
+}
+
+/* Animation pour le marqueur de position */
+@keyframes pulse-gps {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.user-arrow-navigation.gps-active {
+    animation: pulse-gps 2s infinite;
+}
   </style>
 </head>
 <body>
@@ -1598,6 +1933,22 @@ body {
         </div>
         
         <button type="submit">Soumettre mon commerce</button>
+        <button id="stop-navigation-btn" onclick="arreterNavigation()" style="display: none; position: fixed; bottom: 160px; right: 20px; background-color: #ff4444; color: white; padding: 12px 20px; border-radius: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
+    🚫 Arrêter la navigation
+</button>
+<button id="recenter-btn" onclick="centrerSurUtilisateur()" title="Recentrer sur ma position">📍</button>
+<div class="search-bar">
+    <input type="text" id="search-bar" placeholder="Rechercher un service (garage, hôpital, etc.)">
+    <button onclick="centrerSurMaPosition()" style="padding: 10px; margin-left: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+    📍 Ma position
+</button>
+<div class="search-bar">
+    <input type="text" id="search-bar" placeholder="Rechercher un service (garage, hôpital, etc.)">
+    <button onclick="forcerGeolocalisation()" style="padding: 10px; margin-left: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        📍 Activer GPS
+    </button>
+</div>
+</div>
       </form>
     </div>
   </div>
@@ -1686,19 +2037,7 @@ body {
       }
     });
 
-    const map = L.map('map').setView([50.6292, 3.0573], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
-      .on('markgeocode', function(e) {
-        const center = e.geocode.center;
-        map.setView(center, 17);
-        tracerItineraire([center.lat, center.lng]);
-      }).addTo(map);
-  
+    
   function normaliserNomPourFirebase(nom) {
   return nom.toLowerCase()
     .replace(/'/g, '')   // Supprimer les apostrophes
@@ -1735,47 +2074,68 @@ body {
 
     
 
-    let itineraireLayer = L.layerGroup().addTo(map);
+    // Configuration Mapbox
+mapboxgl.accessToken = 'pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g';
+
+// Création de la carte Mapbox
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [3.0573, 50.6292],
+    zoom: 13,
+    pitch: 0,
+    bearing: 0
+});
+
+// ✅ AJOUTEZ L'INITIALISATION DU CONTRÔLE DIRECTIONS ICI
+const directions = new MapboxDirections({
+    accessToken: mapboxgl.accessToken,
+    unit: 'metric',
+    profile: 'mapbox/driving',
+    controls: {
+        instructions: true,
+        profileSwitcher: false
+    },
+    interactive: false,
+    placeholderOrigin: 'Votre position',
+    placeholderDestination: 'Destination'
+});
+
+// Ajouter le contrôle à la carte
+map.addControl(directions, 'top-left');
+
+// ⭐⭐⭐⭐ AJOUTEZ LE CODE ICI - JUSTE APRÈS map.addControl() ⭐⭐⭐⭐
+map.on('load', function() {
+    // Attendre que la géolocalisation soit disponible
+    setTimeout(() => {
+        if (userLocation) {
+            // Définir automatiquement l'origine sur votre position
+            directions.setOrigin(userLocation);
+            console.log("Position définie automatiquement pour le point A");
+        }
+    }, 2000);
+});
+
+// Écouter les changements de position
+map.on('move', function() {
+    if (userLocation && directions) {
+        // Mettre à jour l'origine si l'utilisateur bouge
+        directions.setOrigin(userLocation);
+    }
+});
+
+
+// Ajouter le contrôle de navigation
+map.addControl(new mapboxgl.NavigationControl());
+
+// Variables globales
 let userLocation = null;
 let userMarker = null;
 let suiviItineraire = false;
+let markers = []; // ✅ INITIALISEZ markers COMME UN TABLEAU VIDE
+    
 
-const arrowIcon = L.divIcon({
-    className: 'arrow-icon',
-    iconSize: [50, 50],
-    iconAnchor: [25, 25]
-});
-
-// Watch GPS et orientation
-navigator.geolocation.watchPosition(pos => {
-    userLocation = [pos.coords.latitude, pos.coords.longitude];
-    const heading = pos.coords.heading || 0; // direction de déplacement
-
-    if (!userMarker) {
-        // Crée le marker flèche
-        userMarker = L.marker(userLocation, { icon: arrowIcon }).addTo(map);
-    } else {
-        userMarker.setLatLng(userLocation);
-    }
-
-    if (suiviItineraire) {
-        // Centrer la carte sur l'utilisateur
-        map.setView(userLocation, 17, { animate: true });
-
-        // Faire tourner la carte sous la flèche
-        if (map.setRotationAngle) {
-            // Si Leaflet.Map.Rotate est bien chargé
-            map.setRotationAngle(-heading); // Waze: la route devant toi
-        } else {
-            // Sinon, tourner juste la flèche vers la direction du déplacement
-            userMarker.setRotationAngle(heading);
-        }
-    }
-}, err => console.error("Erreur de géolocalisation :", err), {
-    enableHighAccuracy: true,
-    maximumAge: 1000,
-    timeout: 5000
-});
+    
 
     function formaterDuree(minutes) {
       const h = Math.floor(minutes / 60);
@@ -1783,102 +2143,78 @@ navigator.geolocation.watchPosition(pos => {
       return h > 0 ? `${h}h${m > 0 ? ` ${m} min` : ''}` : `${m} min`;
     }
 
-    let currentRoute = null;      // Ligne de l'itinéraire
-let routeCoords = [];         // Coordonnées complètes de l'itinéraire
-let routeUpdateInterval = null;
+    let currentRoute = null; // Stocke la ligne d'itinéraire actuelle
+let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
+let routeUpdateInterval = null; // Intervalle de mise à jour
 
-function tracerItineraire(dest) {
-    if (!userLocation) return alert("Localisation non disponible");
+// Fonction pour créer une pointe qui pointe vers le service
+function creerPointeVersService(serviceLatLng) {
+  // Supprimer l'ancienne pointe si elle existe
+  const anciennePointe = document.querySelector('.custom-popup-tip');
+  if (anciennePointe) anciennePointe.remove();
+  
+  // Créer la nouvelle pointe
+  const pointe = document.createElement('div');
+  pointe.className = 'custom-popup-tip';
+  
+  // Positionner la pointe entre le popup et le service
+  const popup = document.querySelector('.mapboxgl-popup');
+  const popupRect = popup.getBoundingClientRect();
+  const servicePoint = map.project(serviceLatLng);
+  
+  // Calculer la position de la pointe
+  const pointeX = servicePoint.x;
+  const pointeY = popupRect.bottom + 5; // Juste en dessous du popup
+  
+  pointe.style.left = pointeX + 'px';
+  pointe.style.top = pointeY + 'px';
+  
+  document.body.appendChild(pointe);
+}
 
-    // Nettoyage des anciens itinéraires
-    itineraireLayer.clearLayers();
-    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    // Créer le conteneur d'infos si nécessaire
-    const infoContainerId = "itineraire-infos";
-    let infoContainer = document.getElementById(infoContainerId);
-    if (!infoContainer) {
-        infoContainer = document.createElement("div");
-        infoContainer.id = infoContainerId;
-        infoContainer.style.cssText = `
-            padding:10px;
-            background:#fff;
-            position:absolute;
-            bottom:450px;
-            left:10px;
-            z-index:999;
-            border-radius:8px;
-            box-shadow:0 2px 5px rgba(0,0,0,0.2);
-        `;
-        map.getContainer().appendChild(infoContainer);
+
+// ✅ FONCTION POUR OBTENIR LE CONTRÔLE DIRECTIONS
+function getDirectionsControl() {
+    // Chercher le contrôle Directions dans la carte
+    const controls = map._controls || [];
+    for (const control of controls) {
+        if (control instanceof MapboxDirections) {
+            return control;
+        }
     }
-    infoContainer.innerHTML = "";
-
-    const mode = 'driving';
-    const url = `https://api.mapbox.com/directions/v5/mapbox/${mode}/${userLocation[1]},${userLocation[0]};${dest[1]},${dest[0]}?geometries=geojson&overview=full&access_token=pk.eyJ1Ijoiam95ZnVsYm95IiwiYSI6ImNtZzI0dXF2NzB0NHEyanNjOWd4eDV1ZmgifQ.pdbOlOlVCE8hxodOIE8x0g`;
-
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            if (!data.routes || data.routes.length === 0) return;
-
-            const route = data.routes[0];
-            const durationMin = Math.round(route.duration / 60);
-            const durationFormatted = formaterDuree(durationMin);
-            const distanceKm = (route.distance / 1000).toFixed(2);
-
-            routeCoords = route.geometry.coordinates;
-
-            // Trace l'itinéraire sur la carte
-            currentRoute = L.geoJSON(route.geometry, {
-                style: { color: 'blue', weight: 4 }
-            }).addTo(itineraireLayer);
-
-            // Centrer sur l'utilisateur (flèche au centre)
-            if (userLocation) map.setView(userLocation, 17);
-
-            // Infos itinéraire
-            infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
-
-            // Activer le suivi Waze-like
-            suiviItineraire = true;
-
-            // Lancer le suivi progressif
-            startRouteTracking(dest);
-        })
-        .catch(err => console.error("Erreur itinéraire Mapbox :", err));
+    return null;
+}
+function arreterNavigation() {
+    suiviItineraire = false;
+    
+    // Réinitialiser Directions
+    if (directions) {
+        directions.removeRoutes();
+        directions.setOrigin(null);
+        directions.setDestination(null);
+    }
+    
+    // Cacher le bouton d'arrêt
+    document.getElementById('stop-navigation-btn').style.display = 'none';
+    
+    // Revenir au mode carte normal
+    map.setZoom(15);
+    
+    console.log("Navigation arrêtée");
 }
 
-function startRouteTracking(destination) {
-    if (routeUpdateInterval) clearInterval(routeUpdateInterval);
-    let lastRecalculation = Date.now();
-    const recalculationInterval = 15000; // toutes les 15s
-
-    routeUpdateInterval = setInterval(() => {
-        if (!userLocation || routeCoords.length < 2) return;
-
-        // Recalcul automatique
-        const now = Date.now();
-        if (now - lastRecalculation > recalculationInterval) {
-            recalculerItineraire(destination);
-            lastRecalculation = now;
-        }
-
-        // Arrivée à destination
-        if (L.latLng(userLocation).distanceTo(destination) < 25) {
-            clearInterval(routeUpdateInterval);
-            itineraireLayer.clearLayers();
-            suiviItineraire = false;
-
-            const infoContainer = document.getElementById("itineraire-infos");
-            if (infoContainer) infoContainer.remove();
-
-            alert("🎉 Vous êtes arrivé à destination !");
-        }
-    }, 1000); // rafraîchissement rapide pour la fluidité
+// Afficher le bouton d'arrêt quand la navigation commence
+function demarrerNavigation() {
+    document.getElementById('stop-navigation-btn').style.display = 'block';
+    suiviItineraire = true;
+    
+    // S'assurer que la carte suit l'utilisateur
+    if (userLocation) {
+        map.setCenter(userLocation);
+        map.setZoom(17);
+    }
 }
-
-
 
 function startRouteTracking(destination) {
     let lastRecalculation = Date.now();
@@ -1912,9 +2248,8 @@ function startRouteTracking(destination) {
     }, 3000);
 }
 
-// Initialisation des clusters et services (conservé tel quel)
-const clusterLayer = L.markerClusterGroup().addTo(map);
-let allFeatures = [];
+
+
 
 // Charger uniquement votre fichier lille.geojson
     fetch('te.geojson')
@@ -1923,27 +2258,303 @@ let allFeatures = [];
         allFeatures = data.features;
         afficherServices("");
       }) 
-    function orienterCarteVersDirection(heading) {
-    // Calcule un point "devant" vous pour orienter la vue
-    const bearing = (heading * Math.PI) / 180;
-    const distance = 0.001; // Environ 100m devant
+function utiliserMaPosition() {
+    if (!userLocation) {
+        alert("Position non disponible. Vérifiez que la géolocalisation est activée.");
+        return;
+    }
     
-    const latOffset = Math.cos(bearing) * distance;
-    const lngOffset = Math.sin(bearing) * distance;
+    // Centrer sur la position utilisateur
+    map.flyTo({
+        center: userLocation,
+        zoom: 16
+    });
     
-    const pointDevant = [
-        userLocation[0] + latOffset,
-        userLocation[1] + lngOffset
-    ];
-    
-    // Centre la carte entre votre position et le point devant
-    const centerLat = (userLocation[0] + pointDevant[0]) / 2;
-    const centerLng = (userLocation[1] + pointDevant[1]) / 2;
-    
-    map.setView([centerLat, centerLng], 17);
+    // Afficher un message
+    console.log("Centré sur la position utilisateur:", userLocation);
 }
-    // Recalcul de l'itinéraire en cas de déviation
-function recalculerItineraire(destination) {
+
+// ✅ FONCTION POUR TRACER UN ITINÉRAIRE
+// ✅ FONCTION CORRIGÉE POUR TRACER ITINÉRAIRE
+// ✅ CORRECTION DU GPS - Initialisation forcée
+function initialiserGeolocalisation() {
+    if (!navigator.geolocation) {
+        console.error("Géolocalisation non supportée");
+        return;
+    }
+
+    // Position initiale
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            userLocation = [longitude, latitude];
+            console.log("📍 Position initiale trouvée:", userLocation);
+            
+            // Centrer la carte sur la position
+            map.flyTo({
+                center: userLocation,
+                zoom: 15,
+                essential: true
+            });
+            
+            // Mettre à jour le point A des directions
+            if (directions) {
+                directions.setOrigin(userLocation);
+            }
+        },
+        (error) => {
+            console.error('Erreur géolocalisation initiale:', error);
+            // Position par défaut sur Lille
+            userLocation = [3.0573, 50.6292];
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 60000
+        }
+    );
+}
+
+// ✅ VERSION CORRIGÉE de la fonction d'itinéraire
+function tracerItineraire(destination) {
+    console.log("🚗 Début de tracerItineraire vers:", destination);
+    
+    // Vérifier que la géolocalisation est prête
+    if (!userLocation) {
+        alert("🔍 Recherche de votre position... Activez la géolocalisation.");
+        initialiserGeolocalisation();
+        return;
+    }
+    
+    // Activer le mode navigation
+    suiviItineraire = true;
+    
+    // Afficher le bouton d'arrêt
+    document.getElementById('stop-navigation-btn').style.display = 'block';
+    
+    // Utiliser le contrôle Directions de Mapbox
+    if (directions) {
+        console.log("📍 Définition de l'origine:", userLocation);
+        console.log("🎯 Définition de la destination:", destination);
+        
+        // FORCER la définition de l'origine
+        directions.setOrigin(userLocation);
+        
+        // Définir la destination (inverser lat/lng pour Mapbox)
+        const destLngLat = [destination[1], destination[0]];
+        directions.setDestination(destLngLat);
+        
+        // 🔥 FORCER LE CENTRAGE IMMÉDIAT
+        setTimeout(() => {
+            if (userLocation) {
+                console.log("🎯 Centrage automatique sur votre position");
+                map.flyTo({
+                    center: userLocation,
+                    zoom: 16,
+                    essential: true
+                });
+                
+                // Feedback visuel
+                alert("🗺️ Navigation activée ! Votre position est maintenant suivie automatiquement.");
+            }
+        }, 500);
+        
+        console.log("✅ Itinéraire tracé avec succès!");
+    } else {
+        console.error("❌ Contrôle Directions non disponible");
+        alert("Erreur: le service d'itinéraire n'est pas disponible.");
+    }
+}
+
+// ✅ BOUTON POUR FORCER LA GÉOLOCALISATION
+function forcerGeolocalisation() {
+    if (!navigator.geolocation) {
+        alert("La géolocalisation n'est pas supportée sur votre appareil");
+        return;
+    }
+    
+    alert("🔍 Activation du GPS...");
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            userLocation = [longitude, latitude];
+            
+            // Recentrer la carte
+            map.flyTo({
+                center: userLocation,
+                zoom: 16,
+                essential: true
+            });
+            
+            // Mettre à jour les directions
+            if (directions) {
+                directions.setOrigin(userLocation);
+            }
+            
+            alert("✅ GPS activé ! Votre position est maintenant : " + latitude.toFixed(4) + ", " + longitude.toFixed(4));
+        },
+        (error) => {
+            let message = "Erreur GPS: ";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message += "Autorisation refusée. Activez la géolocalisation dans les paramètres.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message += "Position indisponible. Vérifiez votre connexion.";
+                    break;
+                case error.TIMEOUT:
+                    message += "Temps écoulé. Réessayez.";
+                    break;
+                default:
+                    message += "Erreur inconnue.";
+                    break;
+            }
+            alert(message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+    );
+}
+
+// ✅ MODIFIER LE BOUTON "MA POSITION" EXISTANT
+function centrerSurMaPosition() {
+    forcerGeolocalisation();
+}
+
+// ✅ FONCTION POUR CENTRER AUTOMATIQUEMENT SUR LA POSITION
+function centrerAutomatiquement() {
+    if (userLocation && suiviItineraire) {
+        map.flyTo({
+            center: userLocation,
+            zoom: 17,
+            bearing: map.getBearing(),
+            essential: true
+        });
+    }
+}
+
+// Écouter les changements de position pour recentrer automatiquement
+// 🔥 CORRECTION DE LA GÉOLOCALISATION AVEC CENTRAGE AUTOMATIQUE
+function startTracking() {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.watchPosition(
+        (position) => {
+            const { latitude, longitude, heading, speed } = position.coords;
+            userLocation = [longitude, latitude];
+            
+            console.log("📍 Position utilisateur:", userLocation);
+            
+            // METTRE À JOUR LE POINT A AUTOMATIQUEMENT
+            if (directions) {
+                directions.setOrigin(userLocation);
+            }
+
+            // Mettre à jour ou créer le marqueur utilisateur
+            if (!userMarker) {
+                const el = document.createElement('div');
+                el.className = 'user-arrow-navigation';
+                el.style.width = '25px';
+                el.style.height = '25px';
+                el.style.backgroundColor = '#4CAF50';
+                el.style.borderRadius = '50% 50% 50% 0';
+                el.style.transform = 'rotate(-45deg)';
+                el.style.border = '3px solid white';
+                el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4)';
+                
+                userMarker = new mapboxgl.Marker({
+                    element: el,
+                    rotationAlignment: 'map',
+                    pitchAlignment: 'map'
+                })
+                .setLngLat(userLocation)
+                .addTo(map);
+            } else {
+                userMarker.setLngLat(userLocation);
+            }
+
+            // 🔥 COMPORTEMENT GPS : CENTRER AUTOMATIQUEMENT EN MODE ITINÉRAIRE
+            if (suiviItineraire) {
+                console.log("🎯 Mode navigation - Centrage automatique");
+                map.flyTo({
+                    center: userLocation,
+                    zoom: 16,
+                    bearing: heading || 0,
+                    essential: true
+                });
+                
+                // Animation de la flèche en mouvement
+                const arrowElement = userMarker.getElement();
+                if (speed > 1) {
+                    arrowElement.classList.add('moving');
+                } else {
+                    arrowElement.classList.remove('moving');
+                }
+            }
+
+        },
+        (error) => {
+            console.error('Erreur géolocalisation:', error);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 5000
+        }
+    );
+}
+    // Géolocalisation avec rotation automatique
+
+
+// Démarrer le tracking au chargement
+map.on('load', () => {
+    startTracking();
+});
+// ✅ FONCTION POUR CENTRER SUR MA POSITION (bouton "📍 Ma position")
+function centrerSurMaPosition() {
+    if (userLocation) {
+        console.log("🎯 Centrage manuel sur ma position");
+        map.flyTo({
+            center: userLocation,
+            zoom: 16,
+            essential: true
+        });
+    } else {
+        alert("Position non disponible. Activez la géolocalisation.");
+    }
+}
+function centrerSurUtilisateur() {
+    if (userLocation) {
+        map.flyTo({
+            center: userLocation,
+            zoom: suiviItineraire ? 17 : 15, // Zoom adapté au mode
+            bearing: suiviItineraire ? map.getBearing() : 0, // Garder l'orientation en mode GPS
+            essential: true
+        });
+    }
+}
+    // Fonction pour orienter la carte
+function orienterCarteVersDirection(heading) {
+    // Pour Leaflet, on utilise setBearing si disponible
+    // Sinon, on utilise une transformation CSS
+    if (map.setBearing) {
+        map.setBearing(heading);
+    } else {
+        // Fallback pour les versions sans rotation
+        const mapContainer = map.getContainer();
+        mapContainer.style.transform = `rotate(${heading}deg)`;
+    }
+    
+    // Recentrage
+    if (userLocation) {
+        map.setView(userLocation, map.getZoom());
+    }
+}
+    function recalculerItineraire(destination) {
     if (!userLocation) return;
 
     const mode = 'driving';
@@ -1953,16 +2564,28 @@ function recalculerItineraire(destination) {
         .then(res => res.json())
         .then(data => {
             if (!data.routes || data.routes.length === 0) return;
+
             const route = data.routes[0];
+            const durationMin = Math.round(route.duration / 60);
+            const durationFormatted = formaterDuree(durationMin);
+            const distanceKm = (route.distance / 1000).toFixed(2);
+
+            // Stocke les nouvelles coordonnées
             routeCoords = route.geometry.coordinates;
 
-            // Met à jour l'itinéraire
-            itineraireLayer.clearLayers();
-            currentRoute = L.geoJSON(route.geometry, {
-                style: { color: 'blue', weight: 4 }
-            }).addTo(itineraireLayer);
+           
+
+            // Met à jour les infos de temps
+            const infoContainer = document.getElementById("itineraire-infos");
+            if (infoContainer) {
+                infoContainer.innerHTML = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
+            }
+
+            console.log("Itinéraire recalculé ! Nouveau temps : " + durationFormatted);
         })
-        .catch(err => console.error("Erreur recalcul itinéraire :", err));
+        .catch(err => {
+            console.error(`Erreur recalcul itinéraire :`, err);
+        });
 }
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -1977,40 +2600,41 @@ function recalculerItineraire(destination) {
       });
     }
 
-    function getIconByCategory(properties) {
-      const name = (properties.name || "").toLowerCase();
-      const amenity = (properties.amenity || "").toLowerCase();
-      const leisure = (properties.leisure || "").toLowerCase();
-      const shop = (properties.shop || "").toLowerCase();
-      const religion = (properties.religion || "").toLowerCase();
+    // ✅ Fonction pour obtenir l'URL de l'icône (adaptée de votre getIconByCategory)
+function getIconUrlByCategory(properties) {
+    const name = (properties.name || "").toLowerCase();
+    const amenity = (properties.amenity || "").toLowerCase();
+    const leisure = (properties.leisure || "").toLowerCase();
+    const shop = (properties.shop || "").toLowerCase();
+    const religion = (properties.religion || "").toLowerCase();
 
-      // Mosquée
-      if (amenity === "place_of_worship" && religion === "muslim") return icon("mosquee.png");
+    // Mosquée
+    if (amenity === "place_of_worship" && religion === "muslim") return "icons/mosquee.png";
 
-      // Autres catégories
-      if (name.includes("pharm") || name.includes("sant") || amenity === "pharmacy") return icon("sante.png");
-      if (name.includes("école") || amenity === "school") return icon("ecole.png");
-      if (["hospital", "clinic"].includes(amenity) || name.includes("hôpital") || name.includes("clinique")) return icon("sante.png");
-      if (["restaurant", "fast_food", "cafe"].includes(amenity) || shop === "restaurant" || name.includes("resto")) return icon("restaurant.png");
-      if (["car", "car_repair"].includes(shop) || amenity === "car_repair" || name.includes("garage")) return icon("garage.png");
-      if (leisure === "sports_centre" || amenity === "gym" || name.includes("sport")) return icon("sport.png");
-      if (["atm", "bank", "bureau_de_change"].includes(amenity)) return icon("financier.png");
-      if (["cinema", "arts_centre", "theatre"].includes(amenity) || leisure === "cinema" ||  name.includes("théâtre")) return icon("culture.png");
-      if (["fire_station", "post_office", "courthouse", "police", "community_centre"].includes(amenity)) return icon("administration.png");
-      if (["car_rental", "car_sharing", "car_wash", "fuel", "charging_station", "bicycle_rental"].includes(amenity)) return icon("transport.png");
-      if (["childcare", "kindergarten", "animal_boarding", "animal_shelter"].includes(amenity) || name.includes("chien") || name.includes("chat")) return icon("animal.png");
-      if (["coworking_space", "give_box"].includes(amenity)) return icon("culture.png");
-      if (["bench", "fountain", "clock"].includes(amenity)) return icon("default.png");
-      if (shop !== "") return icon("shop.png");
-      if (amenity === "boulangerie" || name.includes("boulang")) return icon("boulangerie.png");
-      if (amenity === "coiffeur" || name.includes("coiff")) return icon("coiffeur.png");
-      if (amenity === "garage" || name.includes("garage")) return icon("garage.png");
-      if (amenity === "restaurant" || name.includes("resto")) return icon("restaurant.png");
-      if (amenity === "pharmacie" || name.includes("pharm")) return icon("pharmacie.png");
-      if (amenity === "supermarche" || name.includes("supermarche")) return icon("supermarche.png");
+    // Autres catégories (reprenez votre logique existante)
+    if (name.includes("pharm") || name.includes("sant") || amenity === "pharmacy") return "icons/sante.png";
+    if (name.includes("école") || amenity === "school") return "icons/ecole.png";
+    if (["hospital", "clinic"].includes(amenity) || name.includes("hôpital") || name.includes("clinique")) return "icons/sante.png";
+    if (["restaurant", "fast_food", "cafe"].includes(amenity) || shop === "restaurant" || name.includes("resto")) return "icons/restaurant.png";
+    if (["car", "car_repair"].includes(shop) || amenity === "car_repair" || name.includes("garage")) return "icons/garage.png";
+    if (leisure === "sports_centre" || amenity === "gym" || name.includes("sport")) return "icons/sport.png";
+    if (["atm", "bank", "bureau_de_change"].includes(amenity)) return "icons/financier.png";
+    if (["cinema", "arts_centre", "theatre"].includes(amenity) || leisure === "cinema" ||  name.includes("théâtre")) return "icons/culture.png";
+    if (["fire_station", "post_office", "courthouse", "police", "community_centre"].includes(amenity)) return "icons/administration.png";
+    if (["car_rental", "car_sharing", "car_wash", "fuel", "charging_station", "bicycle_rental"].includes(amenity)) return "icons/transport.png";
+    if (["childcare", "kindergarten", "animal_boarding", "animal_shelter"].includes(amenity) || name.includes("chien") || name.includes("chat")) return "icons/animal.png";
+    if (["coworking_space", "give_box"].includes(amenity)) return "icons/culture.png";
+    if (["bench", "fountain", "clock"].includes(amenity)) return "icons/default.png";
+    if (shop !== "") return "icons/shop.png";
+    if (amenity === "boulangerie" || name.includes("boulang")) return "icons/boulangerie.png";
+    if (amenity === "coiffeur" || name.includes("coiff")) return "icons/coiffeur.png";
+    if (amenity === "garage" || name.includes("garage")) return "icons/garage.png";
+    if (amenity === "restaurant" || name.includes("resto")) return "icons/restaurant.png";
+    if (amenity === "pharmacie" || name.includes("pharm")) return "icons/pharmacie.png";
+    if (amenity === "supermarche" || name.includes("supermarche")) return "icons/supermarche.png";
 
-      return icon("default.png");
-    }
+    return "icons/default.png";
+}
 
     // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
 // Correction de la fonction afficherServices
@@ -2019,9 +2643,11 @@ function recalculerItineraire(destination) {
 function afficherServices(filtre = "") {
     console.log("🧠 Recherche intelligente:", filtre);
 
-    // Nettoyage des layers
-    itineraireLayer.clearLayers();
-    clusterLayer.clearLayers();
+    // ✅ VÉRIFIEZ SI markers EXISTE AVANT DE L'UTILISER
+    if (markers && markers.length > 0) {
+        markers.forEach(marker => marker.remove());
+    }
+    markers = []; // ✅ RÉINITIALISER LE TABLEAU
 
     if (!allFeatures || allFeatures.length === 0) {
         console.log("❌ Aucune donnée chargée");
@@ -2043,11 +2669,15 @@ function afficherServices(filtre = "") {
 
             const [lng, lat] = f.geometry.coordinates;
             const marker = createMarker(props, lat, lng);
-            clusterLayer.addLayer(marker);
             count++;
         });
 
-        if (userLocation) map.setView(userLocation, 15);
+        if (userLocation) {
+            map.flyTo({
+                center: userLocation,
+                zoom: 15
+            });
+        }
         console.log(`📊 Total services: ${count}`);
         return;
     }
@@ -2117,7 +2747,6 @@ function afficherServices(filtre = "") {
         if (match) {
             const [lng, lat] = f.geometry.coordinates;
             const marker = createMarker(props, lat, lng);
-            clusterLayer.addLayer(marker);
             servicesTrouves.push({ lat, lng, name: props.name });
             count++;
         }
@@ -2130,16 +2759,22 @@ function afficherServices(filtre = "") {
     if (servicesTrouves.length > 0) {
         if (servicesTrouves.length === 1) {
             const service = servicesTrouves[0];
-            map.setView([service.lat, service.lng], 16);
-        } else {
-            const group = new L.featureGroup();
-            servicesTrouves.forEach(service => {
-                group.addLayer(L.marker([service.lat, service.lng]));
+            map.flyTo({
+                center: [service.lng, service.lat],
+                zoom: 16
             });
-            map.fitBounds(group.getBounds(), { padding: [20, 20], maxZoom: 15 });
+        } else {
+            const bounds = new mapboxgl.LngLatBounds();
+            servicesTrouves.forEach(service => {
+                bounds.extend([service.lng, service.lat]);
+            });
+            map.fitBounds(bounds, { padding: 20, maxZoom: 15 });
         }
     } else if (userLocation) {
-        map.setView(userLocation, 15);
+        map.flyTo({
+            center: userLocation,
+            zoom: 15
+        });
     }
 
     console.log(`📊 Total affiché: ${count}`);
@@ -2227,50 +2862,83 @@ function matchesFilter(props, filter) {
 
 // Ajoutez cette fonction pour créer les marqueurs (évite la duplication de code)
 function createMarker(props, lat, lng) {
-  // Échapper les apostrophes dans le nom
-  const nomEchappe = props.name.replace(/'/g, "\\'");
-  // Construction du contenu du popup
-  let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
+    // Échapper les apostrophes dans le nom
+    const nomEchappe = props.name.replace(/'/g, "\\'");
+    
+    // Construction du contenu du popup (identique à votre version Leaflet)
+    let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
 
-  // Boutons principaux
-  popupContent += `
-    ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
-    ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
-  
-  // Bouton pour les horaires (avec formatage)
-  if (props.opening_hours) {
-    const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" 
-  onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
-  }
-  
-  // Bouton pour les tarifs (si disponible)
-  if (props.price || props.tarifs) {
-    const tarifs = props.price || props.tarifs;
-    const formattedTarifs = tarifs.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
-  }
-  
-  // Boutons communs
-  popupContent += `
-    <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
-    <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
-    <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
-    <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
-    <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
-  `;
+    // Boutons principaux
+    popupContent += `
+        ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
+        ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
+    
+    // Bouton pour les horaires
+    if (props.opening_hours) {
+        const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
+        popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
+    }
+    
+    // Bouton pour les tarifs
+    if (props.price || props.tarifs) {
+        const tarifs = props.price || props.tarifs;
+        const formattedTarifs = tarifs.replace(/\n/g, '<br>');
+        popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
+    }
+    
+    // Boutons communs
+    popupContent += `
+        <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}]); demarrerNavigation();">🚗 Itinéraire</button>
+        <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
+        <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
+        <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
+        <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
+    `;
 
-  return L.marker([lat, lng], {
-    icon: getIconByCategory(props)
-  }).bindPopup(popupContent);
+    // ✅ VERSION MAPBOX - Créer l'élément pour l'icône
+    const el = document.createElement('div');
+    el.className = 'custom-marker';
+    
+    // Obtenir l'URL de l'icône selon la catégorie
+    const iconUrl = getIconUrlByCategory(props);
+    el.innerHTML = `<img src="${iconUrl}" style="width: 32px; height: 32px;" alt="${props.name}">`;
+
+    // ✅ Créer le popup Mapbox
+    const popup = new mapboxgl.Popup({ 
+        offset: 25,
+        className: 'custom-popup'
+    }).setHTML(popupContent);
+
+    // ✅ Créer le marqueur Mapbox
+    const marker = new mapboxgl.Marker({ 
+        element: el
+    })
+    .setLngLat([lng, lat]) // [lng, lat] pour Mapbox
+    .setPopup(popup)
+    .addTo(map);
+
+     // ✅ AJOUTER AU TABLEAU markers (IMPORTANT !)
+    if (markers) {
+        markers.push(marker);
+    } else {
+        markers = [marker]; // Au cas où markers n'existerait pas
+    }
+    
+    return marker;
 }
 
 // Nouvelle fonction pour afficher les détails dans une popup
 function afficherDetailsPopup(nom, type, contenu) {
   nom = decodeURIComponent(nom);
-  // Créer une fenêtre popup plus grande
-  const popup = L.popup({ className: 'custom-popup', maxWidth: 400 })
-    .setContent(`
+  // ✅ CORRECTION MAPBOX - Créer un popup Mapbox
+  new mapboxgl.Popup({ 
+    closeButton: true,
+    closeOnClick: true,
+    maxWidth: '400px',
+    className: 'custom-popup'
+  })
+    .setLngLat(map.getCenter())
+    .setHTML(`
       <div class="details-header">
         <h3>${nom}</h3>
         <h4>${type}</h4>
@@ -2279,25 +2947,26 @@ function afficherDetailsPopup(nom, type, contenu) {
         ${contenu}
       </div>
     `)
-    .setLatLng(map.getCenter())
-    .openOn(map);
+    .addTo(map);
 }
 
 
 function afficherHorairesPopup(nomService, horaires) {
-  // Formater les horaires pour un affichage plus lisible
   const horairesFormatted = horaires.replace(/;/g, '<br>');
   
-  // Créer une popup Leaflet
-  L.popup()
-    .setLatLng(map.getCenter())
-    .setContent(`
-      <div style="max-width: 300px; padding: 10px;">
+  // ✅ CORRECTION MAPBOX
+  new mapboxgl.Popup({
+    closeButton: true,
+    maxWidth: '300px'
+  })
+    .setLngLat(map.getCenter())
+    .setHTML(`
+      <div style="padding: 10px;">
         <h3 style="margin-top: 0;">Horaires - ${nomService}</h3>
         <div>${horairesFormatted}</div>
       </div>
     `)
-    .openOn(map);
+    .addTo(map);
 }
 async function verifierPremierAvis(uid) {
     // Vérifier d'abord si l'email a déjà été envoyé
@@ -3692,64 +4361,120 @@ function afficherSurCarte(serviceName) {
   // Ajoute ici ta logique pour afficher le service sur la carte
 }
 
- // Fonction pour trouver un service par son nom
-    function trouverServiceParNom(nom) {
-      if (!allFeatures) return null;
-      
-      for (const feature of allFeatures) {
-        const props = feature.properties;
-        if (props.name && props.name.toLowerCase() === nom.toLowerCase()) {
-          return {
-            name: props.name,
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0]
-          };
-        }
-      }
-      return null;
-    }
-
-    function centrerSurService(nom) {
-  const service = trouverServiceParNom(nom);
-  if (!service) {
-    console.warn("Service non trouvé :", nom);
-    return;
+ function trouverServiceParNom(nom) {
+  if (!allFeatures || allFeatures.length === 0) {
+    console.warn("Aucune donnée chargée");
+    return null;
   }
 
-  const decaleLat = service.lat - 0.0022;
-  const targetLatLng = L.latLng(service.lat, service.lng);
+  const nomRecherche = nom.toLowerCase().trim();
+  let meilleurMatch = null;
+  let meilleurScore = 0;
 
-  // Étape 1 : flyTo la position décalée
-  map.flyTo([decaleLat, service.lng], 17, {
-    animate: true,
-    duration: 1
+  for (const feature of allFeatures) {
+    if (!feature.properties || !feature.geometry) continue;
+    
+    const props = feature.properties;
+    const featureName = props.name ? props.name.toLowerCase().trim() : '';
+    
+    if (!featureName) continue;
+
+    // Calculer un score de correspondance
+    let score = 0;
+    
+    // Correspondance exacte = score maximum
+    if (featureName === nomRecherche) {
+      score = 100;
+    } 
+    // Correspondance partielle avec priorité pour le début du nom
+    else if (featureName.includes(nomRecherche)) {
+      score = 80;
+      // Bonus si le nom commence par la recherche
+      if (featureName.startsWith(nomRecherche)) {
+        score += 10;
+      }
+    }
+    // Recherche contient le nom du service (moins bon)
+    else if (nomRecherche.includes(featureName)) {
+      score = 60;
+    }
+
+    // Garder le meilleur match
+    if (score > meilleurScore) {
+      meilleurScore = score;
+      meilleurMatch = {
+        name: props.name,
+        lat: feature.geometry.coordinates[1],
+        lng: feature.geometry.coordinates[0],
+        properties: props,
+        score: score
+      };
+    }
+  }
+
+  console.log(`Meilleur match pour "${nom}":`, meilleurMatch?.name, `(score: ${meilleurScore})`);
+  return meilleurScore > 50 ? meilleurMatch : null;
+}
+    // Mettre à jour dans la fonction centrerSurService
+// Fonction pour centrer sur un service et ouvrir son popup
+function centrerSurService(nom) {
+  const service = trouverServiceParNom(nom);
+  if (!service) return;
+
+  const serviceLatLng = [service.lat, service.lng];
+  
+  // Centrer la carte sur le service
+  map.flyTo({
+    center: [service.lng, service.lat],
+    zoom: 16,
+    essential: true
   });
 
-  // Étape 2 : après un petit délai, chercher et ouvrir le marker
-  // (le délai permet à flyTo de terminer, sans dépendre de moveend)
+  // Attendre que l'animation de centrage soit terminée
   setTimeout(() => {
-    let trouvé = false;
+    let marqueurTrouve = null;
+    let meilleureDistance = Infinity;
 
-    clusterLayer.eachLayer(marker => {
-      if (!marker.getLatLng) return;
-
-      const distance = map.distance(marker.getLatLng(), targetLatLng);
-      if (distance < 10 && !trouvé) {
-        trouvé = true;
-
-        // zoomToShowLayer assure que le marker est bien visible (cluster déplié)
-        clusterLayer.zoomToShowLayer(marker, () => {
-          marker.openPopup();
-        });
+    // Trouver le marqueur le plus proche des coordonnées du service
+    markers.forEach(marker => {
+      const markerLngLat = marker.getLngLat();
+      const distance = Math.sqrt(
+        Math.pow(markerLngLat.lng - service.lng, 2) + 
+        Math.pow(markerLngLat.lat - service.lat, 2)
+      );
+      
+      if (distance < meilleureDistance) {
+        meilleureDistance = distance;
+        marqueurTrouve = marker;
       }
     });
 
-    if (!trouvé) {
-      console.warn("Aucun marker trouvé à proximité pour : ", nom);
+    // Si on a trouvé un marqueur proche
+    if (marqueurTrouve && meilleureDistance < 0.001) {
+      // Fermer tous les autres popups
+      markers.forEach(m => {
+        const p = m.getPopup();
+        if (p && p.isOpen()) p.remove();
+      });
+      
+      // Ouvrir le popup du marqueur trouvé
+      marqueurTrouve.togglePopup();
     }
-  }, 1100); // durée du flyTo (1000ms) + petite marge
+  }, 800);
 }
 
+// Mettre à jour la pointe quand la carte bouge
+map.on('move', function() {
+  const pointe = document.querySelector('.custom-popup-tip');
+  const popup = document.querySelector('.mapboxgl-popup');
+  
+  if (pointe && popup) {
+    // Recalculer la position de la pointe
+    const popupRect = popup.getBoundingClientRect();
+    const serviceCoords = // Vous devrez stocker les coordonnées du service actuel
+    creerPointeVersService(serviceCoords);
+  }
+});
     
     // Fonction pour obtenir les services selon la météo
 async function getServicesForTimeSlot() {
@@ -3859,59 +4584,69 @@ async function afficherRecommandations() {
     </div>
   `;
   
-  // Transformation en fonction asynchrone pour gérer la météo
   setTimeout(async () => {
     const day = getFrenchDay();
     const timeSlot = getCurrentTimeSlotDynamic(day);
     
     let slotRecommendations = [];
 
-    // Modification uniquement pour le créneau 14h-18h
+    // Récupérer les recommandations selon le créneau horaire
     if (timeSlot === "14:00-18:00") {
       try {
         const weather = await getLilleWeather();
-        // Utiliser la recommandation du serveur
-        if (weather.recommendation === "extérieur") {
-          slotRecommendations = recommendations[day][timeSlot].outdoor || [];
-        } else {
-          slotRecommendations = recommendations[day][timeSlot].indoor || [];
-        }
+        slotRecommendations = weather.recommendation === "extérieur" 
+          ? recommendations[day][timeSlot].outdoor || []
+          : recommendations[day][timeSlot].indoor || [];
       } catch (error) {
-        console.error("Erreur météo:", error);
         slotRecommendations = recommendations[day][timeSlot]?.outdoor || [];
       }
-    }
-    // Comportement normal pour les autres créneaux
-    else if (recommendations[day] && recommendations[day][timeSlot]) {
-      slotRecommendations = recommendations[day][timeSlot];
+    } else if (recommendations[day] && recommendations[day][timeSlot]) {
+      slotRecommendations = Array.isArray(recommendations[day][timeSlot])
+        ? recommendations[day][timeSlot]
+        : [];
     }
     
-    const validRecommendations = slotRecommendations.filter(nom => trouverServiceParNom(nom));
+    // Filtrer uniquement les services qui existent vraiment
+    const validRecommendations = [];
+    for (const nom of slotRecommendations) {
+      const service = trouverServiceParNom(nom);
+      if (service && service.score > 70) { // Seulement les bons matches
+        validRecommendations.push({
+          nom: service.name,
+          lat: service.lat,
+          lng: service.lng
+        });
+      }
+    }
     
+    // Afficher les résultats
     if (validRecommendations.length === 0) {
-      serviceElem.innerHTML = "<div style='text-align:center; padding:10px;'>Aucune recommandation valide</div>";
+      serviceElem.innerHTML = "<div style='text-align:center; padding:10px; color:#666;'>Aucune recommandation disponible</div>";
     } else {
       const listHtml = validRecommendations
-        .map(rec => `<li>${rec}</li>`)
+        .map(rec => `<li data-nom="${rec.nom}">${rec.nom}</li>`)
         .join('');
       
       serviceElem.innerHTML = `<ul>${listHtml}</ul>`;
       
-      const items = serviceElem.querySelectorAll('li');
-      items.forEach(item => {
+      // Ajouter les événements de clic
+      document.querySelectorAll('#recommandation-service li').forEach(item => {
         item.addEventListener('click', () => {
-          centrerSurService(item.textContent);
+          const nomService = item.getAttribute('data-nom');
+          console.log("Clic sur:", nomService);
+          centrerSurService(nomService);
         });
       });
     }
     
+    // Mettre à jour l'heure
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     timeElem.textContent = `Mis à jour à ${hours}:${minutes}`;
   }, 1000);
   
-  // Gestion du carré supplémentaire pour les marchés (inchangé)
+  // Gestion du marché (inchangé)
   const marketContainer = document.getElementById('market-container');
   const marketTitle = document.getElementById('market-title');
   const marketService = document.getElementById('market-service');
@@ -3922,14 +4657,15 @@ async function afficherRecommandations() {
     marketTitle.textContent = "Jour de marché!";
     marketService.innerHTML = `
       <ul>
-        <li>Marché de Wazemmes</li>
-        <li>Marché de Mons-en-Barœul</li>
+        <li data-nom="Marché de Wazemmes">Marché de Wazemmes</li>
+        <li data-nom="Marché de Mons-en-Barœul">Marché de Mons-en-Barœul</li>
       </ul>
     `;
     
     document.querySelectorAll('#market-service li').forEach(item => {
       item.addEventListener('click', () => {
-        centrerSurService(item.textContent);
+        const nomService = item.getAttribute('data-nom');
+        centrerSurService(nomService);
       });
     });
   } else {
