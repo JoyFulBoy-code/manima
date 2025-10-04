@@ -1,29 +1,39 @@
-const express = require('express');
-const fetch = require('node-fetch'); // indispensable pour fetch en Node.js
-const app = express();
-const PORT = process.env.PORT || 3000; // Vercel définit automatiquement process.env.PORT
+import express from 'express';
 
+const app = express();
 const OPENWEATHER_API_KEY = '5b8c517e1582cb51d2ec1422e9c0b10d';
 
-// Middleware CORS pour autoriser ton frontend
+// Middleware CORS
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // ou remplace '*' par ton domaine frontend
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
 
-/* =======================
-   🌦️ Endpoint météo
-======================= */
-// Dans votre backend Express
+app.use(express.json());
+
+// Endpoint de test
+app.get('/test', (req, res) => {
+  res.json({ message: 'Backend is working with Node.js 22!' });
+});
+
+// Endpoint météo
 app.get('/weather', async (req, res) => {
   try {
+    console.log('🌤️ Fetching weather data...');
+    
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=Lille,fr&appid=${OPENWEATHER_API_KEY}&units=metric`
     );
+    
+    if (!response.ok) {
+      throw new Error(`Weather API error: ${response.status}`);
+    }
+    
     const data = await response.json();
+    console.log('Weather data received:', data);
 
     const rainIds = [500, 501, 502, 503, 504, 511, 520, 521, 522, 531];
     const isRainingById = data.weather.some(w => rainIds.includes(w.id));
@@ -33,33 +43,32 @@ app.get('/weather', async (req, res) => {
     const temp = data.main.temp;
     const humidity = data.main.humidity;
 
-    // VOS CONDITIONS EXACTES :
-    let recommendation = "intérieur"; // Par défaut
-    
+    let recommendation = "intérieur";
     if (!isRaining && temp >= 18) {
       recommendation = "extérieur";
     }
-    // Si il pleut OU température < 18°C → intérieur
 
     res.json({
       recommendation,
-      temp: Math.round(temp * 10) / 10, // Arrondi à 1 décimale
+      temp: Math.round(temp * 10) / 10,
       humidity,
       raining: isRaining,
-      debug: { 
-        weather: data.weather, 
-        rain: data.rain,
-        conditions: `Pluie: ${isRaining}, Temp: ${temp}°C, Décision: ${recommendation}`
-      }
+      city: data.name,
+      weather: data.weather[0].description
     });
+    
   } catch (error) {
-    console.error("Erreur serveur météo:", error);
+    console.error("❌ Backend error:", error);
     res.status(500).json({ 
-      recommendation: "intérieur", 
-      temp: null,
-      humidity: null,
-      raining: null,
-      error: error.message
+      error: "Internal server error",
+      message: error.message
     });
   }
 });
+
+// Gestion des erreurs 404
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+export default app;
