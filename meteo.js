@@ -17,6 +17,7 @@ app.use((req, res, next) => {
 /* =======================
    🌦️ Endpoint météo
 ======================= */
+// Dans votre backend Express
 app.get('/weather', async (req, res) => {
   try {
     const response = await fetch(
@@ -32,17 +33,24 @@ app.get('/weather', async (req, res) => {
     const temp = data.main.temp;
     const humidity = data.main.humidity;
 
-    let recommendation = "intérieur"; 
-    if (!isRaining && temp >= 18 && temp <= 28 && humidity < 70) {
+    // VOS CONDITIONS EXACTES :
+    let recommendation = "intérieur"; // Par défaut
+    
+    if (!isRaining && temp >= 18) {
       recommendation = "extérieur";
     }
+    // Si il pleut OU température < 18°C → intérieur
 
     res.json({
       recommendation,
-      temp,
+      temp: Math.round(temp * 10) / 10, // Arrondi à 1 décimale
       humidity,
       raining: isRaining,
-      debug: { weather: data.weather, rain: data.rain }
+      debug: { 
+        weather: data.weather, 
+        rain: data.rain,
+        conditions: `Pluie: ${isRaining}, Temp: ${temp}°C, Décision: ${recommendation}`
+      }
     });
   } catch (error) {
     console.error("Erreur serveur météo:", error);

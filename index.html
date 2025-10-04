@@ -3710,21 +3710,55 @@ function fermerListeAvis() {
 
 
 
-// Nouvelle version sécurisée (clé API cachée côté serveur)
+// REMPLACEZ l'ancienne fonction getLilleWeather par celle-ci :
 async function getLilleWeather() {
   try {
-    const response = await fetch('http://localhost:3000/weather');
+    const response = await fetch('https://manima-backend-532zre4j4-joyfulboy-codes-projects.vercel.app/weather');
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    
     const data = await response.json();
+    
+    console.log("🌤️ Données météo reçues:", {
+      recommendation: data.recommendation,
+      temp: data.temp,
+      raining: data.raining,
+      humidity: data.humidity
+    });
+    
     return data;
   } catch (error) {
-    console.error("Erreur météo:", error);
+    console.error("❌ Erreur météo:", error);
+    // Fallback en cas d'erreur
     return { 
-      raining: false, 
+      recommendation: "intérieur", 
       temp: 15,
-      recommendation: "intérieur" // Par défaut en cas d'erreur
+      raining: false,
+      humidity: 50,
+      error: error.message
     };
   }
 }
+
+// Fonction de test
+async function testMeteoIntegration() {
+  console.log("🧪 Test intégration météo...");
+  const weather = await getLilleWeather();
+  
+  if (weather.error) {
+    console.error("❌ Échec:", weather.error);
+  } else {
+    console.log("✅ Succès - Recommandation:", weather.recommendation);
+    console.log(`🌡️ ${weather.temp}°C | ☔️ ${weather.raining ? 'Pluie' : 'Sec'} | 💧 ${weather.humidity}%`);
+  }
+}
+
+// Test au chargement
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(testMeteoIntegration, 1000);
+});
 
 
 function fermerStreetView() {
@@ -4110,20 +4144,29 @@ async function afficherRecommandations() {
     const timeSlot = getCurrentTimeSlotDynamic(day);
     
     let slotRecommendations = [];
+    let weatherInfo = "";
 
     // Modification uniquement pour le créneau 14h-18h
     if (timeSlot === "14:00-18:00") {
       try {
         const weather = await getLilleWeather();
-        // Utiliser la recommandation du serveur
+        
+        // Afficher l'info météo dans le titre
+        weatherInfo = ` (${weather.temp}°C${weather.raining ? ' ☔️' : weather.recommendation === 'extérieur' ? ' ☀️ Extérieur' : ' 🏠 Intérieur'})`;
+        
+        // Utiliser directement la recommandation du serveur
         if (weather.recommendation === "extérieur") {
           slotRecommendations = recommendations[day][timeSlot].outdoor || [];
         } else {
           slotRecommendations = recommendations[day][timeSlot].indoor || [];
         }
+        
+        console.log(`📍 Météo Lille: ${weather.temp}°C, ${weather.raining ? 'Pluie' : 'Pas de pluie'}, Recommandation: ${weather.recommendation}`);
+        
       } catch (error) {
         console.error("Erreur météo:", error);
         slotRecommendations = recommendations[day][timeSlot]?.outdoor || [];
+        weatherInfo = " (🌤️)";
       }
     }
     // Comportement normal pour les autres créneaux
@@ -4132,6 +4175,11 @@ async function afficherRecommandations() {
     }
     
     const validRecommendations = slotRecommendations.filter(nom => trouverServiceParNom(nom));
+    
+    // Mettre à jour le titre avec les infos météo
+    if (weatherInfo) {
+      titleElem.textContent = getTitreRecommandation() + weatherInfo;
+    }
     
     if (validRecommendations.length === 0) {
       serviceElem.innerHTML = "<div style='text-align:center; padding:10px;'>Aucune recommandation valide</div>";
@@ -4292,7 +4340,23 @@ function hideWarning() {
   banner.classList.add('hidden');
   setTimeout(() => { banner.style.display = 'none'; }, 350);
 }
+// Fonction de test pour vérifier les données météo
+async function testMeteo() {
+  console.log("🧪 Test des données météo...");
+  const weather = await getLilleWeather();
+  console.log("✅ Données météo:", weather);
+  
+  if (weather.recommendation) {
+    console.log(`🎯 Recommandation: ${weather.recommendation}`);
+    console.log(`🌡️ Température: ${weather.temp}°C`);
+    console.log(`☔️ Pluie: ${weather.raining ? 'Oui' : 'Non'}`);
+  }
+}
 
+// Appeler au chargement pour tester
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(testMeteo, 2000);
+});
 
 // Appeler cette fonction après avoir obtenu la position utilisateur
 // Dans votre fonction de géolocalisation existante, après avoir défini userLocation:
