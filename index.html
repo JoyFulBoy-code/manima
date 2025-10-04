@@ -1370,6 +1370,14 @@ body {
   button { padding: 8px; font-size: 0.9rem; }
 }
 
+@media (max-width: 480px) {
+  #itineraire-infos {
+    bottom: 500px !important; /* Encore plus haut sur très petits écrans */
+    max-width: 180px !important;
+    font-size: 12px !important;
+  }
+}
+
 /* Expérience tactile */
 @media (hover: none) and (pointer: coarse) {
   .popup-btn, button { min-height: 44px; min-width: 44px; }
