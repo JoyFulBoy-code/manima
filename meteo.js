@@ -1,28 +1,24 @@
-import express from 'express';
+// api/weather.js
+import fetch from 'node-fetch';
 
-const app = express();
 const OPENWEATHER_API_KEY = '5b8c517e1582cb51d2ec1422e9c0b10d';
 
-// Middleware CORS
-app.use((req, res, next) => {
+export default async function handler(req, res) {
+  // Configurer CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
 
-app.use(express.json());
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
-// Endpoint de test
-app.get('/test', (req, res) => {
-  res.json({ message: 'Backend is working with Node.js 22!' });
-});
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-// Endpoint météo
-app.get('/weather', async (req, res) => {
   try {
-    console.log('🌤️ Fetching weather data...');
+    console.log('🌤️ Fetching weather data for Lille...');
     
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=Lille,fr&appid=${OPENWEATHER_API_KEY}&units=metric`
@@ -33,7 +29,7 @@ app.get('/weather', async (req, res) => {
     }
     
     const data = await response.json();
-    console.log('Weather data received:', data);
+    console.log('✅ Weather data received');
 
     const rainIds = [500, 501, 502, 503, 504, 511, 520, 521, 522, 531];
     const isRainingById = data.weather.some(w => rainIds.includes(w.id));
@@ -54,21 +50,16 @@ app.get('/weather', async (req, res) => {
       humidity,
       raining: isRaining,
       city: data.name,
-      weather: data.weather[0].description
+      weather: data.weather[0].description,
+      success: true
     });
     
   } catch (error) {
     console.error("❌ Backend error:", error);
     res.status(500).json({ 
       error: "Internal server error",
-      message: error.message
+      message: error.message,
+      success: false
     });
   }
-});
-
-// Gestion des erreurs 404
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
-export default app;
+}
