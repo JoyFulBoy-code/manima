@@ -315,12 +315,43 @@ body {
       cursor: pointer;
     }
     button:hover { background-color: #388e3c; }
-    #contenu-avis { max-height: 400px; overflow-y: auto; }
-    .arrow-icon {
-      width: 50px; height: 50px;
-      background-color: #4CAF50;
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    }
+   .arrow-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(145deg, #00baff, #007aff);
+  clip-path: polygon(50% 0%, 70% 40%, 50% 35%, 30% 40%);
+  position: relative;
+  transform: rotate(0deg);
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 122, 255, 0.4);
+  border: 2px solid white;
+}
+
+/* Cercle central brillant */
+.arrow-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(145deg, #4CAF50, #2E7D32);
+  clip-path: polygon(50% 0%, 90% 100%, 50% 80%, 10% 100%);
+  position: relative;
+  transform: rotate(0deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+  border-radius: 8px;
+}
+
+/* Pointe lumineuse en haut (effet 3D subtil) */
+.arrow-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(145deg, #43A047, #2E7D32);
+  clip-path: polygon(50% 0%, 90% 100%, 50% 80%, 10% 100%);
+  position: relative;
+  transform: rotate(0deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  border: 2px solid white;
+  border-radius: 10px;
+}
     /* Nouveaux styles pour le formulaire de commerce */
     #commerce-modal {
       display: none;
