@@ -1796,6 +1796,9 @@ let routeUpdateInterval = null; // Intervalle de mise à jour
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
 
+    // 🔥 FERMER TOUTES LES POPUPS IMMÉDIATEMENT
+    map.closePopup();
+    
     // Nettoyage des éléments précédents
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
@@ -1809,7 +1812,14 @@ function tracerItineraire(dest) {
         infoContainer.style.padding = "10px";
         infoContainer.style.background = "#fff";
         infoContainer.style.position = "absolute";
-        infoContainer.style.bottom = "450px";
+        
+        // Position adaptative selon l'appareil
+        if (window.innerWidth <= 768) {
+            infoContainer.style.bottom = "500px"; // Plus haut sur mobile
+        } else {
+            infoContainer.style.bottom = "450px"; // Position originale sur desktop
+        }
+        
         infoContainer.style.left = "10px";
         infoContainer.style.zIndex = "999";
         infoContainer.style.borderRadius = "8px";
@@ -1838,6 +1848,9 @@ function tracerItineraire(dest) {
             currentRoute = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
+
+            // 🔥 CENTRER DIRECTEMENT SUR VOTRE POSITION
+            map.setView(userLocation, 17);
 
             // Affiche les infos
             const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
@@ -2277,7 +2290,7 @@ function matchesFilter(props, filter) {
   return filterWords.every(fw => fields.some(f => f.startsWith(fw)));
 }
 
-// Ajoutez cette fonction pour créer les marqueurs (évite la duplication de code)
+// Dans la fonction createMarker, modifier le bouton itinéraire
 function createMarker(props, lat, lng) {
   // Échapper les apostrophes dans le nom
   const nomEchappe = props.name.replace(/'/g, "\\'");
@@ -2303,9 +2316,9 @@ function createMarker(props, lat, lng) {
     popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
   }
   
-  // Boutons communs
+  // Boutons communs - LE BOUTON ITINÉRAIRE FERME LA POPUP AUTOMATIQUEMENT
   popupContent += `
-    <button class="popup-btn" onclick="tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
+    <button class="popup-btn" onclick="map.closePopup(); tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
     <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
     <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
     <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
