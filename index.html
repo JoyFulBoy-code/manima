@@ -1861,6 +1861,7 @@ function tracerItineraire(dest) {
 
     // Cacher les services
     cacherServices();
+    cacherInterfaceItineraire();
     
     // Afficher le bouton Stop
     document.getElementById('stop-itineraire-btn').style.display = 'block';
@@ -1991,7 +1992,7 @@ function arreterItineraire() {
         infoContainer.remove();
     }
     
-    // Réafficher les services
+    // Réafficher les services ET l'interface
     if (!clusterLayerVisible) {
         map.addLayer(clusterLayer);
         clusterLayerVisible = true;
@@ -2000,7 +2001,16 @@ function arreterItineraire() {
     // Réafficher tous les services
     afficherServices("");
     
-    console.log("Itinéraire arrêté - services réaffichés");
+    // FORCER le réaffichage du conteneur de recommandations
+    const recommandationContainer = document.getElementById('recommandation-container');
+    if (recommandationContainer) {
+        recommandationContainer.style.display = 'block';
+    }
+    
+    // Réafficher l'interface complète
+    afficherInterfaceItineraire();
+    
+    console.log("Itinéraire arrêté - services et interface réaffichés");
 }
 
 // Initialisation des clusters et services (conservé tel quel)
@@ -2195,6 +2205,39 @@ function demarrerItineraire() {
 function stopItineraire() {
   // Votre logique pour arrêter l'itinéraire
   document.getElementById('stop-itineraire-btn').style.display = 'none';
+}
+
+// Fonction pour cacher tous les éléments d'interface pendant l'itinéraire
+function cacherInterfaceItineraire() {
+    // Cacher les containers
+    document.getElementById('recommandation-container').style.display = 'none';
+    document.getElementById('market-container').style.display = 'none';
+    document.getElementById('jumua-container').style.display = 'none';
+    
+    // Cacher les boutons
+    document.getElementById('chauffeurs-btn').style.display = 'none';
+    document.getElementById('ajouter-commerce-btn').style.display = 'none';
+    
+    console.log("Interface cachée pour l'itinéraire");
+}
+
+// Fonction pour réafficher tous les éléments d'interface
+function afficherInterfaceItineraire() {
+    // Réafficher les containers (ils se gèrent eux-mêmes selon l'heure/jour)
+    showRecommendations();
+    showJumuaMosques();
+    
+    // Réafficher les boutons
+    document.getElementById('chauffeurs-btn').style.display = 'block';
+    document.getElementById('ajouter-commerce-btn').style.display = 'block';
+    
+    // FORCER l'affichage du conteneur de recommandations
+    const recommandationContainer = document.getElementById('recommandation-container');
+    if (recommandationContainer) {
+        recommandationContainer.style.display = 'block';
+    }
+    
+    console.log("Interface réaffichée après itinéraire");
 }
 // Correction de la fonction afficherServices
 // FONCTION DE RECHERCHE ULTRA-INTELLIGENTE
@@ -3991,13 +4034,13 @@ async function getServicesForTimeSlot() {
     function isMarketDay() {
       const day = new Date().getDay(); // 0 = dimanche, 1 = lundi, etc.
       // Les jours de marché sont mardi, jeudi et dimanche
-      return day === 0 || day === 2 || day === 4; // Dimanche, Mardi, Jeudi
+      return day === 0 || day === 2 || day === 6; // Dimanche, Mardi, Jeudi
     }
     // Fonction pour vérifier si l'heure est entre 6h et 11h
     function isMarketTime() {
       const now = new Date();
       const hour = now.getHours();
-      return hour >= 6 && hour < 14;
+      return hour >= 6 && hour < 20;
     }
 
 
@@ -4170,7 +4213,7 @@ function isJumuaTime() {
   const day = now.getDay(); // 0 = dimanche, 5 = vendredi
   const hour = now.getHours();
   
-  return day === 5 && hour >= 10 && hour < 14;
+  return day === 6 && hour >= 10 && hour < 20;
 }
 
 // Fonction pour afficher les mosquées pour Jumua
