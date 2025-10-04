@@ -1454,7 +1454,34 @@ body {
 
 /*correction mobile*/
   /* Supprimer l'espace blanc en haut sur mobile */
+/* Bouton Stop Itinéraire */
+#stop-itineraire-btn {
+  position: fixed;
+  bottom: 20px; /* Distance du bas */
+  left: 50%; /* Centre horizontal */
+  transform: translateX(-50%); /* Corrige le centrage */
+  background-color: #ff4444;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  display: none; /* Caché par défaut */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+#stop-itineraire-btn:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+#stop-itineraire-btn:hover {
+  background-color: #cc0000;
+}
   </style>
 </head>
 <body>
@@ -1641,6 +1668,9 @@ body {
         </div>
         
         <button type="submit">Soumettre mon commerce</button>
+        <!-- Bouton Stop Itinéraire -->
+        
+
       </form>
     </div>
   </div>
@@ -1651,6 +1681,7 @@ body {
   <div id="streetview-embed-container" style="display:none;position:fixed;top:0;left:0; width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;">
     <!-- Le contenu sera injecté par JavaScript -->
   </div>
+  <button id="stop-itineraire-btn" onclick="arreterItineraire()">⏹️ Stop Itinéraire</button>
   <footer><p>&copy; 2025 Manimap™ - Tous droits réservés</p></footer>
   <script>
 
@@ -1826,6 +1857,14 @@ let routeUpdateInterval = null; // Intervalle de mise à jour
 // Remplacer la fonction tracerItineraire existante par cette version améliorée
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
+    
+
+    // Cacher les services
+    cacherServices();
+    
+    // Afficher le bouton Stop
+    document.getElementById('stop-itineraire-btn').style.display = 'block';
+
 
     // 🔥 FERMER TOUTES LES POPUPS IMMÉDIATEMENT
     map.closePopup();
@@ -1898,10 +1937,10 @@ function tracerItineraire(dest) {
         });
 }
 
-// Remplacer la fonction startRouteTracking existante
+// Modifiez la fonction startRouteTracking
 function startRouteTracking(destination) {
     let lastRecalculation = Date.now();
-    const recalculationInterval = 15000; // Recalcul toutes les 15 secondes
+    const recalculationInterval = 15000;
 
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
@@ -1923,18 +1962,45 @@ function startRouteTracking(destination) {
 
         // Vérifie si arrivé à destination
         if (L.latLng(userLocation).distanceTo(destination) < 25) {
-            clearInterval(routeUpdateInterval);
-            itineraireLayer.clearLayers();
-            suiviItineraire = false;
-            
-            const infoContainer = document.getElementById("itineraire-infos");
-            if (infoContainer) {
-                infoContainer.remove();
-            }
-            
+            arreterItineraire();
             alert("🎉 Vous êtes arrivé à destination !");
         }
-    }, 3000); // Vérification toutes les 3 secondes
+    }, 3000);
+}
+// Nouvelle fonction pour arrêter l'itinéraire
+function arreterItineraire() {
+    // Arrêter le suivi
+    if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
+        routeUpdateInterval = null;
+    }
+    
+    // Réinitialiser les variables
+    suiviItineraire = false;
+    servicesVisible = true;
+    
+    // Nettoyer l'itinéraire
+    itineraireLayer.clearLayers();
+    
+    // Cacher le bouton Stop
+    document.getElementById('stop-itineraire-btn').style.display = 'none';
+    
+    // Supprimer le conteneur d'informations
+    const infoContainer = document.getElementById("itineraire-infos");
+    if (infoContainer) {
+        infoContainer.remove();
+    }
+    
+    // Réafficher les services
+    if (!clusterLayerVisible) {
+        map.addLayer(clusterLayer);
+        clusterLayerVisible = true;
+    }
+    
+    // Réafficher tous les services
+    afficherServices("");
+    
+    console.log("Itinéraire arrêté - services réaffichés");
 }
 
 // Initialisation des clusters et services (conservé tel quel)
@@ -2108,15 +2174,49 @@ function distancePointSegment(point, segmentA, segmentB) {
       return icon("default.png");
     }
 
-    // Modifiez la fonction afficherServices pour utiliser la recherche intelligente
+    // Variables globales pour gérer l'état des marqueurs
+let servicesVisible = true;
+let clusterLayerVisible = true;
+
+// Fonction pour cacher les services
+function cacherServices() {
+    if (clusterLayerVisible) {
+        map.removeLayer(clusterLayer);
+        clusterLayerVisible = false;
+        servicesVisible = false;
+    }
+}
+
+function demarrerItineraire() {
+  // Votre logique pour démarrer l'itinéraire
+  document.getElementById('stop-itineraire-btn').style.display = 'block';
+}
+
+function stopItineraire() {
+  // Votre logique pour arrêter l'itinéraire
+  document.getElementById('stop-itineraire-btn').style.display = 'none';
+}
 // Correction de la fonction afficherServices
 // FONCTION DE RECHERCHE ULTRA-INTELLIGENTE
 // CORRECTION DE LA RECHERCHE INTELLIGENTE - Version améliorée
 function afficherServices(filtre = "") {
     console.log("🧠 Recherche intelligente:", filtre);
+    
+    // Si on est en mode itinéraire, on ne fait rien
+    if (suiviItineraire && !servicesVisible) {
+        console.log("Mode itinéraire - services cachés");
+        return;
+    }
 
     // Nettoyage des layers
     itineraireLayer.clearLayers();
+
+    // Si le cluster layer n'est pas sur la carte, on l'ajoute
+    if (!clusterLayerVisible) {
+        map.addLayer(clusterLayer);
+        clusterLayerVisible = true;
+    }
+
     clusterLayer.clearLayers();
 
     if (!allFeatures || allFeatures.length === 0) {
@@ -2252,12 +2352,18 @@ function normalize(str) {
         .trim();
 }
 
-// Écouteur de recherche
+// Écouteur de recherche MODIFIÉ - arrête l'itinéraire si recherche pendant navigation
 document.addEventListener('DOMContentLoaded', function() {
     const searchBar = document.getElementById('search-bar');
     searchBar.addEventListener('input', function(e) {
         const filtre = e.target.value.trim();
         console.log("Recherche:", filtre);
+        
+        // Si on est en mode itinéraire, on arrête d'abord l'itinéraire
+        if (suiviItineraire) {
+            arreterItineraire();
+        }
+        
         afficherServices(filtre);
     });
 });
