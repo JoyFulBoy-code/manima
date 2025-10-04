@@ -1246,21 +1246,36 @@
       }
     },
     {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [3.0280873, 50.6176841]
-      },
-      "properties": {
-        "name": "Tel Pizza",
-        "type": "restaurant",
-        "address": "33 Rue du Faubourg de Béthune, 59000 Lille, France",
-        "phone": "0320301010",
-        "website": "https://tel-pizza.order.app.hd.digital/menus",
-        "alternate_website": "https://www.telpizza.com/?lang=fr",
-        "price": "10–20 € par personne (majoritairement)",
-        "opening_hours": "lundi, Fermé\nmardi, 18:00–23:00\nmercredi, 18:00–23:00\njeudi, 18:00–23:00\nvendredi, 18:00–23:00\nsamedi, 18:00–23:00\ndimanche, 18:00–23:00"
-      }
-    }
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0280873, 50.6176841]
+  },
+  "properties": {
+    "name": "Tel Pizza",
+    "type": "restaurant",
+    "address": "33 Rue du Faubourg de Béthune, 59000 Lille, France",
+    "phone": "0320301010",
+    "website": "https://tel-pizza.order.app.hd.digital/menus",
+    "alternate_website": "https://www.telpizza.com/?lang=fr",
+    "price": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, Fermé\nmardi, 18:00–23:00\nmercredi, 18:00–23:00\njeudi, 18:00–23:00\nvendredi, 18:00–23:00\nsamedi, 18:00–23:00\ndimanche, 18:00–23:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.1379186, 50.613487]
+  },
+  "properties": {
+    "name": "IUT de Lille",
+    "type": "école",
+    "address": "Av. Paul Langevin, 59653 Villeneuve-d'Ascq, France",
+    "phone": "03 59 63 21 00",
+    "website": "https://iut.univ-lille.fr/",
+    "opening_hours": "lundi, 07:45–19:00\nmardi, 07:45–19:00\nmercredi, 07:45–19:00\njeudi, 07:45–19:00\nvendredi, 07:45–19:00"
+  }
+}
   ]
 }
