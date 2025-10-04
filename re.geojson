@@ -838,7 +838,7 @@
   },
   {
     "type": "Feature",
-    "geometry": { "type": "Point", "coordinates": [3.0501758, 50.6275861] },
+    "geometry": { "type": "Point", "coordinates": [3.0526394, 50.6286796] },
     "properties": {
       "name": "Basic-Fit Léon Gambetta",
       "type": "salle de sport",
@@ -852,7 +852,7 @@
   "type": "Feature",
   "geometry": {
     "type": "Point",
-    "coordinates": [3.0490518, 50.6199159]
+    "coordinates": [3.0491036, 50.619875]
   },
   "properties": {
     "name": "Mosquée Assounna",

@@ -1911,7 +1911,7 @@ const clusterLayer = L.markerClusterGroup().addTo(map);
 let allFeatures = [];
 
 // Charger uniquement votre fichier lille.geojson
-    fetch('te.geojson')
+    fetch('re.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;
@@ -2399,9 +2399,9 @@ async function envoyerEmailPremierAvis(email, nom) {
     
     const result = await emailjs.send("service_wreyh0i", "template_5enx2ae", {
       to_email: email,  // Changed from {{email}} to just email
-      from_name: "Manima",
+      from_name: "Manimap",
       user_name: nom,
-      message: "Merci pour votre premier avis sur Manima!"
+      message: "Merci pour votre premier avis sur Manimap!"
     });
     
     console.log("Email envoyé avec succès:", result);
@@ -4010,7 +4010,7 @@ async function afficherRecommandations() {
     }
     
     // Dans le code de chargement des données
-    fetch('te.geojson')
+    fetch('re.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;
