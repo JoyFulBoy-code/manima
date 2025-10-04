@@ -1739,7 +1739,8 @@ body {
 
     const arrowIcon = L.divIcon({ className: 'arrow-icon', iconSize: [50, 50], iconAnchor: [25, 25] });
 
-    navigator.geolocation.watchPosition(pos => {
+    // Modifier la fonction de géolocalisation pour une meilleure précision
+navigator.geolocation.watchPosition(pos => {
     userLocation = [pos.coords.latitude, pos.coords.longitude];
     const heading = pos.coords.heading || 0;
 
@@ -1776,6 +1777,7 @@ body {
 let routeCoords = []; // Stocke les coordonnées complètes de l'itinéraire
 let routeUpdateInterval = null; // Intervalle de mise à jour
 
+// Remplacer la fonction tracerItineraire existante par cette version améliorée
 function tracerItineraire(dest) {
     if (!userLocation) return alert("Localisation non disponible");
 
@@ -1783,7 +1785,7 @@ function tracerItineraire(dest) {
     itineraireLayer.clearLayers();
     if (routeUpdateInterval) clearInterval(routeUpdateInterval);
 
-    // Création du conteneur d'informations (CONSERVÉ)
+    // Création du conteneur d'informations
     const infoContainerId = "itineraire-infos";
     let infoContainer = document.getElementById(infoContainerId);
     if (!infoContainer) {
@@ -1822,9 +1824,7 @@ function tracerItineraire(dest) {
                 style: { color: 'blue', weight: 4 }
             }).addTo(itineraireLayer);
 
-            map.setView(userLocation, 17);
-
-            // Affiche les infos (CONSERVÉ)
+            // Affiche les infos
             const line = `<div><strong>🚗 En voiture</strong> : ${durationFormatted} (${distanceKm} km)</div>`;
             infoContainer.innerHTML += line;
 
@@ -1839,18 +1839,25 @@ function tracerItineraire(dest) {
         });
 }
 
+// Remplacer la fonction startRouteTracking existante
 function startRouteTracking(destination) {
     let lastRecalculation = Date.now();
-    const recalculationInterval = 15000;
+    const recalculationInterval = 15000; // Recalcul toutes les 15 secondes
 
     routeUpdateInterval = setInterval(() => {
         if (!userLocation || routeCoords.length < 2) return;
 
-        // 🔥 PLUS BESOIN de map.setView ici car c'est géré par le watcher
+        // 🔥 SUIVI EN TEMPS RÉEL - La carte suit votre position
+        map.setView(userLocation, 17);
+        
+        // 🔥 ORIENTATION DE LA CARTE selon votre direction
+        if (userMarker && userMarker.options.rotationAngle !== undefined) {
+            orienterCarteVersDirection(userMarker.options.rotationAngle);
+        }
 
-        // RECALCUL AUTOMATIQUE de l'itinéraire
+        // RECALCUL AUTOMATIQUE si écart à l'itinéraire
         const now = Date.now();
-        if (now - lastRecalculation > recalculationInterval) {
+        if (now - lastRecalculation > recalculationInterval || estHorsItineraire()) {
             recalculerItineraire(destination);
             lastRecalculation = now;
         }
@@ -1868,7 +1875,7 @@ function startRouteTracking(destination) {
             
             alert("🎉 Vous êtes arrivé à destination !");
         }
-    }, 3000);
+    }, 3000); // Vérification toutes les 3 secondes
 }
 
 // Initialisation des clusters et services (conservé tel quel)
@@ -1882,7 +1889,8 @@ let allFeatures = [];
         allFeatures = data.features;
         afficherServices("");
       }) 
-    function orienterCarteVersDirection(heading) {
+    // Améliorer la fonction d'orientation de la carte
+function orienterCarteVersDirection(heading) {
     // Calcule un point "devant" vous pour orienter la vue
     const bearing = (heading * Math.PI) / 180;
     const distance = 0.001; // Environ 100m devant
@@ -1899,7 +1907,10 @@ let allFeatures = [];
     const centerLat = (userLocation[0] + pointDevant[0]) / 2;
     const centerLng = (userLocation[1] + pointDevant[1]) / 2;
     
-    map.setView([centerLat, centerLng], 17);
+    map.setView([centerLat, centerLng], 17, {
+        animate: true,
+        duration: 0.5
+    });
 }
     function recalculerItineraire(destination) {
     if (!userLocation) return;
@@ -1937,6 +1948,58 @@ let allFeatures = [];
         .catch(err => {
             console.error(`Erreur recalcul itinéraire :`, err);
         });
+}
+    // Ajouter cette fonction pour détecter si on s'écarte de l'itinéraire
+function estHorsItineraire() {
+    if (!userLocation || routeCoords.length < 2) return false;
+    
+    // Trouver le point le plus proche sur l'itinéraire
+    let distanceMin = Infinity;
+    for (let i = 0; i < routeCoords.length - 1; i++) {
+        const pointA = [routeCoords[i][1], routeCoords[i][0]];
+        const pointB = [routeCoords[i+1][1], routeCoords[i+1][0]];
+        
+        const distance = distancePointSegment(userLocation, pointA, pointB);
+        if (distance < distanceMin) {
+            distanceMin = distance;
+        }
+    }
+    
+    // Si on est à plus de 100m de l'itinéraire, on considère qu'on s'est trompé
+    return distanceMin > 100;
+}
+// Fonction utilitaire pour calculer la distance d'un point à un segment
+function distancePointSegment(point, segmentA, segmentB) {
+    const A = point[0] - segmentA[0];
+    const B = point[1] - segmentA[1];
+    const C = segmentB[0] - segmentA[0];
+    const D = segmentB[1] - segmentA[1];
+
+    const dot = A * C + B * D;
+    const lenSq = C * C + D * D;
+    let param = -1;
+    
+    if (lenSq !== 0) {
+        param = dot / lenSq;
+    }
+
+    let xx, yy;
+
+    if (param < 0) {
+        xx = segmentA[0];
+        yy = segmentA[1];
+    } else if (param > 1) {
+        xx = segmentB[0];
+        yy = segmentB[1];
+    } else {
+        xx = segmentA[0] + param * C;
+        yy = segmentA[1] + param * D;
+    }
+
+    const dx = point[0] - xx;
+    const dy = point[1] - yy;
+    
+    return Math.sqrt(dx * dx + dy * dy) * 111000; // Conversion en mètres
 }
     function normalize(str) {
       return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
