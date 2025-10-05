@@ -1261,7 +1261,35 @@
     "price": "10–20 € par personne (majoritairement)",
     "opening_hours": "lundi, Fermé\nmardi, 18:00–23:00\nmercredi, 18:00–23:00\njeudi, 18:00–23:00\nvendredi, 18:00–23:00\nsamedi, 18:00–23:00\ndimanche, 18:00–23:00"
   }
-},
+},{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.1472866, 50.637408]
+      },
+      "properties": {
+        "name": "Parc du Héron",
+        "type": "parc",
+        "address": "59650 Villeneuve-d'Ascq, France",
+        "website": "https://www.villeneuvedascq.fr/le-parc-du-heron",
+        "opening_hours": "Ouvert 24h/24, 7j/7"
+      }
+    },
+{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.980954, 50.4143469]
+      },
+      "properties": {
+        "name": "Restaurant Pacific Noyelles",
+        "type": "restaurant",
+        "address": "9064 Av. de la République, 62950 Noyelles-Godault, France",
+        "phone": "03 21 49 78 31",
+        "website": "https://www.facebook.com/pacific62950/?locale=fr_FR",
+        "opening_hours": "lundi, 12:00–14:30, 19:00–22:30\nmardi, 12:00–14:30, 19:00–22:30\nmercredi, 12:00–14:30, 19:00–22:30\njeudi, 12:00–14:30, 19:00–22:30\nvendredi, 12:00–14:30, 19:00–23:00\nsamedi, 12:00–15:00, 18:30–23:00\ndimanche, 12:00–15:00, 19:00–23:00"
+      }
+    },
 {
   "type": "Feature",
   "geometry": {
