@@ -2858,134 +2858,133 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     document.getElementById("liste-avis-modal").style.display = "block";
     document.getElementById("titre-liste-avis").innerText = "Avis sur " + nom;
 
-    
-    // Utilisez nomNormalise pour les requêtes Firebase
-    const nomNormalise = normaliserNomPourFirebase(nom);
-    db.ref('avis/' + nomNormalise).once('value')
-
     const contenuAvis = document.getElementById("contenu-avis");
     contenuAvis.innerHTML = "<div class='loading-dots'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>";
 
-    // On utilise le nom tel quel (pas d'encodeURIComponent)
-    db.ref('avis/' + nom).once('value')
+    // CORRECTION : Essayer d'abord avec le nom ORIGINAL, puis avec le nom normalisé
+    const nomOriginal = nom;
+    const nomNormalise = normaliserNomPourFirebase(nom);
+    
+    // Essayer d'abord avec le nom original (pour les anciens avis)
+    db.ref('avis/' + nomOriginal).once('value')
       .then(snapshot => {
-        const avisList = snapshot.val();
-        if (avisList) {
-            const avisArray = Object.entries(avisList).map(([avisId, avis]) => ({ avisId, ...avis }));
-
-            // Récupérer les informations des utilisateurs pour les badges
-            const promises = avisArray.map(avis => {
-                return db.ref(`utilisateurs/${avis.uid}`).once('value')
-                    .then(userSnapshot => {
-                        const userData = userSnapshot.val() || {};
-                        return {
-                            ...avis,
-                            hasBadgeMoussaillon: userData.badgeMoussaillon || false,
-                            hasBadgeCommandant: userData.badgeCommandant || false
-                        };
-                    });
-            });
-
-            Promise.all(promises).then(avisAvecBadges => {
-                // Trier par priorité: Commandant > Moussaillon > autres
-                avisAvecBadges.sort((a, b) => {
-                    if (b.hasBadgeCommandant && !a.hasBadgeCommandant) return 1;
-                    if (a.hasBadgeCommandant && !b.hasBadgeCommandant) return -1;
-                    if (b.hasBadgeMoussaillon && !a.hasBadgeMoussaillon) return 1;
-                    if (a.hasBadgeMoussaillon && !b.hasBadgeMoussaillon) return -1;
-                    return 0;
-                });
-
-                contenuAvis.innerHTML = '';
-
-                avisAvecBadges.forEach(({ avisId, hasBadgeMoussaillon, hasBadgeCommandant, ...avis }) => {
-                    const avisElement = document.createElement("div");
-                    avisElement.className = "avis-item";
-                    avisElement.style.marginBottom = "15px";
-                    avisElement.style.paddingBottom = "15px";
-                    avisElement.style.borderBottom = "1px solid #eee";
-
-                    const currentUserId = utilisateurConnecte?.uid;
-                    const isOwnAvis = currentUserId && avis.uid === currentUserId;
-                    const userVoteType = currentUserId && avis.voteurs?.[currentUserId];
-
-                    const voteButtons = `
-                        <div style="margin-top:10px; display:flex; gap:15px; font-size:18px;">
-                            <span onclick="${!isOwnAvis ? `voterAvis('${nom}', '${avisId}', 'vert')` : ''}" 
-                                  style="cursor:${isOwnAvis ? 'default' : 'pointer'};
-                                         ${userVoteType === 'vert' ? 'font-weight:bold;' : ''}">
-                                🟢 ${avis.pointsVerts || 0}
-                            </span>
-                            <span onclick="${!isOwnAvis ? `voterAvis('${nom}', '${avisId}', 'rouge')` : ''}" 
-                                  style="cursor:${isOwnAvis ? 'default' : 'pointer'};
-                                         ${userVoteType === 'rouge' ? 'font-weight:bold;' : ''}">
-                                🔴 ${avis.pointsRouges || 0}
-                            </span>
-                        </div>`;
-
-                    let deleteButton = '';
-                    if (isOwnAvis) {
-                        deleteButton = `<button onclick="supprimerAvis('${nom}', '${avisId}')" style="padding:5px; font-size:12px;">🗑️ Supprimer</button>`;
-                    }
-
-                    let badgeHtml = '';
-                    if (hasBadgeCommandant) {
-                        badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Commandant">';
-                    } else if (hasBadgeMoussaillon) {
-                        badgeHtml = '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon">';
-                    }
-
-                    avisElement.innerHTML = `
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
-                                     alt="avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
-                                <div>
-                                    <strong>${avis.pseudo || "anonyme"}</strong>
-                                    ${badgeHtml}
-                                    <br>
-                                    <small>${avis.date || "Date inconnue"}</small>
-                                </div>
-                            </div>
-                            ${deleteButton}
-                        </div>
-                        <div style="margin-top: 10px;">${avis.text || "(aucun commentaire)"}</div>
-                        ${avis.photoUrl ? `<br><img src="${avis.photoUrl}" style="max-width:100%; max-height:200px; margin-top:10px; border-radius:8px;" />` : ""}
-                        ${avis.videoUrl ? `<br><video controls style="max-width:100%; max-height:300px; margin-top:10px;"><source src="${avis.videoUrl}" type="video/mp4"></video>` : ""}
-                        ${voteButtons}
-                    `;
-
-                    contenuAvis.appendChild(avisElement);
-                });
-            });
+        if (snapshot.exists()) {
+          console.log("✅ Avis trouvés avec le nom original");
+          traiterAvis(snapshot.val(), nomOriginal);
         } else {
-            contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Aucun avis pour ce lieu</i></div>";
+          // Si pas trouvé, essayer avec le nom normalisé
+          console.log("🔍 Essai avec le nom normalisé");
+          return db.ref('avis/' + nomNormalise).once('value')
+            .then(snapshotNormalise => {
+              if (snapshotNormalise.exists()) {
+                console.log("✅ Avis trouvés avec le nom normalisé");
+                traiterAvis(snapshotNormalise.val(), nomOriginal);
+              } else {
+                console.log("❌ Aucun avis trouvé");
+                contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Aucun avis pour ce lieu</i></div>";
+              }
+            });
         }
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error("Erreur lors du chargement des avis:", error);
         contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Impossible de charger les avis</i></div>";
-    });
-}
-
-function fermerListeAvis() {
-    document.getElementById("liste-avis-modal").style.display = "none";
-    document.getElementById("contenu-avis").innerHTML = "";
-}
-
-    function supprimerAvis(nomService, avisId) {
-  const nomNormalise = normaliserNomPourFirebase(nomService);
-  if (confirm("Voulez-vous vraiment supprimer cet avis ?")) {
-    db.ref('avis/' + nomNormalise + '/' + avisId).remove()
-      .then(() => {
-        alert("Avis supprimé.");
-        afficherAvis(nomService);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la suppression :", error);
-        alert("Une erreur est survenue.");
       });
-  }
+
+    // Fonction pour traiter les avis (le reste du code reste identique)
+    function traiterAvis(avisList, nomAffichage) {
+        const avisArray = Object.entries(avisList).map(([avisId, avis]) => ({ avisId, ...avis }));
+
+        // Récupérer les informations des utilisateurs pour les badges
+        const promises = avisArray.map(avis => {
+            return db.ref(`utilisateurs/${avis.uid}`).once('value')
+                .then(userSnapshot => {
+                    const userData = userSnapshot.val() || {};
+                    return {
+                        ...avis,
+                        hasBadgeMoussaillon: userData.badgeMoussaillon || false,
+                        hasBadgeCommandant: userData.badgeCommandant || false
+                    };
+                });
+        });
+
+        Promise.all(promises).then(avisAvecBadges => {
+            // Trier par priorité: Commandant > Moussaillon > autres
+            avisAvecBadges.sort((a, b) => {
+                if (b.hasBadgeCommandant && !a.hasBadgeCommandant) return 1;
+                if (a.hasBadgeCommandant && !b.hasBadgeCommandant) return -1;
+                if (b.hasBadgeMoussaillon && !a.hasBadgeMoussaillon) return 1;
+                if (a.hasBadgeMoussaillon && !b.hasBadgeMoussaillon) return -1;
+                return 0;
+            });
+
+            contenuAvis.innerHTML = '';
+
+            avisAvecBadges.forEach(({ avisId, hasBadgeMoussaillon, hasBadgeCommandant, ...avis }) => {
+                const avisElement = document.createElement("div");
+                avisElement.className = "avis-item";
+                avisElement.style.marginBottom = "15px";
+                avisElement.style.paddingBottom = "15px";
+                avisElement.style.borderBottom = "1px solid #eee";
+
+                const currentUserId = utilisateurConnecte?.uid;
+                const isOwnAvis = currentUserId && avis.uid === currentUserId;
+                const userVoteType = currentUserId && avis.voteurs?.[currentUserId];
+
+                // CORRECTION : Utiliser le nom d'affichage original
+                const nomEchappe = nomAffichage.replace(/'/g, "\\'");
+                const avisIdEchappe = avisId.replace(/'/g, "\\'");
+
+                const voteButtons = `
+                    <div style="margin-top:10px; display:flex; gap:15px; font-size:18px;">
+                        <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'vert')` : 'void(0)'}" 
+                              style="cursor:${isOwnAvis ? 'default' : 'pointer'};
+                                     ${userVoteType === 'vert' ? 'font-weight:bold;' : ''}">
+                            🟢 ${avis.pointsVerts || 0}
+                        </span>
+                        <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'rouge')` : 'void(0)'}" 
+                              style="cursor:${isOwnAvis ? 'default' : 'pointer'};
+                                     ${userVoteType === 'rouge' ? 'font-weight:bold;' : ''}">
+                            🔴 ${avis.pointsRouges || 0}
+                        </span>
+                    </div>`;
+
+                let deleteButton = '';
+                if (isOwnAvis) {
+                    deleteButton = `<button onclick="supprimerAvis('${nomEchappe}', '${avisIdEchappe}')" style="padding:5px; font-size:12px;">🗑️ Supprimer</button>`;
+                }
+
+                let badgeHtml = '';
+                if (hasBadgeCommandant) {
+                    badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Commandant">';
+                } else if (hasBadgeMoussaillon) {
+                    badgeHtml = '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon">';
+                }
+
+                avisElement.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
+                                 alt="avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
+                            <div>
+                                <strong>${avis.pseudo || "anonyme"}</strong>
+                                ${badgeHtml}
+                                <br>
+                                <small>${avis.date || "Date inconnue"}</small>
+                            </div>
+                        </div>
+                        ${deleteButton}
+                    </div>
+                    <div style="margin-top: 10px;">${avis.text || "(aucun commentaire)"}</div>
+                    ${avis.photoUrl ? `<br><img src="${avis.photoUrl}" style="max-width:100%; max-height:200px; margin-top:10px; border-radius:8px;" />` : ""}
+                    ${avis.videoUrl ? `<br><video controls style="max-width:100%; max-height:300px; margin-top:10px;"><source src="${avis.videoUrl}" type="video/mp4"></video>` : ""}
+                    ${voteButtons}
+                `;
+
+                contenuAvis.appendChild(avisElement);
+            });
+        });
+    }
 }
     function envoyerEmailBadge(email, nom, badgeType) {
         console.log("envoyerEmailBadge appelé avec :", email, nom, badgeType);
