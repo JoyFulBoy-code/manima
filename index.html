@@ -4320,78 +4320,43 @@ function afficherSurCarte(serviceName) {
     }
 
     function centrerSurService(nom) {
-  console.log("🔍 Recherche du service:", nom);
-  
   const service = trouverServiceParNom(nom);
-  if (!service) {
-    console.warn("❌ Service non trouvé :", nom);
-    return;
-  }
-
-  console.log("✅ Service trouvé:", service);
+  if (!service) return;
 
   const decaleLat = service.lat - 0.0022;
   const targetLatLng = L.latLng(service.lat, service.lng);
 
-  // Étape 1 : flyTo la position décalée
   map.flyTo([decaleLat, service.lng], 17, {
     animate: true,
     duration: 1
   });
 
-  // Étape 2 : après un délai, trouver et ouvrir le BON marker
   setTimeout(() => {
     let markerTrouve = null;
-    let distanceMin = Infinity;
 
     clusterLayer.eachLayer(marker => {
       if (!marker.getLatLng) return;
 
       const distance = map.distance(marker.getLatLng(), targetLatLng);
-      
-      // Vérifier aussi le nom du service dans le popup
       const popupContent = marker.getPopup()?.getContent() || '';
       const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
       
-      console.log(`📍 Marker: ${nomDansPopup}, Distance: ${distance}m`);
-      
       if (distance < 10 && nomDansPopup === nom) {
         markerTrouve = marker;
-        console.log("🎯 BON marker trouvé!");
       }
     });
 
     if (markerTrouve) {
       clusterLayer.zoomToShowLayer(markerTrouve, () => {
-        // Fermer tous les popups d'abord
         map.closePopup();
-        // Ouvrir le bon popup
         setTimeout(() => {
           markerTrouve.openPopup();
-          console.log("✅ Popup ouvert pour:", nom);
         }, 100);
       });
-    } else {
-      console.warn("❌ Aucun marker correspondant trouvé pour:", nom);
     }
   }, 1100);
 }
-// Debug pour les recommandations
-function debugRecommandations() {
-  console.log("🔍 Debug des recommandations activé");
-  
-  const container = document.getElementById('recommandation-service');
-  if (container) {
-    container.addEventListener('click', function(e) {
-      if (e.target.tagName === 'LI') {
-        console.log("🎯 Clic sur recommandation:", e.target.textContent);
-      }
-    });
-  }
-}
 
-// Active le debug
-setTimeout(debugRecommandations, 2000);
 
     
     // Fonction pour obtenir les services selon la météo
