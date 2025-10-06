@@ -3822,7 +3822,7 @@ function fermerListeAvis() {
     }
     // Au chargement de la page, vérifier les paramètres URL
     // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
-// VERSION ULTRA-RAPIDE - Fonction pour vérifier les paramètres URL
+// VERSION OPTIMISÉE - Fonction pour vérifier les paramètres URL
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const nomLieu = urlParams.get('lieu');
@@ -3830,64 +3830,96 @@ function verifierParametresURL() {
   const lng = parseFloat(urlParams.get('lng'));
 
   if (nomLieu && lat && lng) {
-    console.log("🚀 CHARGEMENT RAPIDE - Paramètres URL détectés");
+    console.log("🎯 Paramètres URL détectés:", nomLieu);
     
-    // CENTRAGE IMMÉDIAT
+    // 1. Centrage IMMÉDIAT mais on attend les données
     map.setView([lat, lng], 17);
     
-    // RECHERCHE EXPRESS sans attente
-    function rechercherExpress() {
-      let markerTrouve = null;
-      let distanceMin = Infinity;
-      
-      clusterLayer.eachLayer(marker => {
-        if (!marker.getLatLng) return;
-        
-        const markerLatLng = marker.getLatLng();
-        const distance = map.distance(markerLatLng, [lat, lng]);
-        
-        // Vérification ULTRA-RAPIDE
-        if (distance < 100) { // Distance élargie à 100m pour plus de tolérance
-          const popupContent = marker.getPopup()?.getContent() || '';
-          const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
-          
-          if (nomDansPopup && nomDansPopup.includes(nomLieu)) {
-            if (distance < distanceMin) {
-              distanceMin = distance;
-              markerTrouve = marker;
-            }
-          }
-        }
-      });
-
-      if (markerTrouve) {
-        console.log("✅ POPUP OUVERT - Service:", nomLieu);
-        markerTrouve.openPopup();
-      } else {
-        // Essai de secours après 500ms
-        setTimeout(() => {
-          clusterLayer.eachLayer(marker => {
-            const popupContent = marker.getPopup()?.getContent() || '';
-            const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
-            if (nomDansPopup && nomDansPopup.includes(nomLieu)) {
-              marker.openPopup();
-              console.log("✅ POPUP OUVERT (2ème essai)");
-            }
-          });
-        }, 500);
+    // 2. Attendre que les données soient chargées
+    const attendreDonnees = setInterval(() => {
+      if (allFeatures && allFeatures.length > 0 && clusterLayer) {
+        clearInterval(attendreDonnees);
+        console.log("✅ Données chargées, recherche du marqueur...");
+        ouvrirPopupService(nomLieu, lat, lng);
       }
-    }
+    }, 100);
     
-    // Premier essai IMMÉDIAT
-    setTimeout(rechercherExpress, 100);
+    // Timeout de sécurité après 3 secondes
+    setTimeout(() => {
+      clearInterval(attendreDonnees);
+      console.log("⏱️ Timeout - tentative finale");
+      ouvrirPopupService(nomLieu, lat, lng);
+    }, 3000);
   }
 }
 
-// LANCEMENT EXPRESS au chargement
-document.addEventListener('DOMContentLoaded', verifierParametresURL);
+function ouvrirPopupService(nomLieu, lat, lng) {
+  let markerTrouve = null;
+  let meilleureDistance = Infinity;
+  
+  console.log("🔍 Recherche du service:", nomLieu);
+  
+  // Méthode 1: Recherche précise par nom et position
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    
+    const markerLatLng = marker.getLatLng();
+    const distance = map.distance(markerLatLng, [lat, lng]);
+    
+    if (distance < 200) { // Tolérance de 200m
+      const popupContent = marker.getPopup()?.getContent() || '';
+      const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+      
+      if (nomDansPopup) {
+        // Comparaison flexible des noms
+        const nomNormalise = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const nom1 = nomNormalise(nomDansPopup);
+        const nom2 = nomNormalise(nomLieu);
+        
+        if (nom1.includes(nom2) || nom2.includes(nom1)) {
+          if (distance < meilleureDistance) {
+            meilleureDistance = distance;
+            markerTrouve = marker;
+          }
+        }
+      }
+    }
+  });
+  
+  if (markerTrouve) {
+    console.log("✅ Marqueur trouvé! Ouverture du popup...");
+    // Petit délai pour s'assurer que la carte est centrée
+    setTimeout(() => {
+      markerTrouve.openPopup();
+      console.log("🎉 Popup ouvert avec succès!");
+    }, 300);
+  } else {
+    console.log("❌ Marqueur non trouvé, tentative alternative...");
+    // Méthode 2: Recherche uniquement par nom
+    setTimeout(() => {
+      clusterLayer.eachLayer(marker => {
+        const popupContent = marker.getPopup()?.getContent() || '';
+        const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+        if (nomDansPopup && nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase())) {
+          console.log("✅ Marqueur trouvé (méthode alternative)");
+          marker.openPopup();
+        }
+      });
+    }, 800);
+  }
+}
+
+// Lancer la vérification au bon moment
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("📄 Page chargée, vérification des paramètres...");
+  setTimeout(verifierParametresURL, 500);
+});
 
 // Double vérification quand la carte est prête
-map.whenReady(verifierParametresURL);
+map.whenReady(function() {
+  console.log("🗺️ Carte prête, vérification des paramètres...");
+  setTimeout(verifierParametresURL, 700);
+});
 
 // Fonction utilitaire pour trouver un marqueur par nom et coordonnées
 function trouverMarqueurParNomEtPosition(nomRecherche, lat, lng) {
