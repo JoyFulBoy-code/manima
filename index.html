@@ -3748,13 +3748,11 @@ function fermerListeAvis() {
     let lienPartageActuel = '';
 
     function afficherQRModal(nomLieu, lat, lng) {
-  // Créer un lien court POUR LA PRODUCTION (remplace localhost par ton vrai domaine)
-  const domaine = window.location.origin; // Utilise le domaine actuel
+  // Remplacez par votre vrai domaine
+  const domaine = "https://manima.vercel.app"; 
   const lienComplet = `${domaine}?lieu=${encodeURIComponent(nomLieu)}&lat=${lat}&lng=${lng}`;
   
   lienPartageActuel = lienComplet;
-
-  // Afficher le lien dans la modal
   document.getElementById('lien-partage').textContent = lienComplet;
 
   // Générer le QR code
@@ -3762,6 +3760,11 @@ function fermerListeAvis() {
   qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Trouvez-nous ici :</div>';
 
   if (typeof QRCode !== 'undefined') {
+    // Détruire l'ancien QR code s'il existe
+    if (qrCodeActuel) {
+      qrCodeActuel.clear();
+    }
+    
     qrCodeActuel = new QRCode(qrCodeContainer, {
       text: lienComplet,
       width: 200,
@@ -3822,6 +3825,7 @@ function fermerListeAvis() {
     }
     // Au chargement de la page, vérifier les paramètres URL
     // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
+// VERSION AMÉLIORÉE - Plus robuste
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const nomLieu = urlParams.get('lieu');
@@ -3829,53 +3833,80 @@ function verifierParametresURL() {
   const lng = parseFloat(urlParams.get('lng'));
 
   if (nomLieu && lat && lng) {
-    console.log("🚀 Chargement rapide des paramètres URL...");
+    console.log("🚀 Chargement des paramètres URL:", { nomLieu, lat, lng });
     
-    // CENTRAGE IMMÉDIAT (pas de délai)
-    map.setView([lat, lng], 17);
+    // Attendre que la carte et les données soient chargées
+    const attenteMax = 5000; // 5 secondes max
+    const debut = Date.now();
     
-    // RECHERCHE RAPIDE du marqueur
-    function trouverEtOuvrirPopup() {
-      let markerTrouve = null;
-      
-      clusterLayer.eachLayer(marker => {
-        if (!marker.getLatLng) return;
+    function essayerCentrage() {
+      // Vérifier si les données sont chargées
+      if (allFeatures && allFeatures.length > 0 && map) {
+        console.log("✅ Données chargées, centrage en cours...");
         
-        const markerLatLng = marker.getLatLng();
-        const distance = map.distance(markerLatLng, [lat, lng]);
+        // Centrer la carte
+        map.setView([lat, lng], 17);
         
-        // Vérification ULTRA-RAPIDE
-        if (distance < 30) { // Distance réduite pour plus de vitesse
-          const popupContent = marker.getPopup()?.getContent() || '';
-          const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
-          
-          if (nomDansPopup === nomLieu) {
-            markerTrouve = marker;
-            return true; // Break the loop
-          }
-        }
-      });
-
-      if (markerTrouve) {
-        console.log("✅ Popup ouvert !");
-        markerTrouve.openPopup();
+        // Attendre un peu que le centrage soit effectif
+        setTimeout(() => {
+          trouverEtOuvrirPopup(nomLieu, lat, lng);
+        }, 500);
+        
+      } else if (Date.now() - debut < attenteMax) {
+        // Réessayer dans 200ms
+        setTimeout(essayerCentrage, 200);
       } else {
-        // Si pas trouvé du premier coup, on réessaie une fois rapidement
-        console.log("🔄 Recherche rapide...");
-        setTimeout(trouverEtOuvrirPopup, 300);
+        console.error("❌ Timeout: données non chargées");
       }
     }
     
-    // Premier essai IMMÉDIAT
-    setTimeout(trouverEtOuvrirPopup, 100);
+    essayerCentrage();
   }
 }
 
-// Appeler AU PLUS VITE
-document.addEventListener('DOMContentLoaded', function() {
-  // Pas de délai, on lance tout de suite
-  verifierParametresURL();
-});
+function trouverEtOuvrirPopup(nomLieu, lat, lng) {
+  let markerTrouve = null;
+  const positionCible = L.latLng(lat, lng);
+  
+  console.log(`🔍 Recherche du marqueur: "${nomLieu}"`);
+  
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    
+    const markerLatLng = marker.getLatLng();
+    const distance = map.distance(markerLatLng, positionCible);
+    
+    // Distance plus large pour plus de tolérance
+    if (distance < 50) {
+      const popupContent = marker.getPopup()?.getContent() || '';
+      const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+      
+      console.log(`📍 Marqueur trouvé: "${nomDansPopup}" - Distance: ${distance}m`);
+      
+      if (nomDansPopup && nomDansPopup.trim() === nomLieu.trim()) {
+        markerTrouve = marker;
+      }
+    }
+  });
+
+  if (markerTrouve) {
+    console.log("✅ Ouverture du popup...");
+    
+    // Zoom sur le cluster qui contient le marqueur
+    clusterLayer.zoomToShowLayer(markerTrouve, function() {
+      // Petit délai pour que l'animation se termine
+      setTimeout(() => {
+        map.closePopup();
+        markerTrouve.openPopup();
+        console.log("🎉 Popup ouvert avec succès!");
+      }, 300);
+    });
+  } else {
+    console.warn("❌ Marqueur non trouvé, réessai...");
+    // Réessayer une fois
+    setTimeout(() => trouverEtOuvrirPopup(nomLieu, lat, lng), 1000);
+  }
+}
     
 
 
