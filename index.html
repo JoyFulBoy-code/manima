@@ -3822,7 +3822,7 @@ function fermerListeAvis() {
     }
     // Au chargement de la page, vérifier les paramètres URL
     // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
-// VERSION OPTIMISÉE - Fonction pour vérifier les paramètres URL
+// VERSION CORRIGÉE - Fonction pour vérifier les paramètres URL
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const nomLieu = urlParams.get('lieu');
@@ -3835,21 +3835,31 @@ function verifierParametresURL() {
     // 1. Centrage IMMÉDIAT mais on attend les données
     map.setView([lat, lng], 17);
     
-    // 2. Attendre que les données soient chargées
-    const attendreDonnees = setInterval(() => {
-      if (allFeatures && allFeatures.length > 0 && clusterLayer) {
-        clearInterval(attendreDonnees);
-        console.log("✅ Données chargées, recherche du marqueur...");
-        ouvrirPopupService(nomLieu, lat, lng);
-      }
-    }, 100);
+    // 2. Attendre que les données ET la géolocalisation soient stabilisées
+    let tentatives = 0;
+    const maxTentatives = 10;
     
-    // Timeout de sécurité après 3 secondes
-    setTimeout(() => {
-      clearInterval(attendreDonnees);
-      console.log("⏱️ Timeout - tentative finale");
-      ouvrirPopupService(nomLieu, lat, lng);
-    }, 3000);
+    const essayerOuvrirPopup = () => {
+      tentatives++;
+      
+      // Vérifier si les données sont chargées ET si la géolocalisation est stable
+      if (allFeatures && allFeatures.length > 0 && clusterLayer) {
+        console.log("✅ Données chargées, tentative", tentatives, "d'ouverture du popup");
+        
+        // Attendre un peu que la géolocalisation se stabilise
+        setTimeout(() => {
+          ouvrirPopupService(nomLieu, lat, lng);
+        }, 1000);
+      } else if (tentatives < maxTentatives) {
+        // Réessayer après 500ms
+        setTimeout(essayerOuvrirPopup, 500);
+      } else {
+        console.log("❌ Échec après", maxTentatives, "tentatives");
+      }
+    };
+    
+    // Démarrer la première tentative après un délai plus long
+    setTimeout(essayerOuvrirPopup, 2000);
   }
 }
 
@@ -3888,11 +3898,25 @@ function ouvrirPopupService(nomLieu, lat, lng) {
   
   if (markerTrouve) {
     console.log("✅ Marqueur trouvé! Ouverture du popup...");
-    // Petit délai pour s'assurer que la carte est centrée
+    
+    // FERMER TOUS LES POPUPS EXISTANTS d'abord
+    map.closePopup();
+    
+    // Attendre un peu pour s'assurer que tout est stable
     setTimeout(() => {
+      // Ouvrir le popup
       markerTrouve.openPopup();
       console.log("🎉 Popup ouvert avec succès!");
-    }, 300);
+      
+      // VÉRIFICATION : si le popup se ferme trop vite, on le rouvre
+      setTimeout(() => {
+        if (!markerTrouve.getPopup().isOpen()) {
+          console.log("🔄 Popup fermé trop tôt, réouverture...");
+          markerTrouve.openPopup();
+        }
+      }, 2000);
+      
+    }, 1500); // Délai plus long pour laisser le temps à la géolocalisation
   } else {
     console.log("❌ Marqueur non trouvé, tentative alternative...");
     // Méthode 2: Recherche uniquement par nom
@@ -3902,23 +3926,60 @@ function ouvrirPopupService(nomLieu, lat, lng) {
         const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
         if (nomDansPopup && nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase())) {
           console.log("✅ Marqueur trouvé (méthode alternative)");
-          marker.openPopup();
+          map.closePopup(); // Fermer d'abord
+          setTimeout(() => {
+            marker.openPopup();
+          }, 1000);
         }
       });
-    }, 800);
+    }, 3000);
   }
 }
+
+// MODIFICATION DE LA GÉOLOCALISATION - Empêcher le recentrage automatique
+navigator.geolocation.watchPosition(
+  pos => {
+    userLocation = [pos.coords.latitude, pos.coords.longitude];
+    const heading = pos.coords.heading || 0;
+
+    if (userMarker) {
+        userMarker.setLatLng(userLocation);
+        userMarker.setRotationAngle(heading);
+    } else {
+        userMarker = L.marker(userLocation, {
+            icon: arrowIcon,
+            rotationAngle: heading,
+            rotationOrigin: 'center center'
+        }).addTo(map).bindPopup("📍 Vous êtes ici");
+        
+        // NE PAS OUVRIR LE POPUP AUTOMATIQUEMENT pour ne pas interférer
+        // map.setView(userLocation, 17); // Commenté pour éviter le recentrage
+    }
+
+    // Pendant le suivi d'itinéraire, la carte s'oriente vers l'avant
+    if (suiviItineraire) {
+        orienterCarteVersDirection(heading);
+    }
+  }, 
+  err => console.error("Erreur de géolocalisation :", err), 
+  {
+    enableHighAccuracy: true,
+    maximumAge: 10000, // Augmenté à 10 secondes
+    timeout: 15000     // Augmenté à 15 secondes
+  }
+);
 
 // Lancer la vérification au bon moment
 document.addEventListener('DOMContentLoaded', function() {
   console.log("📄 Page chargée, vérification des paramètres...");
-  setTimeout(verifierParametresURL, 500);
+  // Délai plus long pour laisser le temps à la géolocalisation
+  setTimeout(verifierParametresURL, 3000);
 });
 
 // Double vérification quand la carte est prête
 map.whenReady(function() {
   console.log("🗺️ Carte prête, vérification des paramètres...");
-  setTimeout(verifierParametresURL, 700);
+  setTimeout(verifierParametresURL, 3500);
 });
 
 // Fonction utilitaire pour trouver un marqueur par nom et coordonnées
