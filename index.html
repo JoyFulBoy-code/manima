@@ -84,6 +84,16 @@
     (function() {
       emailjs.init('NgKsLCNz1k3Yxpue7');
     })();
+
+    // ✅ COLLEZ ICI - Surveillance EmailJS
+    const oldEmailSend = emailjs.send;
+    emailjs.send = function(...args) {
+      if (window.serviceMonitor) {
+        window.serviceMonitor.usage.emailSends++;
+        console.log('📧 Email envoyé - Total:', window.serviceMonitor.usage.emailSends);
+      }
+      return oldEmailSend.apply(this, args);
+    };
   </script>
   <!-- Remplacez l'ancien import par celui-ci -->
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -1482,6 +1492,32 @@ body {
 #stop-itineraire-btn:hover {
   background-color: #cc0000;
 }
+
+/* Amélioration des popups pour éviter les collisions */
+.leaflet-popup {
+    pointer-events: auto !important;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.leaflet-popup-content {
+    margin: 15px;
+    line-height: 1.5;
+}
+
+/* Espacement entre les popups */
+.leaflet-marker-icon {
+    z-index: 1000;
+}
+
+.leaflet-popup {
+    z-index: 2000;
+}
   </style>
 </head>
 <body>
@@ -1729,6 +1765,152 @@ body {
     });
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
+    // SYSTEME DE MONITORING GRATUIT
+    class ServiceMonitor {
+      constructor() {
+        this.usage = {
+          firebaseReads: 0,
+          firebaseWrites: 0,
+          mapboxCalls: 0,
+          emailSends: 0,
+          weatherCalls: 0
+        };
+        
+        this.limits = {
+          firebaseReads: 50000,     // 50K/jour
+          firebaseWrites: 20000,    // 20K/jour  
+          mapboxCalls: 1667,        // 50K/mois ÷ 30
+          emailSends: 6,            // 200/mois ÷ 30
+          weatherCalls: 33          // 1K/mois ÷ 30
+        };
+        
+        this.startMonitoring();
+      }
+      
+      startMonitoring() {
+        // Surveiller Firebase
+        this.monitorFirebase();
+        
+        // Surveiller Mapbox
+        this.monitorMapbox();
+        
+        // Alertes quotidiennes
+        setInterval(() => this.dailyReport(), 24 * 60 * 60 * 1000);
+        
+        // Vérification toutes les heures
+        setInterval(() => this.checkLimits(), 60 * 60 * 1000);
+      }
+      
+      monitorFirebase() {
+        const oldRef = firebase.database.Reference.prototype.set;
+        firebase.database.Reference.prototype.set = function(...args) {
+          window.serviceMonitor.usage.firebaseWrites++;
+          return oldRef.apply(this, args);
+        };
+        
+        const oldOn = firebase.database.Reference.prototype.on;
+        firebase.database.Reference.prototype.on = function(...args) {
+          window.serviceMonitor.usage.firebaseReads++;
+          return oldOn.apply(this, args);
+        };
+      }
+      
+      monitorMapbox() {
+        const oldFlyTo = L.Map.prototype.flyTo;
+        L.Map.prototype.flyTo = function(...args) {
+          window.serviceMonitor.usage.mapboxCalls++;
+          return oldFlyTo.apply(this, args);
+        };
+      }
+      
+      checkLimits() {
+        const warnings = [];
+        
+        if (this.usage.firebaseReads > this.limits.firebaseReads * 0.8) {
+          warnings.push(`🚨 Firebase: ${this.usage.firebaseReads}/50K lectures`);
+        }
+        
+        if (this.usage.firebaseWrites > this.limits.firebaseWrites * 0.8) {
+          warnings.push(`🚨 Firebase: ${this.usage.firebaseWrites}/20K écritures`);
+        }
+        
+        if (this.usage.mapboxCalls > this.limits.mapboxCalls * 0.8) {
+          warnings.push(`🚨 Mapbox: ${this.usage.mapboxCalls}/1,667 appels`);
+        }
+        
+        if (this.usage.emailSends > this.limits.emailSends * 0.8) {
+          warnings.push(`🚨 EmailJS: ${this.usage.emailSends}/6 emails`);
+        }
+        
+        if (warnings.length > 0) {
+          this.showAlert(warnings.join('\n'));
+        }
+      }
+      
+      showAlert(message) {
+        // Alert visible pour vous
+        const alertDiv = document.createElement('div');
+        alertDiv.style.cssText = `
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          background: #ff4444;
+          color: white;
+          padding: 15px;
+          border-radius: 5px;
+          z-index: 10000;
+          max-width: 300px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        alertDiv.innerHTML = `
+          <strong>🚨 LIMITE APPROCHANTE</strong>
+          <div style="margin-top: 8px; font-size: 12px;">${message}</div>
+          <button onclick="this.parentElement.remove()" style="margin-top: 8px; padding: 5px;">Fermer</button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Email automatique à vous-même
+        this.sendAlertEmail(message);
+      }
+      
+      async sendAlertEmail(message) {
+        try {
+          await emailjs.send('service_wreyh0i', 'template_5enx2ae', {
+            to_email: 'elmessaoudianiss@gmail.com',
+            subject: '🚨 Manima - Limite de service approchante',
+            message: message
+          });
+        } catch (error) {
+          console.log('Email alert non envoyé:', error);
+        }
+      }
+      
+      dailyReport() {
+        console.log('📊 RAPPORT QUOTIDIEN - Manima:');
+        console.log(`📈 Firebase lectures: ${this.usage.firebaseReads}`);
+        console.log(`📈 Firebase écritures: ${this.usage.firebaseWrites}`);
+        console.log(`🗺️ Mapbox appels: ${this.usage.mapboxCalls}`);
+        console.log(`📧 Emails envoyés: ${this.usage.emailSends}`);
+        console.log(`🌤️ Appels météo: ${this.usage.weatherCalls}`);
+        
+        // Réinitialiser les compteurs
+        this.usage = {
+          firebaseReads: 0,
+          firebaseWrites: 0, 
+          mapboxCalls: 0,
+          emailSends: 0,
+          weatherCalls: 0
+        };
+      }
+    }
+
+    // Démarrer le monitoring - ATTENDRE que tout soit chargé
+    setTimeout(() => {
+      window.serviceMonitor = new ServiceMonitor();
+      console.log('✅ Monitoring des services activé');
+    }, 2000);
+
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/duea4ynnh/upload';
     const CLOUDINARY_UPLOAD_PRESET = 'avis_image';
 
@@ -2470,11 +2652,10 @@ function matchesFilter(props, filter) {
   return filterWords.every(fw => fields.some(f => f.startsWith(fw)));
 }
 
-// Dans la fonction createMarker, modifier le bouton itinéraire
+// REMPLACE ta fonction createMarker par ceci :
 function createMarker(props, lat, lng) {
-  // Échapper les apostrophes dans le nom
   const nomEchappe = props.name.replace(/'/g, "\\'");
-  // Construction du contenu du popup
+  
   let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
 
   // Boutons principaux
@@ -2482,21 +2663,17 @@ function createMarker(props, lat, lng) {
     ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
     ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
   
-  // Bouton pour les horaires (avec formatage)
   if (props.opening_hours) {
     const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" 
-  onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
+    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
   }
   
-  // Bouton pour les tarifs (si disponible)
   if (props.price || props.tarifs) {
     const tarifs = props.price || props.tarifs;
     const formattedTarifs = tarifs.replace(/\n/g, '<br>');
     popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
   }
   
-  // Boutons communs - LE BOUTON ITINÉRAIRE FERME LA POPUP AUTOMATIQUEMENT
   popupContent += `
     <button class="popup-btn" onclick="map.closePopup(); tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
     <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
@@ -2505,10 +2682,25 @@ function createMarker(props, lat, lng) {
     <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
   `;
 
-  return L.marker([lat, lng], {
+  const marker = L.marker([lat, lng], {
     icon: getIconByCategory(props)
   }).bindPopup(popupContent);
+
+  // FORCER l'ouverture du bon popup
+  marker.on('click', function(e) {
+    // Fermer IMMÉDIATEMENT tous les popups
+    map.closePopup();
+    
+    // Ouvrir le bon popup après un très court délai
+    setTimeout(() => {
+      marker.openPopup();
+    }, 10);
+  });
+
+  return marker;
 }
+
+
 
 // Nouvelle fonction pour afficher les détails dans une popup
 function afficherDetailsPopup(nom, type, contenu) {
@@ -3749,6 +3941,10 @@ let weatherCache = {
 };
 
 async function getLilleWeather() {
+  // COMPTER LES APPELS MÉTÉO
+  if (window.serviceMonitor) {
+    window.serviceMonitor.usage.weatherCalls++;
+  }
   const now = Date.now();
   
   // 🔥 CACHE INTELLIGENT - Économise 90% des appels API
@@ -4124,11 +4320,15 @@ function afficherSurCarte(serviceName) {
     }
 
     function centrerSurService(nom) {
+  console.log("🔍 Recherche du service:", nom);
+  
   const service = trouverServiceParNom(nom);
   if (!service) {
-    console.warn("Service non trouvé :", nom);
+    console.warn("❌ Service non trouvé :", nom);
     return;
   }
+
+  console.log("✅ Service trouvé:", service);
 
   const decaleLat = service.lat - 0.0022;
   const targetLatLng = L.latLng(service.lat, service.lng);
@@ -4139,30 +4339,59 @@ function afficherSurCarte(serviceName) {
     duration: 1
   });
 
-  // Étape 2 : après un petit délai, chercher et ouvrir le marker
-  // (le délai permet à flyTo de terminer, sans dépendre de moveend)
+  // Étape 2 : après un délai, trouver et ouvrir le BON marker
   setTimeout(() => {
-    let trouvé = false;
+    let markerTrouve = null;
+    let distanceMin = Infinity;
 
     clusterLayer.eachLayer(marker => {
       if (!marker.getLatLng) return;
 
       const distance = map.distance(marker.getLatLng(), targetLatLng);
-      if (distance < 10 && !trouvé) {
-        trouvé = true;
-
-        // zoomToShowLayer assure que le marker est bien visible (cluster déplié)
-        clusterLayer.zoomToShowLayer(marker, () => {
-          marker.openPopup();
-        });
+      
+      // Vérifier aussi le nom du service dans le popup
+      const popupContent = marker.getPopup()?.getContent() || '';
+      const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+      
+      console.log(`📍 Marker: ${nomDansPopup}, Distance: ${distance}m`);
+      
+      if (distance < 10 && nomDansPopup === nom) {
+        markerTrouve = marker;
+        console.log("🎯 BON marker trouvé!");
       }
     });
 
-    if (!trouvé) {
-      console.warn("Aucun marker trouvé à proximité pour : ", nom);
+    if (markerTrouve) {
+      clusterLayer.zoomToShowLayer(markerTrouve, () => {
+        // Fermer tous les popups d'abord
+        map.closePopup();
+        // Ouvrir le bon popup
+        setTimeout(() => {
+          markerTrouve.openPopup();
+          console.log("✅ Popup ouvert pour:", nom);
+        }, 100);
+      });
+    } else {
+      console.warn("❌ Aucun marker correspondant trouvé pour:", nom);
     }
-  }, 1100); // durée du flyTo (1000ms) + petite marge
+  }, 1100);
 }
+// Debug pour les recommandations
+function debugRecommandations() {
+  console.log("🔍 Debug des recommandations activé");
+  
+  const container = document.getElementById('recommandation-service');
+  if (container) {
+    container.addEventListener('click', function(e) {
+      if (e.target.tagName === 'LI') {
+        console.log("🎯 Clic sur recommandation:", e.target.textContent);
+      }
+    });
+  }
+}
+
+// Active le debug
+setTimeout(debugRecommandations, 2000);
 
     
     // Fonction pour obtenir les services selon la météo
@@ -4320,17 +4549,19 @@ async function afficherRecommandations() {
       serviceElem.innerHTML = "<div style='text-align:center; padding:10px;'>Aucune recommandation valide</div>";
     } else {
       const listHtml = validRecommendations
-        .map(rec => `<li>${rec}</li>`)
-        .join('');
-      
-      serviceElem.innerHTML = `<ul>${listHtml}</ul>`;
-      
-      const items = serviceElem.querySelectorAll('li');
-      items.forEach(item => {
-        item.addEventListener('click', () => {
-          centrerSurService(item.textContent);
-        });
-      });
+  .map(rec => `<li data-service="${rec}">${rec}</li>`)
+  .join('');
+
+serviceElem.innerHTML = `<ul>${listHtml}</ul>`;
+
+const items = serviceElem.querySelectorAll('li');
+items.forEach(item => {
+  item.addEventListener('click', () => {
+    const serviceName = item.getAttribute('data-service');
+    console.log("🎯 Clic recommandation:", serviceName);
+    centrerSurService(serviceName);
+  });
+});
     }
     
     const now = new Date();
