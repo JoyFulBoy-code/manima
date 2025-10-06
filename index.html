@@ -3748,35 +3748,35 @@ function fermerListeAvis() {
     let lienPartageActuel = '';
 
     function afficherQRModal(nomLieu, lat, lng) {
-      // Créer un lien court pour ce lieu
-      const lienComplet = `${window.location.origin}${window.location.pathname}?lieu=${ encodeURIComponent(nomLieu)}&lat=${lat}&lng=${lng}`;
-      lienPartageActuel = lienComplet;
+  // Créer un lien court POUR LA PRODUCTION (remplace localhost par ton vrai domaine)
+  const domaine = window.location.origin; // Utilise le domaine actuel
+  const lienComplet = `${domaine}?lieu=${encodeURIComponent(nomLieu)}&lat=${lat}&lng=${lng}`;
+  
+  lienPartageActuel = lienComplet;
 
-      // Afficher le lien dans la modal
-      document.getElementById('lien-partage').textContent = lienComplet;
+  // Afficher le lien dans la modal
+  document.getElementById('lien-partage').textContent = lienComplet;
 
-      // Générer le QR code avec le texte
-      const qrCodeContainer = document.getElementById('qr-code-container');
-      qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Trouvez-nous ici :</div>'; // Texte ajouté
+  // Générer le QR code
+  const qrCodeContainer = document.getElementById('qr-code-container');
+  qrCodeContainer.innerHTML = '<div style="text-align:center; font-weight:bold; margin-bottom:10px;">Trouvez-nous ici :</div>';
 
-      // Vérifier que QRCode est bien disponible
-      if (typeof QRCode !== 'undefined') {
-        qrCodeActuel = new QRCode(qrCodeContainer, {
-          text: lienComplet,
-          width: 200,
-          height: 200,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-      } else {
-        console.error("La librairie QRCode n'est pas chargée");
-        qrCodeContainer.innerHTML = '<p>Erreur de génération du QR Code</p>';
-        return;
-      }
+  if (typeof QRCode !== 'undefined') {
+    qrCodeActuel = new QRCode(qrCodeContainer, {
+      text: lienComplet,
+      width: 200,
+      height: 200,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } else {
+    qrCodeContainer.innerHTML = '<p>Erreur de génération du QR Code</p>';
+    return;
+  }
 
-      document.getElementById('qr-modal').style.display = 'block';
-    }
+  document.getElementById('qr-modal').style.display = 'block';
+}
 
     function fermerQRModal() {
       document.getElementById('qr-modal').style.display = 'none';
@@ -3821,27 +3821,62 @@ function fermerListeAvis() {
         .catch(err => console.error('Erreur lors de la copie :', err));
     }
     // Au chargement de la page, vérifier les paramètres URL
-    function verifierParametresURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const nomLieu = urlParams.get('lieu');
-      const lat = urlParams.get('lat');
-      const lng = urlParams.get('lng');
-  
-      if (nomLieu && lat && lng) {
-        // Centrer la carte sur le lieu et ouvrir le popup
-        map.setView([lat, lng], 17);
-    
-        // Trouver le marqueur correspondant
-        clusterLayer.eachLayer(marker => {
-          if (marker.getLatLng().lat == lat && marker.getLatLng().lng == lng) {
-            marker.openPopup();
-          }
-        });
-      }
-    }
+    // CORRECTION de la fonction pour ouvrir automatiquement le popup
+function verifierParametresURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const nomLieu = urlParams.get('lieu');
+  const lat = parseFloat(urlParams.get('lat'));
+  const lng = parseFloat(urlParams.get('lng'));
 
-    // Appeler cette fonction à la fin du chargement de la page
-    document.addEventListener('DOMContentLoaded', verifierParametresURL);
+  if (nomLieu && lat && lng) {
+    console.log("📍 Paramètres URL détectés:", nomLieu, lat, lng);
+    
+    // Attendre que la carte et les données soient chargées
+    setTimeout(() => {
+      // Centrer sur la position
+      map.setView([lat, lng], 17);
+      
+      // Trouver et ouvrir le marqueur correspondant
+      let markerTrouve = null;
+      let distanceMin = Infinity;
+
+      clusterLayer.eachLayer(marker => {
+        if (!marker.getLatLng) return;
+        
+        const markerLatLng = marker.getLatLng();
+        const distance = map.distance(markerLatLng, [lat, lng]);
+        
+        // Vérifier aussi le nom dans le popup
+        const popupContent = marker.getPopup()?.getContent() || '';
+        const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+        
+        if (distance < 50 && nomDansPopup === nomLieu) {
+          if (distance < distanceMin) {
+            distanceMin = distance;
+            markerTrouve = marker;
+          }
+        }
+      });
+
+      if (markerTrouve) {
+        console.log("✅ Marqueur trouvé, ouverture du popup...");
+        // Petit délai pour que la carte soit stable
+        setTimeout(() => {
+          markerTrouve.openPopup();
+          console.log("🎉 Popup ouvert automatiquement !");
+        }, 1000);
+      } else {
+        console.warn("❌ Aucun marqueur correspondant trouvé");
+      }
+    }, 1500); // Délai pour laisser le temps au chargement
+  }
+}
+
+// Appeler cette fonction au chargement
+document.addEventListener('DOMContentLoaded', function() {
+  // Attendre que tout soit chargé
+  setTimeout(verifierParametresURL, 2000);
+});
     
 
 
