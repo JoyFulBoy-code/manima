@@ -3821,7 +3821,7 @@ function fermerListeAvis() {
         .catch(err => console.error('Erreur lors de la copie :', err));
     }
     // Au chargement de la page, vérifier les paramètres URL
-    // CORRECTION de la fonction pour ouvrir automatiquement le popup
+    // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const nomLieu = urlParams.get('lieu');
@@ -3829,53 +3829,52 @@ function verifierParametresURL() {
   const lng = parseFloat(urlParams.get('lng'));
 
   if (nomLieu && lat && lng) {
-    console.log("📍 Paramètres URL détectés:", nomLieu, lat, lng);
+    console.log("🚀 Chargement rapide des paramètres URL...");
     
-    // Attendre que la carte et les données soient chargées
-    setTimeout(() => {
-      // Centrer sur la position
-      map.setView([lat, lng], 17);
-      
-      // Trouver et ouvrir le marqueur correspondant
+    // CENTRAGE IMMÉDIAT (pas de délai)
+    map.setView([lat, lng], 17);
+    
+    // RECHERCHE RAPIDE du marqueur
+    function trouverEtOuvrirPopup() {
       let markerTrouve = null;
-      let distanceMin = Infinity;
-
+      
       clusterLayer.eachLayer(marker => {
         if (!marker.getLatLng) return;
         
         const markerLatLng = marker.getLatLng();
         const distance = map.distance(markerLatLng, [lat, lng]);
         
-        // Vérifier aussi le nom dans le popup
-        const popupContent = marker.getPopup()?.getContent() || '';
-        const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
-        
-        if (distance < 50 && nomDansPopup === nomLieu) {
-          if (distance < distanceMin) {
-            distanceMin = distance;
+        // Vérification ULTRA-RAPIDE
+        if (distance < 30) { // Distance réduite pour plus de vitesse
+          const popupContent = marker.getPopup()?.getContent() || '';
+          const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+          
+          if (nomDansPopup === nomLieu) {
             markerTrouve = marker;
+            return true; // Break the loop
           }
         }
       });
 
       if (markerTrouve) {
-        console.log("✅ Marqueur trouvé, ouverture du popup...");
-        // Petit délai pour que la carte soit stable
-        setTimeout(() => {
-          markerTrouve.openPopup();
-          console.log("🎉 Popup ouvert automatiquement !");
-        }, 1000);
+        console.log("✅ Popup ouvert !");
+        markerTrouve.openPopup();
       } else {
-        console.warn("❌ Aucun marqueur correspondant trouvé");
+        // Si pas trouvé du premier coup, on réessaie une fois rapidement
+        console.log("🔄 Recherche rapide...");
+        setTimeout(trouverEtOuvrirPopup, 300);
       }
-    }, 1500); // Délai pour laisser le temps au chargement
+    }
+    
+    // Premier essai IMMÉDIAT
+    setTimeout(trouverEtOuvrirPopup, 100);
   }
 }
 
-// Appeler cette fonction au chargement
+// Appeler AU PLUS VITE
 document.addEventListener('DOMContentLoaded', function() {
-  // Attendre que tout soit chargé
-  setTimeout(verifierParametresURL, 2000);
+  // Pas de délai, on lance tout de suite
+  verifierParametresURL();
 });
     
 
