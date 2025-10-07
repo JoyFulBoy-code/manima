@@ -1518,6 +1518,52 @@ body {
 .leaflet-popup {
     z-index: 2000;
 }
+
+/*hgzzedkuyhjvazd*/
+/* CORRECTION DU SCROLL DANS LES AVIS */
+#liste-avis-modal .modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#contenu-avis {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 10px;
+  margin-top: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+/* Amélioration du scroll sur mobile */
+@media (max-width: 768px) {
+  #liste-avis-modal .modal-content {
+    max-height: 90vh;
+    margin: 2% auto;
+  }
+  
+  #contenu-avis {
+    max-height: 70vh;
+  }
+}
+
+/* Style amélioré pour les éléments d'avis */
+.avis-item {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.avis-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
   </style>
 </head>
 <body>
@@ -2977,38 +3023,45 @@ async function supprimerAvis(nomService, avisId) {
     const contenuAvis = document.getElementById("contenu-avis");
     contenuAvis.innerHTML = "<div class='loading-dots'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>";
 
-    // CORRECTION : Essayer d'abord avec le nom ORIGINAL, puis avec le nom normalisé
+    // FORCER le redimensionnement pour activer le scroll
+    setTimeout(() => {
+        const modalContent = document.querySelector('#liste-avis-modal .modal-content');
+        if (modalContent) {
+            modalContent.style.display = 'flex';
+            modalContent.style.flexDirection = 'column';
+        }
+    }, 100);
+
+    // Le reste de votre code existant...
     const nomOriginal = nom;
     const nomNormalise = normaliserNomPourFirebase(nom);
     
-    // Essayer d'abord avec le nom original (pour les anciens avis)
+    // Votre code de chargement des avis...
     db.ref('avis/' + nomOriginal).once('value')
       .then(snapshot => {
         if (snapshot.exists()) {
           console.log("✅ Avis trouvés avec le nom original");
           traiterAvis(snapshot.val(), nomOriginal);
         } else {
-          // Si pas trouvé, essayer avec le nom normalisé
-          console.log("🔍 Essai avec le nom normalisé");
-          return db.ref('avis/' + nomNormalise).once('value')
+          db.ref('avis/' + nomNormalise).once('value')
             .then(snapshotNormalise => {
               if (snapshotNormalise.exists()) {
                 console.log("✅ Avis trouvés avec le nom normalisé");
                 traiterAvis(snapshotNormalise.val(), nomOriginal);
               } else {
                 console.log("❌ Aucun avis trouvé");
-                contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Aucun avis pour ce lieu</i></div>";
+                contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #666;'><i>Aucun avis pour ce lieu pour le moment</i></div>";
               }
             });
         }
       })
       .catch(error => {
         console.error("Erreur lors du chargement des avis:", error);
-        contenuAvis.innerHTML = "<div style='text-align:center; padding:20px;'><i>Impossible de charger les avis</i></div>";
+        contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #ff4444;'><i>Impossible de charger les avis</i></div>";
       });
 
-    // Fonction pour traiter les avis (le reste du code reste identique)
     function traiterAvis(avisList, nomAffichage) {
+        // Votre code existant de traitement des avis...
         const avisArray = Object.entries(avisList).map(([avisId, avis]) => ({ avisId, ...avis }));
 
         // Récupérer les informations des utilisateurs pour les badges
@@ -3036,18 +3089,19 @@ async function supprimerAvis(nomService, avisId) {
 
             contenuAvis.innerHTML = '';
 
+            if (avisAvecBadges.length === 0) {
+                contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #666;'><i>Aucun avis pour ce lieu</i></div>";
+                return;
+            }
+
             avisAvecBadges.forEach(({ avisId, hasBadgeMoussaillon, hasBadgeCommandant, ...avis }) => {
                 const avisElement = document.createElement("div");
                 avisElement.className = "avis-item";
-                avisElement.style.marginBottom = "15px";
-                avisElement.style.paddingBottom = "15px";
-                avisElement.style.borderBottom = "1px solid #eee";
 
                 const currentUserId = utilisateurConnecte?.uid;
                 const isOwnAvis = currentUserId && avis.uid === currentUserId;
                 const userVoteType = currentUserId && avis.voteurs?.[currentUserId];
 
-                // CORRECTION : Utiliser le nom d'affichage original
                 const nomEchappe = nomAffichage.replace(/'/g, "\\'");
                 const avisIdEchappe = avisId.replace(/'/g, "\\'");
 
@@ -3055,50 +3109,55 @@ async function supprimerAvis(nomService, avisId) {
                     <div style="margin-top:10px; display:flex; gap:15px; font-size:18px;">
                         <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'vert')` : 'void(0)'}" 
                               style="cursor:${isOwnAvis ? 'default' : 'pointer'};
-                                     ${userVoteType === 'vert' ? 'font-weight:bold;' : ''}">
+                                     ${userVoteType === 'vert' ? 'font-weight:bold; color: green;' : ''}">
                             🟢 ${avis.pointsVerts || 0}
                         </span>
                         <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'rouge')` : 'void(0)'}" 
                               style="cursor:${isOwnAvis ? 'default' : 'pointer'};
-                                     ${userVoteType === 'rouge' ? 'font-weight:bold;' : ''}">
+                                     ${userVoteType === 'rouge' ? 'font-weight:bold; color: red;' : ''}">
                             🔴 ${avis.pointsRouges || 0}
                         </span>
                     </div>`;
 
                 let deleteButton = '';
                 if (isOwnAvis) {
-                    deleteButton = `<button onclick="supprimerAvis('${nomEchappe}', '${avisIdEchappe}')" style="padding:5px; font-size:12px;">🗑️ Supprimer</button>`;
+                    deleteButton = `<button onclick="supprimerAvis('${nomEchappe}', '${avisIdEchappe}')" style="padding:5px 10px; font-size:12px; background: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer;">🗑️ Supprimer</button>`;
                 }
 
                 let badgeHtml = '';
                 if (hasBadgeCommandant) {
-                    badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Commandant">';
+                    badgeHtml = '<img src="commandant.png" class="badge-moussaillon" title="Commandant" style="width: 30px; height: 30px;">';
                 } else if (hasBadgeMoussaillon) {
-                    badgeHtml = '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon">';
+                    badgeHtml = '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon" style="width: 30px; height: 30px;">';
                 }
 
                 avisElement.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(avis.pseudo || "A")}&background=4CAF50&color=fff&rounded=true" 
                                  alt="avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
                             <div>
-                                <strong>${avis.pseudo || "anonyme"}</strong>
+                                <strong style="font-size: 16px;">${avis.pseudo || "anonyme"}</strong>
                                 ${badgeHtml}
                                 <br>
-                                <small>${avis.date || "Date inconnue"}</small>
+                                <small style="color: #666;">${avis.date || "Date inconnue"}</small>
                             </div>
                         </div>
                         ${deleteButton}
                     </div>
-                    <div style="margin-top: 10px;">${avis.text || "(aucun commentaire)"}</div>
+                    <div style="margin: 10px 0; font-size: 14px; line-height: 1.5;">${avis.text || "(aucun commentaire)"}</div>
                     ${avis.photoUrl ? `<br><img src="${avis.photoUrl}" style="max-width:100%; max-height:200px; margin-top:10px; border-radius:8px;" />` : ""}
-                    ${avis.videoUrl ? `<br><video controls style="max-width:100%; max-height:300px; margin-top:10px;"><source src="${avis.videoUrl}" type="video/mp4"></video>` : ""}
+                    ${avis.videoUrl ? `<br><video controls style="max-width:100%; max-height:300px; margin-top:10px; border-radius:8px;"><source src="${avis.videoUrl}" type="video/mp4"></video>` : ""}
                     ${voteButtons}
                 `;
 
                 contenuAvis.appendChild(avisElement);
             });
+
+            // FORCER le scroll après chargement
+            setTimeout(() => {
+                contenuAvis.scrollTop = 0;
+            }, 50);
         });
     }
 }
