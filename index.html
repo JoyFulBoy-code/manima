@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
-  <title>Manimap - Carte interactive Lille et services locaux</title>
+  <title>Manima - Carte interactive Lille et services locaux</title>
   <meta name="description" content="Manima est une carte interactive comme Google Maps : trouvez des services à Lille (restaurants, taxis, commerces, garages, pharmacies), consultez leurs horaires, avis et itinéraires. Recherchez aussi des adresses partout dans le monde.">
   <meta name="keywords" content="manima, carte interactive, services Lille, restaurants Lille, taxis Lille, garages Lille, pharmacies Lille, avis commerces, itinéraires, carte mondiale">
   
   <!-- Balises pour les réseaux sociaux -->
   <meta property="og:title" content="Manima | Carte Interactive des Services Locaux">
-  <meta property="og:description" content="Trouvez les meilleurs services autour de vous avec la carte Manima - Taxis, chauffeurs, garages, pharmacies et plus encore.">
+  <meta property="og:description" content="Trouvez les meilleurs services autour de vous avec la carte Manimap - Taxis, chauffeurs, garages, pharmacies et plus encore.">
   <meta property="og:image" content="icone-manima.png">
   <meta property="og:url" content="https://votre-site.com">
   <meta property="og:type" content="website">
@@ -2840,20 +2840,7 @@ async function envoyerEmailPremierAvis(email, nom) {
     throw error;
   }
 }
-// Fonction de test manuelle - À appeler depuis la console du navigateur
-async function testerEmailBienvenue() {
-  console.log("🧪 TEST MANUEL - Email de bienvenue");
-  
-  if (!utilisateurConnecte) {
-    console.log("❌ Veuillez vous connecter d'abord");
-    return;
-  }
-  
-  console.log("👤 Utilisateur:", utilisateurConnecte.email);
-  console.log("🔍 Vérification premier avis...");
-  
-  await verifierEtEnvoyerEmailSiPremierAvis();
-}
+
 
 // Exposer la fonction globalement pour pouvoir la tester
 window.testerEmailBienvenue = testerEmailBienvenue;
