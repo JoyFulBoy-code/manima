@@ -4610,7 +4610,7 @@ async function afficherRecommandations() {
         const weather = await getLilleWeather();
         
         // Afficher l'info météo dans le titre
-        weatherInfo = ` (${weather.temp}°C${weather.raining ? ' ☔️' : weather.recommendation === 'extérieur' ? ' ☀️ Extérieur' : ' 🏠 Intérieur'})`;
+        weatherInfo = ` (${weather.temp}°C${weather.raining ? ' ☔️ Activités couvertes' : weather.recommendation === 'extérieur' ? ' ☀️ Activités extérieures' : ' 🏠 Activités intérieures'})`;
         
         // Utiliser directement la recommandation du serveur
         if (weather.recommendation === "extérieur") {
