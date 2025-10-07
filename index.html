@@ -2896,7 +2896,7 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     return;
   }
 
-  // Vérifier si c'est vraiment le premier avis
+  // 🔥 CORRECTION : Vérifier si c'est le premier avis AVANT d'envoyer l'email
   const avisGlobalRef = db.ref('avis');
   const snapshot = await avisGlobalRef.once('value');
   const tousLesAvis = snapshot.val();
@@ -2924,7 +2924,7 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
 
   console.log(`🎯 Résultat vérification: ${premierAvis ? 'PREMIER AVIS' : `AVIS EXISTANTS (${avisTrouves} trouvés)`}`);
 
-  // Si c'est le premier avis, envoyer l'email et marquer comme envoyé
+  // 🔥 CORRECTION : Envoyer l'email seulement si c'est vraiment le premier avis
   if (premierAvis) {
     console.log("🎉 Premier avis détecté! Envoi de l'email de bienvenue");
     
@@ -2960,6 +2960,14 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     }
   } else {
     console.log("ℹ️ Ce n'est pas le premier avis, pas d'email envoyé");
+    
+    // 🔥 NOUVEAU : Marquer quand même l'utilisateur comme ayant déjà des avis
+    // pour éviter de refaire la vérification à chaque fois
+    await userRef.update({
+      emailBienvenueEnvoye: true, // On marque comme déjà envoyé même si ce n'est pas le cas
+      datePremierAvis: new Date().toISOString(),
+      dernierAvis: new Date().toISOString()
+    });
   }
 };
 
@@ -2999,7 +3007,7 @@ function afficherFormulaireAvis(nom) {
     document.getElementById("avis-modal").style.display = "block";
 }
 
-// Gestion de la soumission du formulaire d'avis
+// Gestion de la soumission du formulaire d'avis - VERSION CORRIGÉE
 document.getElementById("avis-form").addEventListener("submit", async function(e) {
     e.preventDefault();
 
@@ -3044,15 +3052,29 @@ document.getElementById("avis-form").addEventListener("submit", async function(e
             voteurs: {}
         };
 
-        // Utiliser le nom normalisé pour Firebase
-        const nomNormalise = normaliserNomPourFirebase(nomServiceActuel);
+        // 1. VÉRIFIER si c'est le premier avis AVANT la sauvegarde
+        const estPremierAvis = await verifierSiPremierAvis(utilisateurConnecte.uid);
         
-        // Sauvegarder dans Firebase
+        // 2. Sauvegarder l'avis dans Firebase
+        const nomNormalise = normaliserNomPourFirebase(nomServiceActuel);
         const avisRef = db.ref('avis/' + nomNormalise).push();
         await avisRef.set(nouvelAvis);
 
-        // Vérifier et envoyer l'email pour le premier avis
-        await verifierEtEnvoyerEmailSiPremierAvis();
+        // 3. Envoyer l'email seulement si c'est le premier avis
+        if (estPremierAvis) {
+            console.log("🎉 Premier avis détecté! Envoi de l'email de bienvenue");
+            await envoyerEmailPremierAvis(
+                utilisateurConnecte.email, 
+                utilisateurConnecte.displayName || "Utilisateur"
+            );
+            
+            // Marquer que l'email a été envoyé
+            const userRef = db.ref(`utilisateurs/${utilisateurConnecte.uid}`);
+            await userRef.update({
+                emailBienvenueEnvoye: true,
+                datePremierAvis: new Date().toISOString()
+            });
+        }
 
         // Réinitialiser le formulaire
         document.getElementById("avis-form").reset();
@@ -3065,6 +3087,25 @@ document.getElementById("avis-form").addEventListener("submit", async function(e
         alert("Une erreur est survenue lors de la publication de votre avis.");
     }
 });
+
+// Nouvelle fonction pour vérifier si premier avis
+async function verifierSiPremierAvis(uid) {
+    const avisGlobalRef = db.ref('avis');
+    const snapshot = await avisGlobalRef.once('value');
+    const tousLesAvis = snapshot.val();
+    
+    if (!tousLesAvis) return true;
+    
+    for (const service in tousLesAvis) {
+        const avisService = tousLesAvis[service];
+        for (const avisId in avisService) {
+            if (avisService[avisId].uid === uid) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 // Fonction pour supprimer un avis
 async function supprimerAvis(nomService, avisId) {
