@@ -2805,6 +2805,7 @@ async function verifierPremierAvis(uid) {
     return true;
   }
 
+
 async function envoyerEmailPremierAvis(email, nom) {
   try {
     // Vérification supplémentaire de l'email
@@ -2813,29 +2814,27 @@ async function envoyerEmailPremierAvis(email, nom) {
       return;
     }
 
-    console.log("Tentative d'envoi d'email de bienvenue à:", email);
+    console.log("Tentative d'envoi d'email à:", email);
     
     const result = await emailjs.send("service_wreyh0i", "template_5enx2ae", {
-      to_email: email,
+      to_email: email,  // Changed from {{email}} to just email
       from_name: "Manimap",
       user_name: nom,
-      message: "Bienvenue sur Manimap ! Merci pour votre premier avis."
+      message: "Merci pour votre premier avis sur Manima!"
     });
     
-    console.log("Email de bienvenue envoyé avec succès:", result);
-    
-    // Marquer que l'email de bienvenue a été envoyé
-    if (utilisateurConnecte) {
-      await db.ref(`utilisateurs/${utilisateurConnecte.uid}/emailBienvenueEnvoye`).set(true);
-    }
+    console.log("Email envoyé avec succès:", result);
+    await db.ref(`utilisateurs/${utilisateurConnecte.uid}/emailBienvenueEnvoye`).set(true);
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de bienvenue:", {
+    console.error("Erreur détaillée:", {
       status: error.status,
       text: error.text,
-      email: email
+      email: email,
+      utilisateur: utilisateurConnecte
     });
   }
 }
+
 
 // Fonction d'upload vers Cloudinary
 async function uploadToCloudinary(file, type) {
@@ -2853,17 +2852,6 @@ async function uploadToCloudinary(file, type) {
  
 
 const verifierEtEnvoyerEmailSiPremierAvis = async () => {
-  if (!utilisateurConnecte) return;
-
-  // Vérifier d'abord si l'email a déjà été envoyé
-  const userSnapshot = await db.ref(`utilisateurs/${utilisateurConnecte.uid}`).once('value');
-  const userData = userSnapshot.val() || {};
-  
-  if (userData.emailBienvenueEnvoye) {
-    console.log("Email de bienvenue déjà envoyé pour cet utilisateur");
-    return;
-  }
-
   const avisGlobalRef = db.ref('avis');
   const snapshot = await avisGlobalRef.once('value');
   const tousLesAvis = snapshot.val();
@@ -2889,22 +2877,23 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
 
   // Si c'est le premier avis de l'utilisateur, envoyer un email
   if (premierAvis) {
-    console.log("Premier avis détecté - Envoi email de bienvenue pour UID:", utilisateurConnecte.uid);
-    
-    if (utilisateurConnecte?.email) {
-      console.log("Email trouvé:", utilisateurConnecte.email);
-      await envoyerEmailPremierAvis(
-        utilisateurConnecte.email, 
-        utilisateurConnecte.displayName || "Utilisateur"
-      );
-    } else {
-      console.warn("Aucun email disponible pour l'utilisateur:", {
-        uid: utilisateurConnecte?.uid,
-        providerData: utilisateurConnecte?.providerData
-      });
-    }
+  console.log("Tentative d'envoi d'email pour UID:", utilisateurConnecte.uid);
+  
+  if (utilisateurConnecte?.email) {
+    console.log("Email trouvé:", utilisateurConnecte.email);
+    envoyerEmailPremierAvis(
+      utilisateurConnecte.email, 
+      utilisateurConnecte.displayName || "Utilisateur"
+    );
+  } else {
+    console.warn("Aucun email disponible pour l'utilisateur:", {
+      uid: utilisateurConnecte?.uid,
+      providerData: utilisateurConnecte?.providerData
+    });
   }
-};
+}
+  };
+
 
     function fermerModal() {
       document.getElementById("avis-modal").style.display = "none";
