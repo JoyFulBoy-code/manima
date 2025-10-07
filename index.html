@@ -2815,21 +2815,27 @@ async function envoyerEmailPremierAvis(email, nom) {
 
     console.log("📧 Tentative d'envoi d'email de bienvenue à:", email);
     
-    const result = await emailjs.send("service_wreyh0i", "template_5enx2ae", {
+    const templateParams = {
       to_email: email,
-      from_name: "Manimap",
       user_name: nom,
       message: "Bienvenue sur Manimap ! Merci pour votre premier avis. Votre contribution aide toute la communauté à découvrir les meilleurs services autour de Lille.",
-      reply_to: "no-reply@manimap.com"
-    });
+      reply_to: "no-reply@manimap.com",
+      subject: "Bienvenue sur Manimap ! 🎉"
+    };
+
+    console.log("📨 Paramètres email:", templateParams);
+    
+    const result = await emailjs.send("service_wreyh0i", "template_5enx2ae", templateParams);
     
     console.log("✅ Email de bienvenue envoyé avec succès:", result);
     return result;
+    
   } catch (error) {
     console.error("❌ Erreur détaillée lors de l'envoi de l'email:", {
       status: error.status,
       text: error.text,
-      email: email
+      email: email,
+      error: error
     });
     throw error;
   }
@@ -2852,12 +2858,22 @@ async function uploadToCloudinary(file, type) {
  
 
 const verifierEtEnvoyerEmailSiPremierAvis = async () => {
-  if (!utilisateurConnecte) return;
+  console.log("🔍 Vérification premier avis...");
+  
+  if (!utilisateurConnecte) {
+    console.log("❌ Utilisateur non connecté");
+    return;
+  }
+
+  const uid = utilisateurConnecte.uid;
+  console.log("👤 UID utilisateur:", uid);
 
   // Vérifier d'abord si l'email a déjà été envoyé pour cet utilisateur
-  const userRef = db.ref(`utilisateurs/${utilisateurConnecte.uid}`);
+  const userRef = db.ref(`utilisateurs/${uid}`);
   const userSnapshot = await userRef.once('value');
   const userData = userSnapshot.val() || {};
+  
+  console.log("📊 Données utilisateur:", userData);
   
   if (userData.emailBienvenueEnvoye) {
     console.log("✅ Email de bienvenue déjà envoyé pour cet utilisateur");
@@ -2868,15 +2884,21 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
   const avisGlobalRef = db.ref('avis');
   const snapshot = await avisGlobalRef.once('value');
   const tousLesAvis = snapshot.val();
+  
+  console.log("📝 Total avis dans la base:", tousLesAvis ? Object.keys(tousLesAvis).length : 0);
+
   let premierAvis = true;
+  let avisTrouves = 0;
 
   if (tousLesAvis) {
     for (const service in tousLesAvis) {
       const avisService = tousLesAvis[service];
       for (const avisId in avisService) {
         const unAvis = avisService[avisId];
-        if (unAvis.uid === utilisateurConnecte.uid) {
+        if (unAvis.uid === uid) {
+          avisTrouves++;
           premierAvis = false;
+          console.log(`📌 Avis trouvé: ${service} - ${avisId}`);
           break;
         }
       }
@@ -2884,14 +2906,17 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     }
   }
 
+  console.log(`🎯 Résultat vérification: ${premierAvis ? 'PREMIER AVIS' : `AVIS EXISTANTS (${avisTrouves} trouvés)`}`);
+
   // Si c'est le premier avis, envoyer l'email et marquer comme envoyé
   if (premierAvis) {
     console.log("🎉 Premier avis détecté! Envoi de l'email de bienvenue");
     
     if (utilisateurConnecte?.email) {
-      console.log("Email trouvé:", utilisateurConnecte.email);
+      console.log("📧 Email trouvé:", utilisateurConnecte.email);
       
       try {
+        // Envoyer l'email
         await envoyerEmailPremierAvis(
           utilisateurConnecte.email, 
           utilisateurConnecte.displayName || "Utilisateur"
@@ -2900,16 +2925,25 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
         // Marquer que l'email a été envoyé
         await userRef.update({
           emailBienvenueEnvoye: true,
-          datePremierAvis: new Date().toISOString()
+          datePremierAvis: new Date().toISOString(),
+          dernierAvis: new Date().toISOString()
         });
         
         console.log("✅ Email de bienvenue envoyé et marqué dans la base");
+        
       } catch (error) {
         console.error("❌ Erreur lors de l'envoi de l'email:", error);
       }
     } else {
-      console.warn("Aucun email disponible pour l'utilisateur");
+      console.warn("⚠️ Aucun email disponible pour l'utilisateur");
+      console.log("👤 Détails utilisateur:", {
+        email: utilisateurConnecte.email,
+        displayName: utilisateurConnecte.displayName,
+        providerData: utilisateurConnecte.providerData
+      });
     }
+  } else {
+    console.log("ℹ️ Ce n'est pas le premier avis, pas d'email envoyé");
   }
 };
 
