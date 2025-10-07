@@ -2840,7 +2840,23 @@ async function envoyerEmailPremierAvis(email, nom) {
     throw error;
   }
 }
+// Fonction de test manuelle - À appeler depuis la console du navigateur
+async function testerEmailBienvenue() {
+  console.log("🧪 TEST MANUEL - Email de bienvenue");
+  
+  if (!utilisateurConnecte) {
+    console.log("❌ Veuillez vous connecter d'abord");
+    return;
+  }
+  
+  console.log("👤 Utilisateur:", utilisateurConnecte.email);
+  console.log("🔍 Vérification premier avis...");
+  
+  await verifierEtEnvoyerEmailSiPremierAvis();
+}
 
+// Exposer la fonction globalement pour pouvoir la tester
+window.testerEmailBienvenue = testerEmailBienvenue;
 
 // Fonction d'upload vers Cloudinary
 async function uploadToCloudinary(file, type) {
