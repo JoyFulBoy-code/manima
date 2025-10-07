@@ -2853,7 +2853,123 @@ const verifierEtEnvoyerEmailSiPremierAvis = async () => {
     function voirAvis(nom) {
       afficherAvis(nom);
     }
+    
 
+    // Fonction pour afficher le formulaire d'avis - VERSION CORRIGÉE
+let nomServiceActuel = null;
+
+function afficherFormulaireAvis(nom) {
+    nomServiceActuel = nom;
+
+    if (!utilisateurConnecte) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                utilisateurConnecte = result.user;
+                afficherFormulaireAvis(nom);
+            })
+            .catch((error) => {
+                alert("Connexion requise pour laisser un avis.");
+                console.error(error);
+            });
+        return;
+    }
+
+    document.getElementById("titre-avis").innerText = "Avis pour " + nom;
+    document.getElementById("pseudo-avis").value = utilisateurConnecte.displayName;
+    document.getElementById("pseudo-avis").disabled = true;
+    document.getElementById("avis-modal").style.display = "block";
+}
+
+// Gestion de la soumission du formulaire d'avis
+document.getElementById("avis-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    if (!utilisateurConnecte) {
+        alert("Vous devez être connecté pour soumettre un avis.");
+        return;
+    }
+
+    const textAvis = document.getElementById("text-avis").value.trim();
+    if (!textAvis) {
+        alert("Veuillez écrire un avis.");
+        return;
+    }
+
+    const photoFile = document.getElementById("photo-avis").files[0];
+    const videoFile = document.getElementById("video-avis").files[0];
+
+    try {
+        let photoUrl = null;
+        let videoUrl = null;
+
+        // Upload de la photo si elle existe
+        if (photoFile) {
+            photoUrl = await uploadToCloudinary(photoFile, "image");
+        }
+
+        // Upload de la vidéo si elle existe
+        if (videoFile) {
+            videoUrl = await uploadToCloudinary(videoFile, "video");
+        }
+
+        // Préparer l'avis
+        const nouvelAvis = {
+            text: textAvis,
+            pseudo: utilisateurConnecte.displayName || "Anonyme",
+            uid: utilisateurConnecte.uid,
+            date: new Date().toLocaleDateString('fr-FR'),
+            photoUrl: photoUrl,
+            videoUrl: videoUrl,
+            pointsVerts: 0,
+            pointsRouges: 0,
+            voteurs: {}
+        };
+
+        // Utiliser le nom normalisé pour Firebase
+        const nomNormalise = normaliserNomPourFirebase(nomServiceActuel);
+        
+        // Sauvegarder dans Firebase
+        const avisRef = db.ref('avis/' + nomNormalise).push();
+        await avisRef.set(nouvelAvis);
+
+        // Vérifier et envoyer l'email pour le premier avis
+        await verifierEtEnvoyerEmailSiPremierAvis();
+
+        // Réinitialiser le formulaire
+        document.getElementById("avis-form").reset();
+        fermerModal();
+        
+        alert("Votre avis a été publié avec succès !");
+
+    } catch (error) {
+        console.error("Erreur lors de la soumission de l'avis:", error);
+        alert("Une erreur est survenue lors de la publication de votre avis.");
+    }
+});
+
+// Fonction pour supprimer un avis
+async function supprimerAvis(nomService, avisId) {
+    if (!utilisateurConnecte) return;
+    
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cet avis ?")) {
+        return;
+    }
+
+    try {
+        // Utiliser le nom normalisé
+        const nomNormalise = normaliserNomPourFirebase(nomService);
+        await db.ref(`avis/${nomNormalise}/${avisId}`).remove();
+        
+        // Recharger les avis
+        afficherAvis(nomService);
+        
+        alert("Avis supprimé avec succès.");
+    } catch (error) {
+        console.error("Erreur lors de la suppression:", error);
+        alert("Erreur lors de la suppression de l'avis.");
+    }
+}
     function afficherAvis(nom) {
     document.getElementById("liste-avis-modal").style.display = "block";
     document.getElementById("titre-liste-avis").innerText = "Avis sur " + nom;
