@@ -1303,6 +1303,80 @@
     "website": "https://iut.univ-lille.fr/",
     "opening_hours": "lundi, 07:30–19:00\nmardi, 07:30–19:00\nmercredi, 07:30–19:00\njeudi, 07:30–19:00\nvendredi, 07:30–19:00\nsamedi, 7:30–13:00\ndimanche, fermé"
   }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0600076, 50.636777]
+  },
+  "properties": {
+    "name": "Coiffeur Lille - Mak Angel - Salon de coiffure Lille",
+    "type": "coiffeur",
+    "address": "12 Pl. Pierre Mendès France, 59000 Lille, France",
+    "phone": "03 20 31 32 68",
+    "website": "https://mak-angel.com/mak-angel-lille/",
+    "opening_hours": "lundi, Fermé\nmardi, 09:00–19:00\nmercredi, 09:00–19:00\njeudi, 09:00–19:00\nvendredi, 09:00–19:00\nsamedi, 09:00–18:30\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0622194, 50.6319238]
+  },
+  "properties": {
+    "name": "Le Barbier de Lille",
+    "type": "barbier",
+    "address": "13 Pl. Richebé, 59800 Lille, France",
+    "phone": "07 87 00 69 13",
+    "website": "https://www.planity.com/le-barbier-de-lille-59800",
+    "opening_hours": "lundi, 10:00–19:00\nmardi, 10:00–19:00\nmercredi, 10:00–19:00\njeudi, 10:00–19:00\nvendredi, 10:00–19:00\nsamedi, 10:00–19:00\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0568719, 50.6303634]
+  },
+  "properties": {
+    "name": "Vanity Barber Shop Lille",
+    "type": "barbier",
+    "address": "104 Rue Léon Gambetta, 59800 Lille, France",
+    "phone": "06 63 06 02 87",
+    "website": "https://www.planity.com/vanity-barber-shop-59000-lille",
+    "opening_hours": "lundi, 10:00–20:00\nmardi, 10:00–20:00\nmercredi, 10:00–20:00\njeudi, 10:00–20:00\nvendredi, 10:00–20:00\nsamedi, 09:00–20:00\ndimanche, 11:00–20:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0567945, 50.626651]
+  },
+  "properties": {
+    "name": "Hair Coiff",
+    "type": "coiffeur",
+    "address": "47 Rue des Postes, 59000 Lille, France",
+    "phone": "06 28 61 61 24",
+    "website": "https://haircoifflille.setmore.com/",
+    "opening_hours": "lundi, Fermé\nmardi, 09:30–20:00\nmercredi, 09:30–20:00\njeudi, 09:30–20:00\nvendredi, 09:30–20:00\nsamedi, 09:30–20:00\ndimanche, 09:30–19:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0483229, 50.6150394]
+  },
+  "properties": {
+    "name": "Mode Coiffure",
+    "type": "coiffeur",
+    "address": "3 Rue du Faubourg des Postes, 59000 Lille, France",
+    "phone": "03 62 64 23 96",
+    "opening_hours": "lundi, Fermé\nmardi, 09:30–19:00\nmercredi, 09:30–19:00\njeudi, 09:30–19:00\nvendredi, 09:30–19:00\nsamedi, 09:30–19:00\ndimanche, Fermé"
+  }
 }
   ]
 }
