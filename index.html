@@ -3298,62 +3298,74 @@ async function supprimerAvis(nomService, avisId) {
       document.getElementById("liste-avis-modal").style.display = "none";
     }
     async function voterAvis(nomService, avisId, typeVote) {
-        if (!utilisateurConnecte) {
-            alert("Connectez-vous pour voter");
+    // Vérifier si l'utilisateur est connecté
+    if (!utilisateurConnecte) {
+        // Si non connecté, demander la connexion Google
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            const result = await firebase.auth().signInWithPopup(provider);
+            utilisateurConnecte = result.user;
+            // Une fois connecté, rappeler la fonction de vote
+            voterAvis(nomService, avisId, typeVote);
+        } catch (error) {
+            alert("Connexion requise pour voter.");
+            console.error(error);
+        }
+        return;
+    }
+
+    // Le reste du code existant pour le vote...
+    const uidVotant = utilisateurConnecte.uid;
+    const avisRef = db.ref(`avis/${nomService}/${avisId}`);
+
+    try {
+        // 1. Vérifier que l'utilisateur ne vote pas pour lui-même
+        const avisSnapshot = await avisRef.once('value');
+        const avis = avisSnapshot.val();
+    
+        if (!avis) {
+            alert("Cet avis n'existe plus");
             return;
         }
 
-        const uidVotant = utilisateurConnecte.uid;
-        const avisRef = db.ref(`avis/${nomService}/${avisId}`);
-
-        try {
-            // 1. Vérifier que l'utilisateur ne vote pas pour lui-même
-            const avisSnapshot = await avisRef.once('value');
-            const avis = avisSnapshot.val();
-        
-            if (!avis) {
-                alert("Cet avis n'existe plus");
-                return;
-            }
-
-            if (avis.uid === uidVotant) {
-                alert("Vous ne pouvez pas voter pour votre propre avis");
-                return;
-            }
-
-            // 2. Préparer les mises à jour
-            const currentVote = avis.voteurs?.[uidVotant];
-            const updates = {};
-
-            if (currentVote === typeVote) {
-                // Annuler le vote
-                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
-                updates[`voteurs/${uidVotant}`] = null;
-            } else {
-                // Nouveau vote ou changement
-                if (currentVote) {
-                    updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
-                }
-                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
-                updates[`voteurs/${uidVotant}`] = typeVote;
-            }
-
-            // 3. Appliquer les mises à jour
-            await avisRef.update(updates);
-        
-            // 4. Vérifier les badges (uniquement si vote vert)
-            if (typeVote === 'vert') {
-                await verifierBadges(avis.uid);
-            }
-
-            // 5. Actualiser l'affichage
-            afficherAvis(nomService);
-
-        } catch (error) {
-            console.error("Erreur lors du vote:", error);
-            alert("Erreur lors du vote: " + error.message);
+        if (avis.uid === uidVotant) {
+            alert("Vous ne pouvez pas voter pour votre propre avis");
+            return;
         }
+
+        // 2. Préparer les mises à jour
+        const currentVote = avis.voteurs?.[uidVotant];
+        const updates = {};
+
+        if (currentVote === typeVote) {
+            // Annuler le vote
+            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+            updates[`voteurs/${uidVotant}`] = null;
+        } else {
+            // Nouveau vote ou changement
+            if (currentVote) {
+                updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+            }
+            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
+            updates[`voteurs/${uidVotant}`] = typeVote;
+        }
+
+        // 3. Appliquer les mises à jour
+        await avisRef.update(updates);
+    
+        // 4. Vérifier les badges (uniquement si vote vert)
+        if (typeVote === 'vert') {
+            await verifierBadges(avis.uid);
+        }
+
+        // 5. Actualiser l'affichage
+        afficherAvis(nomService);
+
+    } catch (error) {
+        console.error("Erreur lors du vote:", error);
+        alert("Erreur lors du vote: " + error.message);
     }
+}
 
     async function verifierBadges(uidAuteur) {
         try {
@@ -3756,66 +3768,82 @@ async function supprimerAvis(nomService, avisId) {
     }
 
     function noterChauffeur(chauffeurId, typeVote) {
-      if (!utilisateurConnecte) return alert("Connectez-vous pour noter");
+    // Vérifier si l'utilisateur est connecté
+    if (!utilisateurConnecte) {
+        // Si non connecté, demander la connexion Google
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                utilisateurConnecte = result.user;
+                // Une fois connecté, rappeler la fonction de notation
+                noterChauffeur(chauffeurId, typeVote);
+            })
+            .catch((error) => {
+                alert("Connexion requise pour noter");
+                console.error(error);
+            });
+        return;
+    }
 
-      const uid = utilisateurConnecte.uid;
-      const chauffeurRef = db.ref(`notesChauffeurs/${chauffeurId}`);
-      const voteRef = db.ref(`votesChauffeurs/${chauffeurId}/${uid}`);
+    // Le reste du code existant pour la notation des chauffeurs...
+    const uid = utilisateurConnecte.uid;
+    const chauffeurRef = db.ref(`notesChauffeurs/${chauffeurId}`);
+    const voteRef = db.ref(`votesChauffeurs/${chauffeurId}/${uid}`);
 
-      console.log(`Tentative de vote: ${typeVote}`);
+    console.log(`Tentative de vote: ${typeVote}`);
 
-      // 1. INITIALISATION - Corrige les valeurs négatives
-      initPointsChauffeur(chauffeurId)
+    // 1. INITIALISATION - Corrige les valeurs négatives
+    initPointsChauffeur(chauffeurId)
         .then(() => {
-          // 2. RÉCUPÉRATION de l'état actuel
-          return Promise.all([
-            chauffeurRef.once('value'),
-            voteRef.once('value')
-          ]);
+            // 2. RÉCUPÉRATION de l'état actuel
+            return Promise.all([
+                chauffeurRef.once('value'),
+                voteRef.once('value')
+            ]);
         })
         .then(([chauffeurSnap, voteSnap]) => {
-          const currentData = chauffeurSnap.val() || { pointsVerts: 0, pointsRouges: 0 };
-          const currentVote = voteSnap.val();
-      
-        console.log('État actuel:', currentData);
+            const currentData = chauffeurSnap.val() || { pointsVerts: 0, pointsRouges: 0 };
+            const currentVote = voteSnap.val();
+        
+            console.log('État actuel:', currentData);
 
-          // 3. PRÉPARATION des mises à jour
-          const updates = {};
-          let voteOperation = Promise.resolve();
+            // 3. PRÉPARATION des mises à jour
+            const updates = {};
+            let voteOperation = Promise.resolve();
 
-          if (currentVote === typeVote) {
-            // ANNULATION
-            console.log('Annulation du vote');
-            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
-              firebase.database.ServerValue.increment(-1);
-            voteOperation = voteRef.remove();
-          } else {
-            // NOUVEAU VOTE ou CHANGEMENT
-            if (currentVote) {
-              updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
-                firebase.database.ServerValue.increment(-1);
+            if (currentVote === typeVote) {
+                // ANNULATION
+                console.log('Annulation du vote');
+                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+                    firebase.database.ServerValue.increment(-1);
+                voteOperation = voteRef.remove();
+            } else {
+                // NOUVEAU VOTE ou CHANGEMENT
+                if (currentVote) {
+                    updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+                        firebase.database.ServerValue.increment(-1);
+                }
+                updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
+                    firebase.database.ServerValue.increment(1);
+                voteOperation = voteRef.set(typeVote);
             }
-            updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = 
-              firebase.database.ServerValue.increment(1);
-            voteOperation = voteRef.set(typeVote);
-          }
 
-          // 4. APPLICATION des mises à jour
-          return Promise.all([
-            chauffeurRef.update(updates),
-            voteOperation
-          ]);
+            // 4. APPLICATION des mises à jour
+            return Promise.all([
+                chauffeurRef.update(updates),
+                voteOperation
+            ]);
         })
         .then(() => {
-          console.log('Mise à jour réussie');
-          // 5. ACTUALISATION de l'affichage
-          return chargerNotesChauffeur(chauffeurId);
+            console.log('Mise à jour réussie');
+            // 5. ACTUALISATION de l'affichage
+            return chargerNotesChauffeur(chauffeurId);
         })
         .catch(error => {
-          console.error('Erreur:', error);
-          alert("Erreur: " + error.message);
+            console.error('Erreur:', error);
+            alert("Erreur: " + error.message);
         });
-    }
+}
 
     // Version optimisée de chargerNotesChauffeur
     function chargerNotesChauffeur(chauffeurId) {
@@ -3845,10 +3873,20 @@ async function supprimerAvis(nomService, avisId) {
 
     // Fonction pour voter sur un avis de chauffeur
     function voterAvisChauffeur(chauffeurId, avisId, typeVote) {
-      if (!utilisateurConnecte) {
-        alert("Vous devez être connecté pour voter.");
+      // Vérifier si l'utilisateur est connecté
+    if (!utilisateurConnecte) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                utilisateurConnecte = result.user;
+                voterAvisChauffeur(chauffeurId, avisId, typeVote);
+            })
+            .catch((error) => {
+                alert("Connexion requise pour voter.");
+                console.error(error);
+            });
         return;
-      }
+    }
 
       const avisRef = db.ref(`avisChauffeurs/${chauffeurId}/${avisId}`);
       const uid = utilisateurConnecte.uid;
