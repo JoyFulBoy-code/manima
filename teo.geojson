@@ -1377,6 +1377,19 @@
     "phone": "03 62 64 23 96",
     "opening_hours": "lundi, Fermé\nmardi, 09:30–19:00\nmercredi, 09:30–19:00\njeudi, 09:30–19:00\nvendredi, 09:30–19:00\nsamedi, 09:30–19:00\ndimanche, Fermé"
   }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0516362, 50.6017623]
+  },
+  "properties": {
+    "name": "Mosquée Al Houda",
+    "type": "lieu de culte",
+    "address": "390 Rue de l'Arbrisseau, 59000 Lille, France",
+    "website": "http://elazharfrance.com/"
+  }
 }
-  ]
+]
 }
