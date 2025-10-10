@@ -685,21 +685,21 @@
       }
     },
     {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [3.1062993, 50.6396894]
-      },
-      "properties": {
-        "name": "Piscine Municipale de Mons-en-Baroeul",
-        "type": "piscine",
-        "address": "20 Rue Lacordaire, 59370 Mons-en-Barœul",
-        "phone": "0320561311",
-        "website": "http://piscine-monsenbaroeul.fr/",
-        "tarifs": "Moins de 4 ans : gratuit\nMoins de 18 ans : 2,30€\nCarte 10 entrées -18 ans : 20,70€\nAdulte : 3,45€\nCarte 10 entrées adulte : 27,60€\n\nTarifs Monsois :\nAdulte Monsois : 3,15€\nCarte 10 entrées adulte Monsois : 25,20€\nCarte 10 entrées -18 ans Monsois : 18,90€",
-        "opening_hours": "Vacances scolaires:\nLundi: Fermé\nMardi: 10:00–13:30, 14:00–16:00, 17:00–19:00\nMercredi: 10:00–13:30, 14:00–16:00, 17:00–19:30\nJeudi: 10:00–13:30, 14:00–16:00, 17:00–19:00\nVendredi: 10:00–13:30, 14:00–16:00, 17:00–19:30\nSamedi: 09:00–12:00, 15:00–18:00\nDimanche: 09:00–12:00\n\nHors vacances:\nLundi: Fermé\nMardi: 11:30–13:30, 17:00–19:00\nMercredi: 09:00–12:30, 14:00–16:00, 17:00–19:30\nJeudi: 10:00–11:30 (seniors), 11:30–13:30, 17:00–19:00\nVendredi: 11:30–13:30, 17:00–19:30\nSamedi: 09:00–12:00, 15:00–18:00\nDimanche: 09:00–12:00"
-      }
-    },
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.1062993, 50.6396894]
+  },
+  "properties": {
+    "name": "Piscine Municipale de Mons-en-Barœul",
+    "type": "piscine",
+    "address": "20 Rue Lacordaire, 59370 Mons-en-Barœul",
+    "phone": "0320561311",
+    "website": "https://piscine-monsenbaroeul.fr/",
+    "tarifs": "💧 **Tarifs Enfants (Monsois)** :\n- Moins de 4 ans : Gratuit\n- De 4 à 12 ans : 2,10€\n- Carte 10 entrées (4–12 ans) : 18,90€\n- Écoles primaires : Gratuit\n- Leçon enfant (à l’année) : 42,00€\n- Forfait mini-stages : 26,25€\n- Jeton : 1,00€\n\n💧 **Tarifs Enfants (Extérieurs)** :\n- Moins de 4 ans : Gratuit\n- De 4 à 12 ans : 2,30€\n- Carte 10 entrées (4–12 ans) : 20,70€\n- Écoles primaires : 2,50€\n- Leçon enfant (à l’année) : 138,00€\n- Forfait mini-stages : 30,00€\n- Jeton : 1,00€",
+    "opening_hours": "🏫 **Période scolaire (Enfants)** :\nLundi : Fermé\nMardi : 11h30–13h30, 17h–19h\nMercredi : 9h–12h, 14h–16h, 17h–19h30\nJeudi : 10h–11h30 (scolaires), 11h30–13h30, 17h–19h\nVendredi : 11h30–13h30, 17h–19h30\nSamedi : 9h–12h, 15h–18h\nDimanche : 9h–12h\n\n🏖️ **Vacances scolaires (Enfants)** :\nLundi : Fermé\nMardi : 10h–13h30, 14h–16h, 17h–19h\nMercredi : 10h–12h, 14h–16h, 17h–19h30\nJeudi : 10h–11h30 (scolaires), 14h–16h, 17h–19h\nVendredi : 10h–13h30, 14h–16h, 17h–19h30\nSamedi : 8h–12h, 15h–18h\nDimanche : 8h–12h\n\n👶 **Horaires conseillés pour les enfants (moins de 12 ans)** :\n- Mercredi matin et après-midi\n- Samedi matin\n- Dimanche matin"
+  }
+},
     {
       "type": "Feature",
       "geometry": {
