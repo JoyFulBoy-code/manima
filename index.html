@@ -4101,37 +4101,83 @@ async function supprimerAvis(nomService, avisId) {
     }
 
     function telechargerQRCode() {
-      if (!qrCodeActuel) return;
+  if (!qrCodeActuel) {
+    alert("QR Code non disponible");
+    return;
+  }
 
-      const container = document.querySelector('#qr-code-container');
-      const canvas = container.querySelector('canvas');
+  const container = document.querySelector('#qr-code-container');
+  const canvas = container.querySelector('canvas');
   
-      // Créer un nouveau canvas pour inclure le texte
-      const newCanvas = document.createElement('canvas');
-      newCanvas.width = canvas.width;
-      newCanvas.height = canvas.height + 40; // Espace pour le texte
-  
-      const ctx = newCanvas.getContext('2d');
-  
-      // Fond blanc
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+  if (!canvas) {
+    alert("Erreur : Canvas non trouvé");
+    return;
+  }
+
+  try {
+    // Créer un canvas plus grand pour une meilleure qualité
+    const newCanvas = document.createElement('canvas');
+    const scale = 2; // Augmenter la résolution
+    newCanvas.width = canvas.width * scale;
+    newCanvas.height = (canvas.height + 40) * scale; // Espace pour le texte
     
-      // Ajouter le texte
-      ctx.fillStyle = '#4CAF50';
-      ctx.font = 'bold 16px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Trouvez-nous ici :', newCanvas.width/2, 25);
+    const ctx = newCanvas.getContext('2d');
+    
+    // Fond blanc
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+    
+    // Améliorer la qualité du texte
+    ctx.fillStyle = '#4CAF50';
+    ctx.font = `bold ${16 * scale}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Trouvez-nous ici :', newCanvas.width/2, 25 * scale/2);
+    
+    // Dessiner le QR code avec une meilleure qualité
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(canvas, 0, 40 * scale, newCanvas.width, newCanvas.width);
+    
+    // Créer le lien de téléchargement
+    const lien = document.createElement('a');
+    
+    // Méthode universelle pour tous les appareils
+    if (navigator.share) {
+      // Utiliser l'API Web Share si disponible (iOS/Mobile)
+      newCanvas.toBlob(function(blob) {
+        const file = new File([blob], "qr-code-manima.png", { type: "image/png" });
+        navigator.share({
+          files: [file],
+          title: 'QR Code Manimap',
+          text: 'Partagez ce QR Code'
+        }).catch(err => {
+          console.log('Annulation du partage:', err);
+          // Fallback au téléchargement normal
+          fallbackDownload(newCanvas);
+        });
+      });
+    } else {
+      // Méthode standard pour autres appareils
+      fallbackDownload(newCanvas);
+    }
+    
+  } catch (error) {
+    console.error("Erreur téléchargement QR:", error);
+    alert("Erreur lors du téléchargement. Essayez de prendre une capture d'écran.");
+  }
+}
+
+// Fonction fallback pour le téléchargement
+function fallbackDownload(canvas) {
+  const lien = document.createElement('a');
+  lien.href = canvas.toDataURL('image/png');
+  lien.download = 'qr-code-manima.png';
   
-      // Ajouter le QR code
-      ctx.drawImage(canvas, 0, 40);
-  
-      // Télécharger
-      const lien = document.createElement('a');
-      lien.href = newCanvas.toDataURL('image/png');
-      lien.download = 'qr-code-manima.png';
-      lien.click();
-    }   
+  // Méthode plus fiable pour mobile
+  document.body.appendChild(lien);
+  lien.click();
+  document.body.removeChild(lien);
+}   
 
     function copierLienPartage() {
       navigator.clipboard.writeText(lienPartageActuel)
