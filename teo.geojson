@@ -1368,6 +1368,18 @@
   "type": "Feature",
   "geometry": {
     "type": "Point",
+    "coordinates": [3.0555987, 50.6211191]
+  },
+  "properties": {
+    "name": "Lépicerie Charcuterie Crémerie Fruits",
+    "type": "épicerie",
+    "opening_hours": "lundi, Fermé\nmardi, 08:30–13:00, 15:00–19:00\nmercredi, 08:30–13:00, 15:00–19:00\njeudi, 08:30–13:00, 15:00–19:00\nvendredi, 08:30–13:00, 15:00–19:00\nsamedi, 08:30–19:00\ndimanche, 09:00–13:30"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
     "coordinates": [3.0483229, 50.6150394]
   },
   "properties": {
