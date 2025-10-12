@@ -12,7 +12,7 @@
   <meta property="og:title" content="Manimap | Carte Interactive des Services Locaux">
   <meta property="og:description" content="Trouvez les meilleurs services autour de vous avec la carte Manimap - Taxis, chauffeurs, garages, pharmacies et plus encore.">
   <meta property="og:image" content="icone-manima.png">
-  <meta property="og:url" content="https://votre-site.com">
+  <meta property="og:url" content="https://cmanima.com">
   <meta property="og:type" content="website">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -27,7 +27,7 @@
 
   <!-- Sitemap et robots.txt -->
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-  <link rel="canonical" href="https://votre-site.com">
+  <link rel="canonical" href="https://cmanima.com">
 
   <!-- Balises pour les résultats Google -->
   <meta name="description" content="Manimap - Carte interactive des services à Lille">
@@ -1570,6 +1570,63 @@ body {
 .avis-item:last-child {
   margin-bottom: 0;
   border-bottom: none;
+}
+/* Améliorations pour le QR Code */
+#qr-modal .modal-content {
+  max-width: 320px;
+  margin: 5% auto;
+  padding: 20px;
+}
+
+#qr-code-container {
+  margin: 15px auto;
+  padding: 15px;
+  background: white;
+  border-radius: 12px;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 2px solid #4CAF50;
+}
+
+#qr-code-container canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Boutons améliorés */
+#qr-modal button {
+  padding: 12px 20px;
+  margin: 8px 5px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s;
+  min-height: 44px;
+}
+
+#qr-modal button:hover {
+  background: #388E3C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  #qr-modal .modal-content {
+    max-width: 90vw;
+    margin: 10% auto;
+    padding: 15px;
+  }
+  
+  #qr-modal button {
+    width: 100%;
+    margin: 5px 0;
+  }
 }
   </style>
 </head>
@@ -4115,51 +4172,66 @@ async function supprimerAvis(nomService, avisId) {
   }
 
   try {
-    // Créer un canvas plus grand pour une meilleure qualité
+    // Créer un canvas BEAUCOUP plus grand avec des marges importantes
     const newCanvas = document.createElement('canvas');
-    const scale = 2; // Augmenter la résolution
-    newCanvas.width = canvas.width * scale;
-    newCanvas.height = (canvas.height + 40) * scale; // Espace pour le texte
+    const scale = 2;
+    const margin = 80; // Espace blanc important
+    
+    // Dimensions avec généreuses marges blanches
+    newCanvas.width = (canvas.width + margin * 2) * scale;
+    newCanvas.height = (canvas.height + margin * 2 + 120) * scale;
     
     const ctx = newCanvas.getContext('2d');
     
-    // Fond blanc
+    // Fond blanc pour toute la zone
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
     
-    // Améliorer la qualité du texte
-    ctx.fillStyle = '#4CAF50';
-    ctx.font = `bold ${16 * scale}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Trouvez-nous ici :', newCanvas.width/2, 25 * scale/2);
+    // Charger le logo
+    const logo = new Image();
+    logo.onload = function() {
+      // Logo en haut avec marge
+      const logoSize = 40 * scale;
+      const logoX = (newCanvas.width - logoSize) / 2;
+      const logoY = margin * 0.5;
+      
+      ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+      
+      // Texte sous le logo
+      ctx.fillStyle = '#4CAF50';
+      ctx.font = `bold ${16 * scale}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Trouvez-nous ici sur', newCanvas.width/2, logoY + logoSize + (20 * scale));
+      
+      // Texte "Manimap"
+      ctx.font = `bold ${20 * scale}px Arial`;
+      ctx.fillText('Manimap', newCanvas.width/2, logoY + logoSize + (45 * scale));
+      
+      // Dessiner le QR Code AU CENTRE avec marges blanches
+      const qrX = margin * scale;
+      const qrY = logoY + logoSize + (70 * scale); // Position après le texte
+      const qrSize = canvas.width * scale;
+      
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(canvas, qrX, qrY, qrSize, qrSize);
+      
+      // Ajouter une bordure subtile autour du QR Code
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 2 * scale;
+      ctx.strokeRect(qrX - (5 * scale), qrY - (5 * scale), qrSize + (10 * scale), qrSize + (10 * scale));
+      
+      // Télécharger
+      downloadFinalImage(newCanvas);
+    };
     
-    // Dessiner le QR code avec une meilleure qualité
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(canvas, 0, 40 * scale, newCanvas.width, newCanvas.width);
+    logo.onerror = function() {
+      // Fallback si le logo ne charge pas
+      console.log("Logo non trouvé, utilisation du texte uniquement");
+      drawTextOnlyVersionWithMargins(ctx, newCanvas, canvas, scale, margin);
+    };
     
-    // Créer le lien de téléchargement
-    const lien = document.createElement('a');
-    
-    // Méthode universelle pour tous les appareils
-    if (navigator.share) {
-      // Utiliser l'API Web Share si disponible (iOS/Mobile)
-      newCanvas.toBlob(function(blob) {
-        const file = new File([blob], "qr-code-manima.png", { type: "image/png" });
-        navigator.share({
-          files: [file],
-          title: 'QR Code Manimap',
-          text: 'Partagez ce QR Code'
-        }).catch(err => {
-          console.log('Annulation du partage:', err);
-          // Fallback au téléchargement normal
-          fallbackDownload(newCanvas);
-        });
-      });
-    } else {
-      // Méthode standard pour autres appareils
-      fallbackDownload(newCanvas);
-    }
+    logo.src = 'icons/icone-manima.png';
     
   } catch (error) {
     console.error("Erreur téléchargement QR:", error);
@@ -4167,7 +4239,61 @@ async function supprimerAvis(nomService, avisId) {
   }
 }
 
-// Fonction fallback pour le téléchargement
+// Version de secours avec marges
+function drawTextOnlyVersionWithMargins(ctx, newCanvas, canvas, scale, margin) {
+  // Fond blanc
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+  
+  // Texte principal en haut
+  ctx.fillStyle = '#4CAF50';
+  ctx.font = `bold ${14 * scale}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Trouvez-nous ici sur', newCanvas.width/2, margin * 0.7);
+  
+  // Texte "Manimap" en plus gros
+  ctx.font = `bold ${18 * scale}px Arial`;
+  ctx.fillText('MANIMAP', newCanvas.width/2, margin * 0.7 + (25 * scale));
+  
+  // Dessiner le QR Code avec marges
+  const qrX = margin * scale;
+  const qrY = margin * scale + (40 * scale);
+  const qrSize = canvas.width * scale;
+  
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(canvas, qrX, qrY, qrSize, qrSize);
+  
+  // Bordure subtile
+  ctx.strokeStyle = '#e0e0e0';
+  ctx.lineWidth = 2 * scale;
+  ctx.strokeRect(qrX - (5 * scale), qrY - (5 * scale), qrSize + (10 * scale), qrSize + (10 * scale));
+  
+  downloadFinalImage(newCanvas);
+}
+
+// Fonction pour finaliser le téléchargement (conservez celle que vous avez déjà)
+function downloadFinalImage(canvas) {
+  const lien = document.createElement('a');
+  
+  if (navigator.share) {
+    canvas.toBlob(function(blob) {
+      const file = new File([blob], "qr-code-manima.png", { type: "image/png" });
+      navigator.share({
+        files: [file],
+        title: 'QR Code Manimap',
+        text: 'Partagez ce QR Code'
+      }).catch(err => {
+        console.log('Annulation du partage:', err);
+        fallbackDownload(canvas);
+      });
+    });
+  } else {
+    fallbackDownload(canvas);
+  }
+}
+
+// Fonction fallback pour le téléchargement (conservez celle que vous avez déjà)
 function fallbackDownload(canvas) {
   const lien = document.createElement('a');
   lien.href = canvas.toDataURL('image/png');
