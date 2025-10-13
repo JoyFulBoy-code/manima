@@ -5,75 +5,78 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [3.060974, 50.628267]
+        "coordinates": [3.0427934, 50.62366]
       },
       "properties": {
-        "name": "Restaurant Suzanne",
+        "name": "Indian Garden - Restaurant Indien Lille",
         "type": "restaurant",
-        "address": "4 Pl. Philippe Lebon, 59000 Lille",
-        "phone": "0320008121",
-        "website": "http://www.suzannelille.fr/",
-        "opening_hours": "Lundi: Fermé\nMardi: 12:00–13:30, 19:15–21:30\nMercredi: 12:00–13:30, 19:15–21:30\nJeudi: 12:00–13:30, 19:15–21:30\nVendredi: 12:00–13:30, 19:15–21:30\nSamedi: Fermé\nDimanche: Fermé"
+        "address": "60 Rue d'Esquermes, 59000 Lille",
+        "phone": "0983329620",
+        "website": "https://indian-garden-lille.fr/fr/services",
+        "price_range": "10–20 € par personne (majoritairement)",
+        "opening_hours": "Lundi: 12:00–14:30, 18:30–23:00\nMardi: Fermé\nMercredi: 12:00–14:30, 18:30–23:00\nJeudi: 12:00–14:30, 18:30–23:00\nVendredi: 12:00–14:30, 18:30–23:00\nSamedi: 12:00–14:30, 18:30–23:00\nDimanche: 12:00–14:30, 18:30–23:00"
       }
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [3.061431, 50.629696]
+        "coordinates": [3.0522351, 50.6325706]
       },
       "properties": {
-        "name": "Aux éphérites",
+        "name": "LE BEAULIEU RESTAURANT HALAL",
         "type": "restaurant",
-        "address": "17 Rue Nicolas Leblanc, 59000 Lille",
-        "phone": "0956277005",
-        "website": "http://www.auxepherites.com/",
-        "opening_hours": "Lundi: Fermé\nMardi: 12:00–14:00\nMercredi: 12:00–14:00\nJeudi: 12:00–14:00, 19:30–23:00\nVendredi: 12:00–14:00, 19:30–23:00\nSamedi: 12:00–14:00, 19:30–23:00\nDimanche: Fermé"
+        "address": "112 Rue Solférino, 59800 Lille",
+        "phone": "0320230353",
+        "website": "https://restaurant-lebeaulieu.com/carte-menu/",
+        "price_range": "30–40 € par personne (majoritairement)",
+        "opening_hours": "Lundi: 18:30–23:00\nMardi: 18:30–23:00\nMercredi: 18:30–23:00\nJeudi: 18:30–23:00\nVendredi: 18:30–23:30\nSamedi: 18:30–23:30\nDimanche: Fermé"
       }
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [3.058931, 50.628866]
+        "coordinates": [3.0509309, 50.619392]
       },
       "properties": {
-        "name": "Restaurant Sébastopol",
+        "name": "L'Éveil des Sens",
         "type": "restaurant",
-        "address": "1 Pl. Sébastopol, 59000 Lille",
-        "phone": "0320131338",
-        "website": "http://www.restaurantsebastopol.com/",
-        "opening_hours": "Lundi: 12:00–13:00, 19:00–21:00\nMardi: 12:00–13:00, 19:00–21:00\nMercredi: 12:00–13:00, 19:00–21:00\nJeudi: 12:00–13:00, 19:00–21:00\nVendredi: 12:00–13:00, 19:00–21:00\nSamedi: 12:00–13:00, 19:00–21:00\nDimanche: Fermé"
+        "address": "252 Rue des Postes, 59000 Lille",
+        "phone": "0320543218",
+        "website": "http://www.restaurant-leveildessens.com/",
+        "price_range": "20–30 € par personne (majoritairement)",
+        "opening_hours": "Lundi: 11:30–15:00, 18:30–23:00\nMardi: 11:30–15:00, 18:30–23:00\nMercredi: 11:30–15:00, 18:30–23:00\nJeudi: 11:30–15:00, 18:30–23:00\nVendredi: 18:30–00:00\nSamedi: 11:30–16:00, 18:30–00:00\nDimanche: 12:00–16:00, 18:30–23:00"
       }
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [3.065465, 50.629498]
+        "coordinates": [3.0556731, 50.6253105]
       },
       "properties": {
-        "name": "Come Prima Lille",
+        "name": "Le 85 - The Halal Kitchen",
         "type": "restaurant",
-        "address": "108 bis Bd de la Liberté, 59000 Lille",
-        "phone": "0320562390",
-        "website": "https://www.comeprimalille.com/",
-        "opening_hours": "Lundi: 12:00–14:00, 19:00–22:30\nMardi: 12:00–14:00, 19:00–22:30\nMercredi: 12:00–14:00, 19:00–22:30\nJeudi: 12:00–14:00, 19:00–22:30\nVendredi: 12:00–14:30, 19:00–23:00\nSamedi: 12:00–14:30, 19:00–23:00\nDimanche: Fermé"
+        "address": "85 Rue des Postes, 59000 Lille",
+        "phone": "0663523765",
+        "price_range": "Non précisé",
+        "opening_hours": "Lundi: Fermé\nMardi: 12:00–13:30, 19:30–22:30\nMercredi: 12:00–13:30, 19:30–22:30\nJeudi: 12:00–13:30, 19:30–22:30\nVendredi: 12:00–13:30, 19:30–22:30\nSamedi: 12:00–13:30, 19:30–22:30\nDimanche: Fermé"
       }
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [3.060154, 50.630583]
+        "coordinates": [3.0516304, 50.6202646]
       },
       "properties": {
-        "name": "Les Oiseaux",
+        "name": "L’Artiste",
         "type": "restaurant",
-        "address": "7 Rue d'Inkermann, 59000 Lille",
-        "phone": "0766159579",
-        "website": "https://bookings.zenchef.com/results?rid=354457&pid=1001",
-        "opening_hours": "Lundi: Fermé\nMardi: 19:00–23:00\nMercredi: 12:00–14:30, 19:00–23:00\nJeudi: 12:00–14:30, 19:00–23:00\nVendredi: 12:00–14:30, 19:00–23:00\nSamedi: 12:00–14:30, 19:00–23:00\nDimanche: Fermé"
+        "address": "231 Rue des Postes, 59000 Lille",
+        "phone": "0320069656",
+        "price_range": "1–10 € par personne (majoritairement)",
+        "opening_hours": "Lundi: 07:00–23:00\nMardi: 07:00–23:00\nMercredi: 07:00–23:00\nJeudi: 07:00–23:00\nVendredi: 07:00–23:00\nSamedi: 07:00–23:00\nDimanche: 07:00–23:00"
       }
     },
     {
@@ -684,22 +687,7 @@
         "opening_hours": "Lundi: Fermé\nMardi: 11:30–15:00, 18:00–23:30\nMercredi: 11:30–15:00, 18:00–23:30\nJeudi: 11:30–15:00, 18:00–23:30\nVendredi: 11:30–15:00, 18:00–01:00\nSamedi: 12:00–15:00, 18:00–01:00\nDimanche: 11:30–16:00, 18:00–23:00"
       }
     },
-    {
-  "type": "Feature",
-  "geometry": {
-    "type": "Point",
-    "coordinates": [3.1062993, 50.6396894]
-  },
-  "properties": {
-    "name": "Piscine Municipale de Mons-en-Barœul",
-    "type": "piscine",
-    "address": "20 Rue Lacordaire, 59370 Mons-en-Barœul",
-    "phone": "0320561311",
-    "website": "https://piscine-monsenbaroeul.fr/",
-    "tarifs": "💧 **Tarifs Enfants (Monsois)** :\n- Moins de 4 ans : Gratuit\n- De 4 à 12 ans : 2,10€\n- Carte 10 entrées (4–12 ans) : 18,90€\n- Écoles primaires : Gratuit\n- Leçon enfant (à l’année) : 42,00€\n- Forfait mini-stages : 26,25€\n- Jeton : 1,00€\n\n💧 **Tarifs Enfants (Extérieurs)** :\n- Moins de 4 ans : Gratuit\n- De 4 à 12 ans : 2,30€\n- Carte 10 entrées (4–12 ans) : 20,70€\n- Écoles primaires : 2,50€\n- Leçon enfant (à l’année) : 138,00€\n- Forfait mini-stages : 30,00€\n- Jeton : 1,00€",
-    "opening_hours": "🏫 **Période scolaire (Enfants)** :\nLundi : Fermé\nMardi : 11h30–13h30, 17h–19h\nMercredi : 9h–12h, 14h–16h, 17h–19h30\nJeudi : 10h–11h30 (scolaires), 11h30–13h30, 17h–19h\nVendredi : 11h30–13h30, 17h–19h30\nSamedi : 9h–12h, 15h–18h\nDimanche : 9h–12h\n\n🏖️ **Vacances scolaires (Enfants)** :\nLundi : Fermé\nMardi : 10h–13h30, 14h–16h, 17h–19h\nMercredi : 10h–12h, 14h–16h, 17h–19h30\nJeudi : 10h–11h30 (scolaires), 14h–16h, 17h–19h\nVendredi : 10h–13h30, 14h–16h, 17h–19h30\nSamedi : 8h–12h, 15h–18h\nDimanche : 8h–12h\n\n👶 **Horaires conseillés pour les enfants (moins de 12 ans)** :\n- Mercredi matin et après-midi\n- Samedi matin\n- Dimanche matin"
-  }
-},
+    
     {
       "type": "Feature",
       "geometry": {
@@ -802,17 +790,7 @@
         "opening_hours": "Tous les jours: 07:00–21:30"
       }
     },
-    {
-    "type": "Feature",
-    "geometry": { "type": "Point", "coordinates": [3.0346661, 50.6353374] },
-    "properties": {
-      "name": "Piscine Marx Dormoy",
-      "type": "piscine",
-      "address": "36 Av. Marx Dormoy, 59000 Lille",
-      "phone": "0320925330",
-      "website": "http://www.lille.fr/Nos-equipements/Piscine-olympique-Marx-Dormoy",
-      "opening_hours": "Horaires conseillés pour les enfants :\nlundi, 08:00-13:30, 17:00-21:00\nmardi, 08:00–13:30, 17:00–21:00\nmercredi, 08:00–16:00, 17:00–19:30\njeudi, 08:00–13:30, 17:00–21:00\nvendredi, 08:00–13:30, 17:00–19:30\nsamedi, 08:00–13:00, 14:30–18:00\ndimanche, 08:30–12:30"}
-  },
+    
   {
   "type": "Feature",
   "geometry": { 
@@ -1416,6 +1394,138 @@
     "name": "Point Chand Du Rif",
     "type": "restaurant,boulangerie",
     "address": "104 Rue Jules Guesde, 59000 Lille, France"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0714019, 50.6376083]
+  },
+  "properties": {
+    "name": "Westfield Euralille",
+    "type": "centre commercial,shopping",
+    "address": "100 Av. Willy Brandt, 59777 Lille",
+    "website": "https://www.westfield.com/france/euralille?utm_source=google&utm_medium=GMB",
+    "phone": "0320145220",
+    "opening_hours": "lundi, 09:30–20:00\nmardi, 09:30–20:00\nmercredi, 09:30–20:00\njeudi, 09:30–20:00\nvendredi, 09:30–20:00\nsamedi, 09:30–20:00\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0483475, 50.615458]
+  },
+  "properties": {
+    "name": "Centre Commercial Lillenium",
+    "type": "centre commercial,shopping",
+    "address": "2 Rue du Faubourg des Postes, 59000 Lille",
+    "website": "https://www.lillenium-lille.com/",
+    "phone": "0374953780",
+    "opening_hours": "lundi, 10:00–20:00\nmardi, 10:00–20:00\nmercredi, 10:00–20:00\njeudi, 10:00–20:00\nvendredi, 10:00–20:00\nsamedi, 10:00–20:00\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0642683, 50.6376913]
+  },
+  "properties": {
+    "name": "Zara Home",
+    "type": "magasin,shopping",
+    "address": "Bd Carnot nº 1-5, 59800 Lille",
+    "website": "https://www.zarahome.com/fr",
+    "phone": "0320127640",
+    "opening_hours": "lundi, 10:00–19:30\nmardi, 10:00–19:30\nmercredi, 10:00–19:30\njeudi, 10:00–19:30\nvendredi, 10:00–19:30\nsamedi, 10:00–19:30\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0505518, 50.6232874]
+  },
+  "properties": {
+    "name": "Boucherie Marrakech",
+    "type": "boucherie,alimentation",
+    "address": "76 Rue Jules Guesde, 59000 Lille",
+    "phone": "0320510484",
+    "opening_hours": "mardi, 09:00–13:00, 15:00–19:00\nmercredi, 10:00–13:00, 15:00–19:00\njeudi, 09:00–13:00, 15:00–19:00\nvendredi, 09:00–13:00, 15:00–19:00\nsamedi, 09:00–13:30, 15:00–19:00\ndimanche, 09:31–18:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0500624, 50.6243207]
+  },
+  "properties": {
+    "name": "Restaurant Nakhil",
+    "type": "restaurant",
+    "address": "40 Rue Jules Guesde, 59000 Lille",
+    "phone": "0320129549",
+    "price_range": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, 11:30–22:00\nmardi, 11:30–16:00\nmercredi, 11:30–22:00\njeudi, 11:30–22:00\nvendredi, 11:30–22:00\nsamedi, 11:30–22:00\ndimanche, 11:30–22:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0505518, 50.6232874]
+  },
+  "properties": {
+    "name": "Wazemmes Market - Minimarket",
+    "type": "épicerie,alimentation",
+    "address": "73 Rue Jules Guesde, 59000 Lille",
+    "opening_hours": "lundi, 09:00–22:00\nmardi, 09:00–22:00\nmercredi, 09:00–22:00\njeudi, 09:00–22:00\nvendredi, 09:00–22:00\nsamedi, 09:00–22:00\ndimanche, 09:00–22:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0540226, 50.6232943]
+  },
+  "properties": {
+    "name": "Aprium Pharmacie d'Iéna",
+    "type": "pharmacie,santé",
+    "address": "2 Pl. de la Solidarité, 59000 Lille",
+    "website": "https://iena.aprium-pharmacie.fr/",
+    "phone": "0320571980",
+    "opening_hours": "lundi, 08:30–19:30\nmardi, 08:30–19:30\nmercredi, 08:30–19:30\njeudi, 08:30–19:30\nvendredi, 08:30–19:30\nsamedi, 09:00–12:30\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0610722, 50.6220957]
+  },
+  "properties": {
+    "name": "Lidl Lille",
+    "type": "supermarché,alimentation",
+    "address": "116 Bd Victor Hugo, 59000 Lille",
+    "website": "https://www.lidl.fr/",
+    "phone": "0188247070",
+    "opening_hours": "lundi, 08:30–19:30\nmardi, 08:30–19:30\nmercredi, 08:30–19:30\njeudi, 08:30–19:30\nvendredi, 08:30–19:30\nsamedi, 08:30–19:30\ndimanche, 08:30–12:15"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0536911, 50.6232416]
+  },
+  "properties": {
+    "name": "La Poste",
+    "type": "service,poste",
+    "address": "21 Pl. de la Solidarité, 59000 Lille",
+    "website": "https://localiser.laposte.fr/nord/lille/lille-wazemmes-597230#gmb",
+    "phone": "0970823631",
+    "opening_hours": "lundi, 09:00–12:30, 14:00–17:30\nmardi, 09:00–12:30, 14:00–17:30\nmercredi, 09:00–12:30, 14:00–17:30\njeudi, 09:00–12:30, 14:00–17:30\nvendredi, 09:00–12:30, 14:00–17:30\nsamedi, 09:00–12:00\ndimanche, Fermé"
   }
 }
 ]
