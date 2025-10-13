@@ -1402,6 +1402,18 @@
     "address": "390 Rue de l'Arbrisseau, 59000 Lille, France",
     "website": "http://elazharfrance.com/"
   }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0510031, 50.6222056]
+  },
+  "properties": {
+    "name": "Point Chand Du Rif",
+    "type": "restaurant,boulangerie",
+    "address": "104 Rue Jules Guesde, 59000 Lille, France"
+  }
 }
 ]
 }
