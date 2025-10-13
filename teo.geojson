@@ -814,15 +814,18 @@
       "opening_hours": "Horaires conseillés pour les enfants :\nlundi, 08:00-13:30, 17:00-21:00\nmardi, 08:00–13:30, 17:00–21:00\nmercredi, 08:00–16:00, 17:00–19:30\njeudi, 08:00–13:30, 17:00–21:00\nvendredi, 08:00–13:30, 17:00–19:30\nsamedi, 08:00–13:00, 14:30–18:00\ndimanche, 08:30–12:30"}
   },
   {
-    "type": "Feature",
-    "geometry": { "type": "Point", "coordinates": [3.0440729, 50.6274258] },
-    "properties": {
-      "name": "Proxi Service – Lille",
-      "type": "épicerie",
-      "address": "90 Rue des Stations, 59800 Lille",
-      "opening_hours": "mardi, 10:00–22:00\nmercredi, 09:40–22:00\njeudi, 10:00–22:00\nvendredi, 10:00–22:00\nsamedi, 10:00–22:00\ndimanche, 10:00–22:00\nlundi (Fête Nationale du 14 juillet), 10:00–22:00, Les horaires peuvent être modifiés"
-    }
+  "type": "Feature",
+  "geometry": { 
+    "type": "Point", 
+    "coordinates": [3.0440729, 50.6274258] 
   },
+  "properties": {
+    "name": "Proxi Service – Lille",
+    "type": "épicerie",
+    "address": "90 Rue des Stations, 59800 Lille",
+    "opening_hours": "lundi, 10:00–22:00\nmardi, 10:00–22:00\nmercredi, 10:00–22:00\njeudi, 10:00–22:00\nvendredi, 10:00–22:00\nsamedi, 10:00–22:00\ndimanche, 10:00–22:00"
+  }
+},
   {
     "type": "Feature",
     "geometry": { "type": "Point", "coordinates": [3.0491611, 50.6272329] },
