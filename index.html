@@ -4315,28 +4315,31 @@ function fallbackDownload(canvas) {
 // VERSION ULTRA-RAPIDE - Fonction pour vérifier les paramètres URL
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  const nomLieu = urlParams.get('lieu');
+  let nomLieu = urlParams.get('lieu');
   const lat = parseFloat(urlParams.get('lat'));
   const lng = parseFloat(urlParams.get('lng'));
 
   if (nomLieu && lat && lng) {
     console.log("🚀 PARAMÈTRES URL DÉTECTÉS - Lancement rapide");
+    console.log("📍 Lieu recherché:", nomLieu);
+    
+    // Décoder les caractères URL
+    nomLieu = decodeURIComponent(nomLieu);
+    console.log("📍 Lieu décodé:", nomLieu);
     
     // 1. CENTRAGE IMMÉDIAT
     map.setView([lat, lng], 17);
     
-    // 2. RECHERCHE EXPRESS - Pas d'attente inutile
+    // 2. RECHERCHE AVEC CORRECTION DES NOMS
     function rechercheExpress() {
       if (allFeatures && allFeatures.length > 0 && clusterLayer) {
         console.log("✅ Données prêtes - Recherche express");
         ouvrirPopupRapide(nomLieu, lat, lng);
       } else {
-        // Réessai ultra-rapide
         setTimeout(rechercheExpress, 100);
       }
     }
     
-    // Premier essai IMMÉDIAT
     setTimeout(rechercheExpress, 300);
   }
 }
@@ -4345,36 +4348,80 @@ function ouvrirPopupRapide(nomLieu, lat, lng) {
   console.log("🔍 RECHERCHE RAPIDE:", nomLieu);
   
   let markerTrouve = null;
+  let meilleurMatch = null;
+  let meilleureDistance = Infinity;
   
-  // RECHERCHE DIRECTE - Pas de vérification de distance stricte
+  // NORMALISATION du nom recherché
+  const nomNormalise = normaliserNomPourRecherche(nomLieu);
+  console.log("🔍 Nom normalisé pour recherche:", nomNormalise);
+  
+  // RECHERCHE INTELLIGENTE avec tolérance
   clusterLayer.eachLayer(marker => {
     const popupContent = marker.getPopup()?.getContent() || '';
     const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
     
-    if (nomDansPopup && nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase())) {
-      markerTrouve = marker;
-      return; // Stop au premier trouvé
+    if (nomDansPopup) {
+      // Normaliser le nom du marqueur
+      const nomMarqueurNormalise = normaliserNomPourRecherche(nomDansPopup);
+      
+      // Vérifier la distance (priorité aux marqueurs proches des coordonnées)
+      const markerLatLng = marker.getLatLng();
+      const distance = map.distance(markerLatLng, [lat, lng]);
+      
+      console.log(`📌 Comparaison: "${nomMarqueurNormalise}" vs "${nomNormalise}" - Distance: ${distance}m`);
+      
+      // CORRECTION SPÉCIALE POUR "LA POSTE" ET "PAIN BEURRE"
+      const nomsSpeciaux = {
+        'la poste': ['la poste', 'poste', 'laposte'],
+        'pain beurre': ['pain beurre', 'painbeurre', 'pain et beurre']
+      };
+      
+      let correspondanceTrouvee = false;
+      
+      // Vérifier les correspondances spéciales
+      for (const [nomCle, variantes] of Object.entries(nomsSpeciaux)) {
+        if (variantes.includes(nomNormalise) && variantes.some(v => nomMarqueurNormalise.includes(v))) {
+          correspondanceTrouvee = true;
+          console.log("🎯 CORRESPONDANCE SPÉCIALE TROUVÉE!");
+          break;
+        }
+      }
+      
+      // Correspondance exacte ou partielle
+      if (correspondanceTrouvee || 
+          nomMarqueurNormalise === nomNormalise || 
+          nomMarqueurNormalise.includes(nomNormalise) || 
+          nomNormalise.includes(nomMarqueurNormalise)) {
+        
+        if (distance < meilleureDistance) {
+          meilleureDistance = distance;
+          meilleurMatch = marker;
+        }
+      }
     }
   });
 
-  if (markerTrouve) {
-    console.log("✅ MARQUEUR TROUVÉ - Ouverture immédiate");
+  if (meilleurMatch) {
+    console.log("✅ MEILLEUR MARQUEUR TROUVÉ - Ouverture immédiate");
     
-    // FERMER tout popup existant IMMÉDIATEMENT
+    // FERMER tout popup existant
     map.closePopup();
     
-    // OUVERTURE RAPIDE sans délai
+    // OUVERTURE avec délai minimal
     setTimeout(() => {
-      markerTrouve.openPopup();
-      console.log("🎉 POPUP OUVERT!");
+      meilleurMatch.openPopup();
+      console.log("🎉 POPUP OUVERT AVEC SUCCÈS!");
       
-      // PROTECTION contre la fermeture par géolocalisation
-      protegerPopup(markerTrouve);
-    }, 100);
+      // PROTECTION contre la fermeture accidentelle
+      protegerPopup(meilleurMatch);
+    }, 150);
   } else {
-    console.log("⚠️ Marqueur non trouvé - Essai alternatif");
-    // Essai de secours rapide
-    setTimeout(() => ouvrirPopupRapide(nomLieu, lat, lng), 500);
+    console.log("⚠️ Aucun marqueur trouvé - Essai de secours");
+    
+    // ESSAI DE SECOURS : chercher par coordonnées exactes
+    setTimeout(() => {
+      trouverMarqueurParCoordonnees(lat, lng, nomLieu);
+    }, 1000);
   }
 }
 
