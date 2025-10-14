@@ -4313,6 +4313,7 @@ function fallbackDownload(canvas) {
     // Au chargement de la page, vérifier les paramètres URL
     // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
 // VERSION ULTRA-RAPIDE - Fonction pour vérifier les paramètres URL
+// REMPLACER la fonction verifierParametresURL par cette version
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const nomLieu = urlParams.get('lieu');
@@ -4335,7 +4336,7 @@ function verifierParametresURL() {
       console.log("✅ Données prêtes - Recherche améliorée");
       
       let markerTrouve = null;
-      const nomLieuLower = nomLieu.toLowerCase();
+      const nomLieuLower = nomLieu.toLowerCase().trim();
       
       // RECHERCHE FLEXIBLE dans tous les marqueurs
       clusterLayer.eachLayer(marker => {
@@ -4345,15 +4346,39 @@ function verifierParametresURL() {
         const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
         
         if (nomDansPopup) {
-          const nomDansPopupLower = nomDansPopup.toLowerCase();
+          const nomDansPopupLower = nomDansPopup.toLowerCase().trim();
           
           // Recherche plus flexible - correspondance partielle
-          if (nomDansPopupLower.includes(nomLieuLower) || nomLieuLower.includes(nomDansPopupLower)) {
+          if (nomDansPopupLower.includes(nomLieuLower) || 
+              nomLieuLower.includes(nomDansPopupLower) ||
+              nomDansPopupLower === nomLieuLower) {
             markerTrouve = marker;
             console.log("✅ MARQUEUR TROUVÉ:", nomDansPopup);
           }
         }
       });
+
+      // Si pas trouvé, essayer avec recherche approximative
+      if (!markerTrouve) {
+        clusterLayer.eachLayer(marker => {
+          if (!marker.getPopup) return;
+          
+          const popupContent = marker.getPopup()?.getContent() || '';
+          const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+          
+          if (nomDansPopup) {
+            const nomDansPopupLower = nomDansPopup.toLowerCase().trim();
+            const nomLieuLower = nomLieu.toLowerCase().trim();
+            
+            // Recherche approximative
+            if (nomDansPopupLower.replace(/\s+/g, ' ').includes(nomLieuLower.replace(/\s+/g, ' ')) ||
+                nomLieuLower.replace(/\s+/g, ' ').includes(nomDansPopupLower.replace(/\s+/g, ' '))) {
+              markerTrouve = marker;
+              console.log("✅ MARQUEUR TROUVÉ (approximatif):", nomDansPopup);
+            }
+          }
+        });
+      }
 
       if (markerTrouve) {
         console.log("🎉 OUVERTURE DU POPUP");
@@ -4365,26 +4390,31 @@ function verifierParametresURL() {
         setTimeout(() => {
           markerTrouve.openPopup();
           
-          // PROTECTION contre fermeture accidentelle
+          // PROTECTION légère seulement
           protegerPopup(markerTrouve);
-        }, 300);
+        }, 500);
       } else {
-        console.log("⚠️ Marqueur non trouvé - Nouvel essai dans 1s");
-        // Nouvel essai avec délai plus long
-        setTimeout(rechercheAmelioree, 1000);
+        console.log("⚠️ Marqueur non trouvé pour:", nomLieu);
+        // Créer un marqueur temporaire à la position exacte
+        const tempMarker = L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(`<b>${nomLieu}</b><br>Position partagée`)
+          .openPopup();
+          
+        console.log("📍 Marqueur temporaire créé à la position partagée");
       }
     }
     
     // Premier essai avec délai plus long pour laisser le temps au chargement
-    setTimeout(rechercheAmelioree, 500);
+    setTimeout(rechercheAmelioree, 1000);
   }
 }
 
-// Fonction de protection améliorée
+// REMPLACER la fonction protegerPopup par cette version améliorée
 function protegerPopup(marker) {
   let protectionActive = true;
   let tentatives = 0;
-  const maxTentatives = 10;
+  const maxTentatives = 3; // Réduit à 3 tentatives seulement
   
   const verifierPopup = setInterval(() => {
     if (!marker.getPopup().isOpen() && protectionActive && tentatives < maxTentatives) {
@@ -4398,16 +4428,15 @@ function protegerPopup(marker) {
       clearInterval(verifierPopup);
       console.log("🛡️ Protection du popup désactivée (max tentatives)");
     }
-  }, 500);
+  }, 300); // Intervalle réduit
   
-  // Désactiver la protection après 8 secondes
+  // Désactiver la protection après 3 secondes seulement
   setTimeout(() => {
     protectionActive = false;
     clearInterval(verifierPopup);
     console.log("🛡️ Protection du popup désactivée (timeout)");
-  }, 8000);
+  }, 3000);
 }
-
 function ouvrirPopupRapide(nomLieu, lat, lng) {
   console.log("🔍 RECHERCHE RAPIDE:", nomLieu);
   
