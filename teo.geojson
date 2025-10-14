@@ -1521,11 +1521,26 @@
   },
   "properties": {
     "name": "La Poste",
-    "type": "service,poste",
+    "type": "service,poste,lettre",
     "address": "21 Pl. de la Solidarité, 59000 Lille",
     "website": "https://localiser.laposte.fr/nord/lille/lille-wazemmes-597230#gmb",
     "phone": "0970823631",
     "opening_hours": "lundi, 09:00–12:30, 14:00–17:30\nmardi, 09:00–12:30, 14:00–17:30\nmercredi, 09:00–12:30, 14:00–17:30\njeudi, 09:00–12:30, 14:00–17:30\nvendredi, 09:00–12:30, 14:00–17:30\nsamedi, 09:00–12:00\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0482459, 50.6267761]
+  },
+  "properties": {
+    "name": "Pain Beurre",
+    "type": "restaurant,boulangerie",
+    "address": "370 Rue Léon Gambetta, 59800 Lille",
+    "phone": "0320291164",
+    "price_range": "1–10 € par personne (majoritairement)",
+    "opening_hours": "lundi, 07:00–19:00\nmardi, 06:30–19:00\nmercredi, 07:00–19:00\njeudi, 06:30–19:00\nvendredi, 07:00–19:30\nsamedi, 07:00–19:30\ndimanche, 06:30–13:00"
   }
 }
 ]
