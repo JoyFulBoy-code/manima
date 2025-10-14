@@ -2764,51 +2764,66 @@ function matchesFilter(props, filter) {
 
 // REMPLACE ta fonction createMarker par ceci :
 function createMarker(props, lat, lng) {
-  const nomEchappe = props.name.replace(/'/g, "\\'");
-  
-  let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
-
-  // Boutons principaux
-  popupContent += `
-    ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
-    ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
-  
-  if (props.opening_hours) {
-    const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
-  }
-  
-  if (props.price || props.tarifs) {
-    const tarifs = props.price || props.tarifs;
-    const formattedTarifs = tarifs.replace(/\n/g, '<br>');
-    popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
-  }
-  
-  popupContent += `
-    <button class="popup-btn" onclick="map.closePopup(); tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
-    <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
-    <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
-    <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
-    <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
-  `;
-
-  const marker = L.marker([lat, lng], {
-    icon: getIconByCategory(props)
-  }).bindPopup(popupContent);
-
-  // FORCER l'ouverture du bon popup
-  marker.on('click', function(e) {
-    // Fermer IMMÉDIATEMENT tous les popups
-    map.closePopup();
+    const nomEchappe = props.name.replace(/'/g, "\\'");
     
-    // Ouvrir le bon popup après un très court délai
-    setTimeout(() => {
-      marker.openPopup();
-    }, 10);
-  });
+    let popupContent = `<b>${props.name}</b><br>${props.address || ''}<br>`;
 
-  return marker;
+    // Boutons principaux
+    popupContent += `
+        ${props.phone ? `<button class="popup-btn call-btn" onclick="window.location.href='tel:${props.phone}'">📞 Appeler</button>` : ''}
+        ${props.website ? `<button class="popup-btn" onclick="window.open('${props.website}', '_blank')">🌐 Site web</button>` : ''}`;
+    
+    if (props.opening_hours) {
+        const formattedHours = props.opening_hours.replace(/\n/g, '<br>');
+        popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${encodeURIComponent(props.name).replace(/'/g, "\\'")}', 'Horaires', '${formattedHours.replace(/'/g, "\\'")}')">🕒 Horaires</button>`;
+    }
+    
+    if (props.price || props.tarifs) {
+        const tarifs = props.price || props.tarifs;
+        const formattedTarifs = tarifs.replace(/\n/g, '<br>');
+        popupContent += `<button class="popup-btn" onclick="afficherDetailsPopup('${props.name}', 'Tarifs', \`${formattedTarifs}\`)">💰 Tarifs</button>`;
+    }
+    
+    popupContent += `
+        <button class="popup-btn" onclick="map.closePopup(); tracerItineraire([${lat}, ${lng}])">🚗 Itinéraire</button>
+        <button class="popup-btn" onclick="afficherFormulaireAvis('${props.name.replace(/'/g, "\\'")}')">💬 Laisser un avis</button>
+        <button class="popup-btn" onclick="voirAvis('${props.name.replace(/'/g, "\\'")}')">👀 Voir les avis</button>
+        <button class="popup-btn" onclick="afficherQRModal('${props.name.replace(/'/g, "\\'")}', ${lat}, ${lng})">📱 Partager</button>
+        <button class="popup-btn" onclick="afficherStreetView(${lat}, ${lng})">🌍 Street View</button>
+    `;
+
+    const marker = L.marker([lat, lng], {
+        icon: getIconByCategory(props)
+    }).bindPopup(popupContent);
+
+    // VERSION CORRIGÉE - Gestion améliorée des clics
+    marker.on('click', function(e) {
+        // Fermer tous les popups IMMÉDIATEMENT
+        map.closePopup();
+        
+        // Attendre un court instant pour éviter les conflits
+        setTimeout(() => {
+            // Vérifier si le marqueur est dans un cluster
+            const parentCluster = clusterLayer.getVisibleParent(marker);
+            
+            if (parentCluster && parentCluster !== marker) {
+                // Développer le cluster d'abord
+                parentCluster.once('spiderfied', function() {
+                    setTimeout(() => {
+                        marker.openPopup();
+                    }, 100);
+                });
+                parentCluster.spiderfy();
+            } else {
+                // Ouvrir directement
+                marker.openPopup();
+            }
+        }, 10);
+    });
+
+    return marker;
 }
+
 
 
 
@@ -4313,155 +4328,364 @@ function fallbackDownload(canvas) {
     // Au chargement de la page, vérifier les paramètres URL
     // VERSION ULTRA-RAPIDE - Remplace ta fonction verifierParametresURL
 // VERSION ULTRA-RAPIDE - Fonction pour vérifier les paramètres URL
+// VERSION STABLE - Gestion automatique des popups depuis URL
+// REMPLACE ta fonction verifierParametresURL par cette version ULTRA-RENFORCÉE
+// REMPLACE complètement ta fonction verifierParametresURL par ceci :
 function verifierParametresURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  const nomLieu = urlParams.get('lieu');
-  const lat = parseFloat(urlParams.get('lat'));
-  const lng = parseFloat(urlParams.get('lng'));
+  const nomLieu = urlParams.get("lieu");
+  const lat = parseFloat(urlParams.get("lat"));
+  const lng = parseFloat(urlParams.get("lng"));
 
   if (nomLieu && lat && lng) {
-    console.log("🚀 PARAMÈTRES URL DÉTECTÉS - Lancement rapide");
-    
-    // 1. CENTRAGE IMMÉDIAT
-    map.setView([lat, lng], 17);
-    
-    // 2. RECHERCHE EXPRESS - Pas d'attente inutile
-    function rechercheExpress() {
+    console.log("🚀 PARAMÈTRES URL DÉTECTÉS - OUVERTURE DIRECTE:", nomLieu, lat, lng);
+
+    // 1. CENTRER ET ZOOMER FORTEMENT
+    map.setView([lat, lng], 19, {
+      animate: true,
+      duration: 0.5
+    });
+
+    // 2. ATTENDRE que tout soit chargé
+    const attenteChargement = setInterval(() => {
       if (allFeatures && allFeatures.length > 0 && clusterLayer) {
-        console.log("✅ Données prêtes - Recherche express");
-        ouvrirPopupRapide(nomLieu, lat, lng);
-      } else {
-        // Réessai ultra-rapide
-        setTimeout(rechercheExpress, 100);
+        clearInterval(attenteChargement);
+        console.log("✅ Données prêtes — OUVERTURE DIRECTE IMMÉDIATE");
+        
+        // 3. OUVRIR DIRECTEMENT sans attendre
+        ouvrirPopupDirect(nomLieu, lat, lng);
       }
-    }
-    
-    // Premier essai IMMÉDIAT
-    setTimeout(rechercheExpress, 300);
+    }, 300);
   }
 }
 
-function ouvrirPopupRapide(nomLieu, lat, lng) {
-  console.log("🔍 RECHERCHE RAPIDE:", nomLieu);
-  
-  let markerTrouve = null;
-  
-  // RECHERCHE DIRECTE - Pas de vérification de distance stricte
-  clusterLayer.eachLayer(marker => {
-    const popupContent = marker.getPopup()?.getContent() || '';
-    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
-    
-    if (nomDansPopup && nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase())) {
-      markerTrouve = marker;
-      return; // Stop au premier trouvé
-    }
-  });
+// NOUVELLE FONCTION - OUVERTURE DIRECTE SANS CLIC
+function ouvrirPopupDirect(nomLieu, lat, lng, tentative = 0) {
+  console.log(`🎯 OUVERTURE DIRECTE - Tentative ${tentative + 1} pour "${nomLieu}"`);
 
-  if (markerTrouve) {
-    console.log("✅ MARQUEUR TROUVÉ - Ouverture immédiate");
-    
-    // FERMER tout popup existant IMMÉDIATEMENT
-    map.closePopup();
-    
-    // OUVERTURE RAPIDE sans délai
-    setTimeout(() => {
-      markerTrouve.openPopup();
-      console.log("🎉 POPUP OUVERT!");
-      
-      // PROTECTION contre la fermeture par géolocalisation
-      protegerPopup(markerTrouve);
-    }, 100);
-  } else {
-    console.log("⚠️ Marqueur non trouvé - Essai alternatif");
-    // Essai de secours rapide
-    setTimeout(() => ouvrirPopupRapide(nomLieu, lat, lng), 500);
-  }
-}
+  // FORCER la fermeture de tous les popups d'abord
+  map.closePopup();
 
-// FONCTION DE PROTECTION du popup
-function protegerPopup(marker) {
-  let protectionActive = true;
-  
-  // Surveiller si le popup se ferme
-  const verifierPopup = setInterval(() => {
-    if (!marker.getPopup().isOpen() && protectionActive) {
-      console.log("🛡️ POPUP FERMÉ - Réouverture automatique");
-      marker.openPopup();
-    }
-  }, 500);
-  
-  // Désactiver la protection après 5 secondes
-  setTimeout(() => {
-    protectionActive = false;
-    clearInterval(verifierPopup);
-    console.log("🛡️ Protection du popup désactivée");
-  }, 5000);
-}
-
-// GÉOLOCALISATION MODIFIÉE - Ne pas interférer
-let premiereLocalisation = true;
-
-navigator.geolocation.watchPosition(
-  pos => {
-    userLocation = [pos.coords.latitude, pos.coords.longitude];
-    
-    if (userMarker) {
-      userMarker.setLatLng(userLocation);
-    } else {
-      userMarker = L.marker(userLocation, {
-        icon: arrowIcon
-      }).addTo(map).bindPopup("📍 Vous êtes ici");
-      
-      // PREMIÈRE LOCALISATION : ne pas centrer pour éviter les conflits
-      if (premiereLocalisation) {
-        premiereLocalisation = false;
-        console.log("📍 Géolocalisation activée - Pas de centrage automatique");
-      }
-    }
-  }, 
-  err => console.log("📍 Géolocalisation:", err.message), 
-  {
-    enableHighAccuracy: false, // Plus rapide
-    maximumAge: 30000, // Cache de 30 secondes
-    timeout: 10000     // Timeout de 10 secondes
-  }
-);
-
-// LANCEMENT ULTRA-RAPIDE
-document.addEventListener('DOMContentLoaded', function() {
-  console.log("📄 PAGE CHARGÉE - Vérification express");
-  setTimeout(verifierParametresURL, 100);
-});
-
-map.whenReady(function() {
-  console.log("🗺️ CARTE PRÊTE - Vérification express");
-  setTimeout(verifierParametresURL, 200);
-});
-
-// Fonction utilitaire pour trouver un marqueur par nom et coordonnées
-function trouverMarqueurParNomEtPosition(nomRecherche, lat, lng) {
+  const positionCible = L.latLng(lat, lng);
   let meilleurMarqueur = null;
   let meilleureDistance = Infinity;
-  
+
+  // 🔥 RECHERCHE ULTRA-PRÉCISE du bon marqueur
   clusterLayer.eachLayer(marker => {
     if (!marker.getLatLng) return;
     
-    const markerLatLng = marker.getLatLng();
-    const distance = map.distance(markerLatLng, [lat, lng]);
+    const markerPos = marker.getLatLng();
     const popupContent = marker.getPopup()?.getContent() || '';
-    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1] || '';
+    const distance = positionCible.distanceTo(markerPos);
+
+    // Vérifier la correspondance EXACTE du nom
+    const nomCorrespond = nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase());
     
-    // Vérifier si c'est le bon marqueur
-    if (nomDansPopup && nomDansPopup.trim().toLowerCase() === nomRecherche.trim().toLowerCase()) {
+    if (nomCorrespond && distance < 30) { // Distance très courte
       if (distance < meilleureDistance) {
         meilleureDistance = distance;
         meilleurMarqueur = marker;
       }
     }
   });
+
+  if (meilleurMarqueur) {
+    console.log("✅ Marqueur exact trouvé - OUVERTURE DIRECTE");
+    ouvrirMarqueurDirectement(meilleurMarqueur);
+    return;
+  }
+
+  // 🔄 SI PAS TROUVÉ - Recherche élargie
+  console.log("🔄 Recherche élargie...");
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    
+    const markerPos = marker.getLatLng();
+    const distance = positionCible.distanceTo(markerPos);
+    
+    if (distance < 50) { // Distance un peu plus large
+      if (distance < meilleureDistance) {
+        meilleureDistance = distance;
+        meilleurMarqueur = marker;
+      }
+    }
+  });
+
+  if (meilleurMarqueur) {
+    console.log("✅ Marqueur proche trouvé - OUVERTURE DIRECTE");
+    ouvrirMarqueurDirectement(meilleurMarqueur);
+    return;
+  }
+
+  // ❌ SI TOUJOURS PAS TROUVÉ
+  if (tentative < 10) {
+    console.log(`⏳ Tentative ${tentative + 1} échouée - Nouvel essai dans 500ms`);
+    setTimeout(() => ouvrirPopupDirect(nomLieu, lat, lng, tentative + 1), 500);
+  } else {
+    console.error("❌ Impossible de trouver le marqueur après 10 tentatives");
+  }
+}
+
+// FONCTION CRITIQUE - Ouvre le marqueur DIRECTEMENT
+function ouvrirMarqueurDirectement(marker) {
+  console.log("🔥 OUVERTURE DIRECTE DU MARQUEUR");
+
+  // 1. Fermer tous les popups
+  map.closePopup();
+
+  // 2. Vérifier si le marqueur est dans un cluster
+  const parentCluster = clusterLayer.getVisibleParent(marker);
   
+  if (parentCluster && parentCluster !== marker) {
+    console.log("🕷️ Marqueur dans cluster - DÉVELOPPEMENT AUTOMATIQUE");
+    
+    // 🔥 DÉVELOPPER LE CLUSTER AUTOMATIQUEMENT
+    parentCluster.spiderfy();
+    
+    // Attendre que le cluster soit développé
+    parentCluster.once('spiderfied', function() {
+      console.log("✅ Cluster développé - OUVERTURE POPUP");
+      
+      // Petit délai pour être sûr
+      setTimeout(() => {
+        // FORCER l'ouverture du popup
+        if (marker.getPopup()) {
+          marker.openPopup();
+          console.log("🎉 POPUP OUVERT DIRECTEMENT !");
+          
+          // Protection contre la fermeture accidentelle
+          protegerPopupFort(marker);
+        }
+      }, 400);
+    });
+    
+  } else {
+    // Marqueur déjà visible - OUVERTURE DIRECTE
+    console.log("📍 Marqueur visible - OUVERTURE IMMÉDIATE");
+    setTimeout(() => {
+      if (marker.getPopup()) {
+        marker.openPopup();
+        console.log("🎉 POPUP OUVERT DIRECTEMENT !");
+        protegerPopupFort(marker);
+      }
+    }, 200);
+  }
+}
+
+
+
+// NOUVELLE FONCTION - Ouvre le popup même dans les clusters denses
+function ouvrirPopupForce(nomLieu, lat, lng, tentative = 0) {
+  console.log(`🎯 FORCE OUVERTURE - Tentative ${tentative + 1} pour "${nomLieu}"`);
+
+  const positionCible = L.latLng(lat, lng);
+  let marqueursTrouves = [];
+
+  // 🔥 RECHERCHE AGGRESSIVE de tous les marqueurs proches
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    
+    const markerPos = marker.getLatLng();
+    const popupContent = marker.getPopup()?.getContent() || '';
+    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1] || '';
+    const distance = positionCible.distanceTo(markerPos);
+
+    // Recherche plus large pour trouver le bon service
+    if (nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase()) || 
+        distance < 50) { // Distance plus large
+      marqueursTrouves.push({
+        marker: marker,
+        distance: distance,
+        nom: nomDansPopup
+      });
+    }
+  });
+
+  console.log(`📍 Marqueurs trouvés: ${marqueursTrouves.length}`, marqueursTrouves);
+
+  if (marqueursTrouves.length === 0) {
+    if (tentative < 8) { // Plus de tentatives
+      console.log("⏳ Aucun marqueur trouvé, nouvelle tentative...");
+      return setTimeout(() => ouvrirPopupForce(nomLieu, lat, lng, tentative + 1), 500);
+    } else {
+      console.error("❌ Aucun marqueur correspondant trouvé après plusieurs essais.");
+      return;
+    }
+  }
+
+  // Trier par distance et correspondance du nom
+  marqueursTrouves.sort((a, b) => {
+    // Priorité au nom exact
+    const exactMatchA = a.nom.toLowerCase() === nomLieu.toLowerCase();
+    const exactMatchB = b.nom.toLowerCase() === nomLieu.toLowerCase();
+    
+    if (exactMatchA && !exactMatchB) return -1;
+    if (!exactMatchA && exactMatchB) return 1;
+    
+    // Sinon par distance
+    return a.distance - b.distance;
+  });
+
+  const markerCible = marqueursTrouves[0].marker;
+  console.log("🎯 Marqueur cible sélectionné:", markerCible.getPopup()?.getContent()?.substring(0, 50));
+
+  // 🔥 FORCER LA FERMETURE DE TOUS LES POPUPS
+  map.closePopup();
+
+  // Vérifier si le marqueur est dans un cluster
+  const parentCluster = clusterLayer.getVisibleParent(markerCible);
+  
+  if (parentCluster && parentCluster !== markerCible) {
+    console.log("🕷️ Marqueur dans un cluster — développement forcé...");
+    
+    // Développer le cluster
+    parentCluster.once('spiderfied', function() {
+      console.log("✅ Cluster développé — ouverture du popup...");
+      setTimeout(() => {
+        // Ré-ouvrir le popup après développement
+        markerCible.openPopup();
+        protegerPopup(markerCible);
+      }, 300);
+    });
+    
+    parentCluster.spiderfy();
+    
+    // Plan B: Si le spiderfy ne fonctionne pas
+    setTimeout(() => {
+      if (!markerCible.getPopup()?.isOpen()) {
+        console.log("🔄 Spiderfy échoué — ouverture directe...");
+        markerCible.openPopup();
+        protegerPopup(markerCible);
+      }
+    }, 1000);
+    
+  } else {
+    // Marqueur déjà visible
+    console.log("📍 Marqueur déjà visible — ouverture directe...");
+    setTimeout(() => {
+      markerCible.openPopup();
+      protegerPopup(markerCible);
+    }, 200);
+  }
+}
+
+
+
+function ouvrirPopupRapide(nomLieu, lat, lng, tentative = 0) {
+  console.log(`🎯 Tentative ${tentative + 1} — recherche précise pour "${nomLieu}"`);
+
+  const positionCible = L.latLng(lat, lng);
+  let marqueursProches = [];
+
+  // 🔍 Recherche des marqueurs proches
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    const markerPos = marker.getLatLng();
+    const popupContent = marker.getPopup()?.getContent() || '';
+    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1] || '';
+    const distance = positionCible.distanceTo(markerPos);
+
+    if (nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase()) && distance < 25) {
+      marqueursProches.push(marker);
+    }
+  });
+
+  if (marqueursProches.length === 0) {
+    if (tentative < 5) {
+      console.log("⏳ Aucun marqueur trouvé, nouvelle tentative...");
+      return setTimeout(() => ouvrirPopupRapide(nomLieu, lat, lng, tentative + 1), 400);
+    } else {
+      return console.warn("❌ Aucun marqueur correspondant trouvé après plusieurs essais.");
+    }
+  }
+
+  // 🕷️ Si les marqueurs sont regroupés dans un cluster
+  const parentCluster = clusterLayer.getVisibleParent(marqueursProches[0]);
+  if (parentCluster && parentCluster !== marqueursProches[0] && parentCluster.spiderfy) {
+    console.log("🕷️ Cluster détecté — ouverture en étoile en cours…");
+    parentCluster.once("spiderfied", () => {
+      setTimeout(() => {
+        console.log("✅ Spiderfy terminé — recherche du bon marqueur…");
+        ouvrirPopupRapide(nomLieu, lat, lng, tentative + 1);
+      }, 400);
+    });
+    parentCluster.spiderfy();
+    return;
+  }
+
+  // ✅ Si un seul marqueur ou cluster déjà ouvert
+  const markerCible = marqueursProches[0];
+  console.log("📍 Marqueur trouvé:", markerCible.getPopup()?.getContent()?.substring(0, 50));
+
+  map.closePopup();
+
+  // 🔁 Attendre que tout soit prêt avant ouverture
+  setTimeout(() => {
+    markerCible.openPopup();
+    protegerPopup(markerCible);
+    console.log("🎉 Popup ouvert avec succès !");
+  }, 250);
+}
+
+function attendreOuverturePopup(marker, tentative = 0) {
+  let essais = 0;
+  const popupNom = marker.getPopup()?.getContent()?.match(/<b>(.*?)<\/b>/)?.[1];
+
+  const interval = setInterval(() => {
+    essais++;
+    const popupOuvert = marker.getPopup()?.isOpen();
+
+    if (map.hasLayer(marker)) {
+      clearInterval(interval);
+      console.log(`📬 Ouverture du popup pour "${popupNom}"`);
+      setTimeout(() => {
+        marker.openPopup();
+        protegerPopup(marker);
+      }, 200); // Délai léger pour éviter conflit d’animation
+    } else if (essais > 15) {
+      clearInterval(interval);
+      if (tentative < 3) {
+        console.warn("⚠️ Marqueur encore masqué, nouvelle tentative...");
+        ouvrirPopupRapide(popupNom, marker.getLatLng().lat, marker.getLatLng().lng, tentative + 1);
+      } else {
+        console.error("❌ Impossible d’afficher le popup après plusieurs essais");
+      }
+    }
+  }, 200);
+}
+
+
+
+function trouverMarqueurParNomEtPosition(nomRecherche, lat, lng) {
+  let meilleurMarqueur = null;
+  let meilleureDistance = Infinity;
+
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    const markerLatLng = marker.getLatLng();
+    const distance = map.distance(markerLatLng, [lat, lng]);
+    const popupContent = marker.getPopup()?.getContent() || "";
+    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
+    if (nomDansPopup && nomDansPopup.trim().toLowerCase().includes(nomRecherche.trim().toLowerCase())) {
+      if (distance < 50 && distance < meilleureDistance) {
+        meilleureDistance = distance;
+        meilleurMarqueur = marker;
+      }
+    }
+  });
+
   return meilleurMarqueur;
 }
+
+// Vérification automatique
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(verifierParametresURL, 300);
+});
+
+map.whenReady(() => {
+  setTimeout(verifierParametresURL, 500);
+});
     
 
 
