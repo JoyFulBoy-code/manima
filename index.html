@@ -4978,59 +4978,86 @@ function afficherSurCarte(serviceName) {
   // Ajoute ici ta logique pour afficher le service sur la carte
 }
 
- // Fonction pour trouver un service par son nom
-    function trouverServiceParNom(nom) {
-      if (!allFeatures) return null;
+ // AMÉLIORER la fonction trouverServiceParNom
+function trouverServiceParNom(nom) {
+  if (!allFeatures) return null;
+  
+  const nomRecherche = nom.toLowerCase().trim();
+  
+  for (const feature of allFeatures) {
+    const props = feature.properties;
+    if (props.name) {
+      const nomService = props.name.toLowerCase().trim();
       
-      for (const feature of allFeatures) {
-        const props = feature.properties;
-        if (props.name && props.name.toLowerCase() === nom.toLowerCase()) {
-          return {
-            name: props.name,
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0]
-          };
-        }
+      // Correspondance exacte
+      if (nomService === nomRecherche) {
+        return {
+          name: props.name,
+          lat: feature.geometry.coordinates[1],
+          lng: feature.geometry.coordinates[0]
+        };
       }
-      return null;
+      
+      // Correspondance partielle
+      if (nomService.includes(nomRecherche) || nomRecherche.includes(nomService)) {
+        return {
+          name: props.name,
+          lat: feature.geometry.coordinates[1],
+          lng: feature.geometry.coordinates[0]
+        };
+      }
     }
+  }
+  
+  console.log("❌ Aucun service trouvé pour:", nom);
+  return null;
+}
 
-    function centrerSurService(nom) {
+    // AMÉLIORER la fonction centrerSurService
+function centrerSurService(nom) {
   const service = trouverServiceParNom(nom);
-  if (!service) return;
+  if (!service) {
+    console.log("❌ Service non trouvé:", nom);
+    return;
+  }
 
-  const decaleLat = service.lat - 0.0022;
-  const targetLatLng = L.latLng(service.lat, service.lng);
+  console.log("🎯 Centrage sur:", nom, service);
 
-  map.flyTo([decaleLat, service.lng], 17, {
+  // Centrer directement sur le service
+  map.flyTo([service.lat, service.lng], 17, {
     animate: true,
-    duration: 1
+    duration: 1.5
   });
 
   setTimeout(() => {
     let markerTrouve = null;
+    const targetLatLng = L.latLng(service.lat, service.lng);
 
+    // Rechercher le marqueur exact
     clusterLayer.eachLayer(marker => {
       if (!marker.getLatLng) return;
 
-      const distance = map.distance(marker.getLatLng(), targetLatLng);
+      const markerLatLng = marker.getLatLng();
+      const distance = map.distance(markerLatLng, targetLatLng);
       const popupContent = marker.getPopup()?.getContent() || '';
       const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1];
       
-      if (distance < 10 && nomDansPopup === nom) {
+      // Tolérance de 50 mètres et nom correspondant
+      if (distance < 50 && nomDansPopup && nomDansPopup.trim() === nom.trim()) {
         markerTrouve = marker;
       }
     });
 
     if (markerTrouve) {
-      clusterLayer.zoomToShowLayer(markerTrouve, () => {
-        map.closePopup();
-        setTimeout(() => {
-          markerTrouve.openPopup();
-        }, 100);
-      });
+      console.log("✅ Marqueur trouvé, ouverture popup");
+      map.closePopup();
+      setTimeout(() => {
+        markerTrouve.openPopup();
+      }, 300);
+    } else {
+      console.log("⚠️ Marqueur non trouvé après centrage");
     }
-  }, 1100);
+  }, 1200);
 }
 
 
