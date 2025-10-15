@@ -4350,10 +4350,79 @@ function verifierParametresURL() {
         console.log("✅ Données prêtes — OUVERTURE DIRECTE IMMÉDIATE");
         
         // 3. OUVRIR DIRECTEMENT sans attendre
-        ouvrirPopupDirect(nomLieu, lat, lng);
+        ouvrirPopupClusterSafe(nomLieu, lat, lng);
       }
     }, 300);
   }
+}
+function ouvrirPopupClusterSafe(nomLieu, lat, lng, tentative = 0) {
+  console.log(`🧭 Tentative ${tentative + 1} pour ouvrir le popup cluster-safe de "${nomLieu}"`);
+
+  if (!clusterLayer) return console.warn("⚠️ clusterLayer pas encore prêt");
+
+  const positionCible = L.latLng(lat, lng);
+  let markerCible = null;
+  let meilleureDistance = Infinity;
+
+  // Trouver le bon marqueur
+  clusterLayer.eachLayer(marker => {
+    if (!marker.getLatLng) return;
+    const popupContent = marker.getPopup()?.getContent() || '';
+    const nomDansPopup = popupContent.match(/<b>(.*?)<\/b>/)?.[1] || '';
+    const distance = positionCible.distanceTo(marker.getLatLng());
+    if (nomDansPopup && nomDansPopup.toLowerCase().includes(nomLieu.toLowerCase())) {
+      if (distance < meilleureDistance) {
+        meilleureDistance = distance;
+        markerCible = marker;
+      }
+    }
+  });
+
+  if (!markerCible) {
+    if (tentative < 10) {
+      console.log("⏳ Aucun marqueur trouvé, réessai dans 400ms...");
+      return setTimeout(() => ouvrirPopupClusterSafe(nomLieu, lat, lng, tentative + 1), 400);
+    }
+    return console.error("❌ Aucun marqueur correspondant trouvé");
+  }
+
+  const parentCluster = clusterLayer.getVisibleParent(markerCible);
+
+  // Si cluster ne peut pas se déplier (plusieurs marqueurs à la même position)
+  if (parentCluster && parentCluster._childCount > 1) {
+    console.log("⚠️ Cluster indépliable détecté — ouverture via marqueur temporaire");
+
+    const popupContent = markerCible.getPopup()?.getContent() || `<b>${nomLieu}</b>`;
+
+    // Création d’un faux marqueur invisible
+    const fauxMarker = L.marker(positionCible, { opacity: 0, interactive: false }).addTo(map);
+    fauxMarker.bindPopup(popupContent);
+
+    map.setView(positionCible, 20, { animate: true });
+    setTimeout(() => {
+      fauxMarker.openPopup();
+      console.log("🎯 Popup affiché via faux marqueur !");
+      // Supprime le faux marqueur après 5s
+      setTimeout(() => map.removeLayer(fauxMarker), 5000);
+    }, 500);
+
+    return;
+  }
+
+  // Si le marqueur est visible
+  if (!parentCluster || parentCluster === markerCible) {
+    console.log("📍 Marqueur déjà visible — ouverture directe");
+    map.setView(markerCible.getLatLng(), 19, { animate: true });
+    setTimeout(() => markerCible.openPopup(), 400);
+    return;
+  }
+
+  // Sinon : spiderfy classique
+  console.log("🕷️ Cluster spiderfy normal");
+  parentCluster.once('spiderfied', () => {
+    setTimeout(() => markerCible.openPopup(), 300);
+  });
+  parentCluster.spiderfy();
 }
 
 // NOUVELLE FONCTION - OUVERTURE DIRECTE SANS CLIC

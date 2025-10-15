@@ -1354,6 +1354,7 @@
   "properties": {
     "name": "Lépicerie Charcuterie Crémerie Fruits",
     "type": "épicerie",
+    "phone": "03 59 89 89 12",
     "opening_hours": "lundi, Fermé\nmardi, 08:30–13:00, 15:00–19:00\nmercredi, 08:30–13:00, 15:00–19:00\njeudi, 08:30–13:00, 15:00–19:00\nvendredi, 08:30–13:00, 15:00–19:00\nsamedi, 08:30–19:00\ndimanche, 09:00–13:30"
   }
 },
@@ -1393,7 +1394,8 @@
   "properties": {
     "name": "Point Chand Du Rif",
     "type": "restaurant,boulangerie",
-    "address": "104 Rue Jules Guesde, 59000 Lille, France"
+    "address": "104 Rue Jules Guesde, 59000 Lille, France",
+    "opening_hours": "lundi, Fermé\nmardi, 09:00–16:00\nmercredi, 09:00–16:00\njeudi, 09:00–16:00\nvendredi, 09:00–16:00\nsamedi, 09:00–16:00\ndimanche, 09:00–16:00"
   }
 },
 {
@@ -1452,7 +1454,7 @@
     "type": "boucherie,alimentation",
     "address": "76 Rue Jules Guesde, 59000 Lille",
     "phone": "0320510484",
-    "opening_hours": "mardi, 09:00–13:00, 15:00–19:00\nmercredi, 10:00–13:00, 15:00–19:00\njeudi, 09:00–13:00, 15:00–19:00\nvendredi, 09:00–13:00, 15:00–19:00\nsamedi, 09:00–13:30, 15:00–19:00\ndimanche, 09:31–18:00"
+    "opening_hours": "lundi, 9:00-19:00\nmardi, 09:00–13:00, 15:00–19:00\nmercredi, 10:00–13:00, 15:00–19:00\njeudi, 09:00–13:00, 15:00–19:00\nvendredi, 09:00–13:00, 15:00–19:00\nsamedi, 09:00–13:30, 15:00–19:00\ndimanche, 09:31–18:00"
   }
 },
 {
