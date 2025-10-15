@@ -4,11 +4,6 @@
     { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "https://cmanima.com/(.*)",
-      "headers": { "Location": "https://www.cmanima.com/$1" },
-      "status": 301
-    },
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
