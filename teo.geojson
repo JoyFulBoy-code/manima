@@ -1542,6 +1542,21 @@
     "price_range": "1–10 € par personne (majoritairement)",
     "opening_hours": "lundi, 07:00–19:00\nmardi, 06:30–19:00\nmercredi, 07:00–19:00\njeudi, 06:30–19:00\nvendredi, 07:00–19:30\nsamedi, 07:00–19:30\ndimanche, 06:30–13:00"
   }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0490612, 50.6271281]
+  },
+  "properties": {
+    "name": "NATURALIA",
+    "type": "supermarché,épicerie,bio,magasin",
+    "address": "342 Rue Léon Gambetta, 59000 Lille",
+    "website": "https://magasins.naturalia.fr/naturalia/fr/store/france/hauts-de-france/nord/lille/lille-wazemmes/4007?utm_source=GMB&utm_medium=local&utm_campaign=Multidiffusion&utm_content=4007&origin=GMB",
+    "phone": "0320026399",
+    "opening_hours": "lundi, 09:00–20:00\nmardi, 09:00–20:00\nmercredi, 09:00–20:00\njeudi, 09:00–20:00\nvendredi, 09:00–20:00\nsamedi, 09:00–20:00\ndimanche, 09:00–12:45"
+  }
 }
 ]
 }
