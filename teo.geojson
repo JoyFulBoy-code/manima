@@ -1559,6 +1559,111 @@
     "phone": "0320026399",
     "opening_hours": "lundi, 09:00–20:00\nmardi, 09:00–20:00\nmercredi, 09:00–20:00\njeudi, 09:00–20:00\nvendredi, 09:00–20:00\nsamedi, 09:00–20:00\ndimanche, 09:00–12:45"
   }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0551913, 50.634164]
+  },
+  "properties": {
+    "name": "PAUL",
+    "type": "boulangerie, café",
+    "address": "6 Pl. de Strasbourg, 59000 Lille",
+    "website": "https://paul.fr/",
+    "phone": "0320572629",
+    "opening_hours": "lundi, 07:00–20:00\nmardi, 07:00–20:00\nmercredi, 07:00–20:00\njeudi, 07:00–20:00\nvendredi, 07:00–20:00\nsamedi, 07:00–20:00\ndimanche, 07:00–13:30"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.064733, 50.6369352]
+  },
+  "properties": {
+    "name": "PAUL (Rue Pierre Mauroy)",
+    "type": "boulangerie, café",
+    "address": "8 à 12 Rue Pierre Mauroy, 12 Rue des Manneliers, 59800 Lille",
+    "website": "https://paul.fr/",
+    "phone": "0320782078",
+    "opening_hours": "lundi, 07:00–20:00\nmardi, 07:00–20:00\nmercredi, 07:00–20:00\njeudi, 07:00–20:00\nvendredi, 07:00–20:00\nsamedi, 07:00–20:00\ndimanche, 07:00–19:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0631393, 50.6368201]
+  },
+  "properties": {
+    "name": "PAUL (Place du Général-de-Gaulle)",
+    "type": "boulangerie, café",
+    "address": "19 Pl. du Général de Gaulle, 59000 Lille",
+    "website": "https://paul.fr/",
+    "phone": "0320574099",
+    "opening_hours": "lundi, 07:30–20:00\nmardi, 07:30–20:00\nmercredi, 07:30–20:00\njeudi, 07:30–20:00\nvendredi, 07:30–20:00\nsamedi, 07:30–20:00\ndimanche, 10:00–18:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0516765, 50.6259941]
+  },
+  "properties": {
+    "name": "Boulangerie Maes Éric",
+    "type": "boulangerie",
+    "address": "45 Bis Rue du Marché, 59000 Lille",
+    "website": "https://www.facebook.com/pages/Boulangerie-MAES-Lille-Wazemmes/317527371749379?ref=bookmarks",
+    "phone": "0320573544",
+    "opening_hours": "lundi, Fermé\nmardi, 07:30–20:00\nmercredi, 07:30–20:00\njeudi, 07:30–20:00\nvendredi, 07:30–20:00\nsamedi, 07:30–20:00\ndimanche, 07:15–14:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.1553124, 50.6406713]
+  },
+  "properties": {
+    "name": "Chic Nana",
+    "type": "magasin, vêtements",
+    "address": "2 Place Jean Moulin, 59650 Villeneuve-d’Ascq",
+    "website": "",
+    "phone": "",
+    "opening_hours": "lundi, Fermé\nmardi, 11:30–18:30\nmercredi, 10:00–18:30\njeudi, 10:00–18:30\nvendredi, 10:00–18:30\nsamedi, Fermé\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0638339, 50.6333423]
+  },
+  "properties": {
+    "name": "Chic Nana (Rue de Béthune)",
+    "type": "magasin, vêtements",
+    "address": "Galerie Passage 57, 57 Rue de Béthune, 59800 Lille",
+    "website": "http://chicnana.online/",
+    "phone": "0320549286",
+    "opening_hours": "lundi, Fermé\nmardi, 10:30–19:00\nmercredi, 10:30–19:00\njeudi, 10:30–19:00\nvendredi, 10:30–19:00\nsamedi, 10:30–19:00\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0504896, 50.6277364]
+  },
+  "properties": {
+    "name": "ZEEMAN LILLE GAMBETTA",
+    "type": "magasin, vêtements, textile",
+    "address": "288-290-292 Rue Léon Gambetta, 59000 Lille",
+    "website": "https://www.zeeman.com/fr-fr/magasins/3124-lille-gambetta?utm_source=google&utm_medium=organic&utm_campaign=gmb",
+    "phone": "0359810200",
+    "opening_hours": "lundi, 09:30–19:00\ntuesday, 09:30–19:00\nmercredi, 09:30–19:00\njeudi, 09:30–19:00\nvendredi, 09:30–19:00\nsamedi, 09:30–19:00\ndimanche, 09:30–13:30"
+  }
 }
 ]
 }
