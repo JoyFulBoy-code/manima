@@ -1,29 +1,15 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(ajouter-commerce|services-lille|chauffeurs-lille|carte-interactive|restaurants-lille|taxis-lille|garages-lille|pharmacies-lille|boucheries-lille|boulangeries-lille|supermarches-lille|mosquees-lille|itineraires-lille|avis-commerces|recommandations|marches-lille|cgu|confidentialite|a-propos|contact)",
-      "headers": {
-        "Location": "https://www.cmanima.com"
-      },
+      "src": "https://cmanima.com/(.*)",
+      "headers": { "Location": "https://www.cmanima.com/$1" },
       "status": 301
     },
-    {
-      "src": "/(.*)",
-      "headers": {
-        "Location": "https://www.cmanima.com"
-      },
-      "status": 301
-    }
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
