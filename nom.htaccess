@@ -1,28 +1,32 @@
 RewriteEngine On
 
-# Rediriger TOUTES les URLs du sitemap erroné vers l'accueil
-RewriteRule ^ajouter-commerce/?$ https://cmanima.com [R=301,L]
-RewriteRule ^services-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^chauffeurs-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^carte-interactive/?$ https://cmanima.com [R=301,L]
-RewriteRule ^restaurants-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^taxis-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^garages-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^pharmacies-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^boucheries-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^boulangeries-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^supermarches-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^mosquees-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^itineraires-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^avis-commerces/?$ https://cmanima.com [R=301,L]
-RewriteRule ^recommandations/?$ https://cmanima.com [R=301,L]
-RewriteRule ^marches-lille/?$ https://cmanima.com [R=301,L]
-RewriteRule ^cgu/?$ https://cmanima.com [R=301,L]
-RewriteRule ^confidentialite/?$ https://cmanima.com [R=301,L]
-RewriteRule ^a-propos/?$ https://cmanima.com [R=301,L]
-RewriteRule ^contact/?$ https://cmanima.com [R=301,L]
+# Rediriger vers la version WWW
+RewriteCond %{HTTP_HOST} ^cmanima\.com [NC]
+RewriteRule ^(.*)$ https://www.cmanima.com/$1 [R=301,L]
+
+# Rediriger TOUTES les URLs du sitemap erroné
+RewriteRule ^ajouter-commerce/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^services-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^chauffeurs-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^carte-interactive/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^restaurants-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^taxis-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^garages-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^pharmacies-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^boucheries-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^boulangeries-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^supermarches-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^mosquees-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^itineraires-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^avis-commerces/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^recommandations/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^marches-lille/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^cgu/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^confidentialite/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^a-propos/?$ https://www.cmanima.com [R=301,L]
+RewriteRule ^contact/?$ https://www.cmanima.com [R=301,L]
 
 # Redirection générale pour toutes les autres URLs inexistantes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ https://cmanima.com [R=301,L]
+RewriteRule ^(.*)$ https://www.cmanima.com [R=301,L]
