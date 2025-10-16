@@ -1662,7 +1662,67 @@
     "address": "288-290-292 Rue Léon Gambetta, 59000 Lille",
     "website": "https://www.zeeman.com/fr-fr/magasins/3124-lille-gambetta?utm_source=google&utm_medium=organic&utm_campaign=gmb",
     "phone": "0359810200",
-    "opening_hours": "lundi, 09:30–19:00\ntuesday, 09:30–19:00\nmercredi, 09:30–19:00\njeudi, 09:30–19:00\nvendredi, 09:30–19:00\nsamedi, 09:30–19:00\ndimanche, 09:30–13:30"
+    "opening_hours": "lundi, 09:30–19:00\nmardi, 09:30–19:00\nmercredi, 09:30–19:00\njeudi, 09:30–19:00\nvendredi, 09:30–19:00\nsamedi, 09:30–19:00\ndimanche, 09:30–13:30"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.053602, 50.6323987]
+  },
+  "properties": {
+    "name": "Laser Game Evolution Lille Solférino - Deux labyrinthes multiniveaux",
+    "type": "loisirs, jeu, laser game",
+    "address": "9 Rue des Primeurs, 59000 Lille",
+    "website": "https://lille.lasergame-evolution.fr/",
+    "phone": "0320137063",
+    "opening_hours": "lundi, Fermé\nmardi, Fermé\nmercredi, 14:00–22:00\njeudi, 17:00–23:00\nvendredi, 17:00–23:00\nsamedi, 10:00–23:00\ndimanche, 10:00–20:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0621556, 50.6331277]
+  },
+  "properties": {
+    "name": "Starship Laser Lille centre",
+    "type": "loisirs, jeu, laser game",
+    "address": "11 Rue de l'Hôpital Militaire, 59800 Lille",
+    "website": "http://starshiplaser.com/",
+    "phone": "0320151881",
+    "opening_hours": "lundi, Fermé\nmardi, 14:00–19:00\nmercredi, 14:00–19:00\njeudi, 14:00–00:00\nvendredi, 14:00–00:00\nsamedi, 14:00–00:00\ndimanche, 14:00–18:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.1406486, 50.6479291]
+  },
+  "properties": {
+    "name": "Koezio Lille",
+    "type": "parc de loisirs, aventure, team building",
+    "address": "31 Rue Alfred de Musset, 59650 Villeneuve-d’Ascq",
+    "website": "https://koezio.co/koezio-lille",
+    "phone": "0320058000",
+    "opening_hours": ""
+  }
+},
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [3.0619416, 50.6378334]
+  },
+  "properties": {
+    "name": "Maison Méert",
+    "type": "pâtisserie, chocolaterie, salon de thé",
+    "address": "25-27 Rue Esquermoise, 59000 Lille",
+    "website": "https://www.meert.fr/",
+    "phone": "0320570744",
+    "opening_hours": "lundi, 14:00–19:00\nmardi, 10:00–19:30\nmercredi, 10:00–19:30\njeudi, 10:00–19:30\nvendredi, 10:00–19:30\nsamedi, 10:00–19:30\ndimanche, 09:00–19:00"
   }
 }
 ]
