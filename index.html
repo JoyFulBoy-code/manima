@@ -2307,7 +2307,7 @@ const clusterLayer = L.markerClusterGroup().addTo(map);
 let allFeatures = [];
 
 // Charger uniquement votre fichier lille.geojson
-    fetch('teo.geojson')
+    fetch('tra.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;
@@ -5479,7 +5479,7 @@ items.forEach(item => {
     }
     
     // Dans le code de chargement des données
-    fetch('teo.geojson')
+    fetch('tra.geojson')
       .then(res => res.json())
       .then(data => {
         allFeatures = data.features;

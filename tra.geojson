@@ -1711,19 +1711,108 @@
   }
 },
 {
-  "type": "Feature",
-  "geometry": {
-    "type": "Point",
-    "coordinates": [3.0619416, 50.6378334]
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0619416, 50.6378334]
+    },
+    "properties": {
+      "name": "Maison Méert",
+      "type": "pâtisserie, chocolaterie, salon de thé",
+      "address": "25-27 Rue Esquermoise, 59000 Lille",
+      "website": "https://www.meert.fr/",
+      "phone": "0320570744",
+      "opening_hours": "lundi, 14:00–19:00\nmardi, 10:00–19:30\nmercredi, 10:00–19:30\njeudi, 10:00–19:30\nvendredi, 10:00–19:30\nsamedi, 10:00–19:30\ndimanche, 09:00–19:00"
+    }
   },
-  "properties": {
-    "name": "Maison Méert",
-    "type": "pâtisserie, chocolaterie, salon de thé",
-    "address": "25-27 Rue Esquermoise, 59000 Lille",
-    "website": "https://www.meert.fr/",
-    "phone": "0320570744",
-    "opening_hours": "lundi, 14:00–19:00\nmardi, 10:00–19:30\nmercredi, 10:00–19:30\njeudi, 10:00–19:30\nvendredi, 10:00–19:30\nsamedi, 10:00–19:30\ndimanche, 09:00–19:00"
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.133225, 50.6205138]
+    },
+    "properties": {
+      "name": "Forum départemental des sciences",
+      "type": "centre scientifique, musée",
+      "address": "1 Place De L'Hôtel De Ville, 59650 Villeneuve-d'Ascq",
+      "website": "https://forumdepartementaldessciences.fr/",
+      "phone": "0359739600",
+      "tarifs": "Atelier d’Atom : 3€\n\nPlein tarifs :\nPlanétarium : 9€\nPetit forum et Enigma : 8€\n\nTarif réduit :\nPlanétarium : 8€/4€\nPetit forum et Enigma : 6€/4€\n\nConditions de réduction à 6€ :\n- Moins de 18 ans\n- Demandeurs d’emploi\n- Accompagnateurs de groupe\n- Étudiants, chercheurs, enseignants dans un projet en lien avec l’équipement\n\nConditions de réduction à 4€ :\n- Carte Louvre Lens\n- Carte Furet du Nord\n- Société des Amis du musée du Louvre\n- Dreamservices\n\nGratuité :\n- Abonnés C’ART\n- Moins de 3 ans (sauf activités jeunes enfants)\n- Personnes en situation de handicap\n- Bénéficiaires des minimas sociaux (RSA, ASI, ASS, ADA, ASV, ASPA…)\n- Porteurs carte ICOM, ICOMOS ou professionnels de la culture\n- Journalistes accrédités\n- Mécènes, donateurs, personnels du Département du Nord\n- 1er dimanche du mois\n- Journées et événements nationaux",
+      "opening_hours": "lundi, Fermé\nmardi, 14:00–18:00\nmercredi, 14:00–18:00\njeudi, 14:00–18:00\nvendredi, 14:00–18:00\nsamedi, 14:00–18:00\ndimanche, 14:00–18:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.196101, 50.6827558]
+    },
+    "properties": {
+      "name": "La Manufacture",
+      "type": "musée, patrimoine industriel",
+      "address": "29 Av. Julien Lagache, 59100 Roubaix",
+      "website": "http://www.lamanufacture-roubaix.com/",
+      "phone": "0320209892",
+      "tarifs": "Visite guidée du parc de machines (français uniquement) :\n- Plein tarif : 6 €\n- Tarif réduit : 4 €\n\nVisite libre / visite guidée vidéo (avec sous-titres anglais) :\n- 4 €\n\nBillets combinés (valables 6 mois) :\n- Avec le musée La Piscine : 13,50 €\n- Avec la Villa Cavrois : 12,50 €\n*La visite guidée du parc de machines est incluse dans ces billets combinés.*\n\nTarifs réduits :\n- Enfants de 8 à 18 ans\n- Étudiants\n- Demandeurs d’emploi\n- Visiteurs en situation de handicap + accompagnant\n- Ambassadeurs de Roubaix\n- Amis du musée La Piscine\n- Détenteurs de la carte Ch’ti\n- Voyageurs TER Hauts-de-France (billet valable le jour de la visite)\n\nEntrée gratuite :\n- Enfants de moins de 8 ans\n- Étudiants ENSAIT, ESAAT, ESMOD, INFORMA\n- Détenteurs du City Pass Lille Métropole\n- Titulaires de la carte C’Art\n- Membres de l’ICOM\n- Journalistes\n- Guides touristiques professionnels\n- Tous les visiteurs le premier dimanche du mois",
+      "opening_hours": "lundi, Fermé\nmardi, 14:00–18:00\nmercredi, 14:00–18:00\njeudi, 14:00–18:00\nvendredi, 14:00–18:00\nsamedi, 14:00–18:00\ndimanche, 14:00–18:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0637612, 50.6369184]
+    },
+    "properties": {
+      "name": "Vieille Bourse de Lille",
+      "type": "site historique, monument",
+      "address": "Place du Général de Gaulle, 59000 Lille",
+      "website": "https://www.lilletourism.com/explorer/lille-et-ses-environs/musees-et-sites-touristiques/vieille-bourse/",
+      "phone": "0359579400",
+      "opening_hours": "lundi, Fermé\nmardi, 13:00–19:00\nmercredi, 13:00–19:00\njeudi, 13:00–19:00\nvendredi, 13:00–19:00\nsamedi, 13:00–19:00\ndimanche, 13:00–19:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0631393, 50.6368201]
+    },
+    "properties": {
+      "name": "Furet du Nord",
+      "type": "librairie",
+      "address": "15 Place du Général de Gaulle, 59800 Lille",
+      "website": "https://www.furet.com/blog/nos-magasins/furet-du-nord-de-lille/",
+      "phone": "0320784343",
+      "opening_hours": "lundi, 09:30–19:30\nmardi, 09:30–19:30\nmercredi, 09:30–19:30\njeudi, 09:30–19:30\nvendredi, 09:30–19:30\nsamedi, 09:30–19:30\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0480653, 50.6216271]
+    },
+    "properties": {
+      "name": "Stade Roger Salengro",
+      "type": "stade, complexe sportif",
+      "address": "62 Rue d'Iéna, 59000 Lille",
+      "phone": "0320139891",
+      "opening_hours": "Ouvert 24H/7j"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [3.0516208, 50.6231504]
+    },
+    "properties": {
+      "name": "Artisan Boulanger",
+      "type": "boulangerie, pâtisserie",
+      "address": "18 Rue d'Iéna, 59000 Lille",
+      "opening_hours": "lundi, 07:00–19:00\nmardi, 07:00–19:00\nmercredi, 07:00–19:00\njeudi, 07:00–19:00\nvendredi, 07:00–19:00\nsamedi, 07:00–19:00\ndimanche, 07:00–20:00"
+    }
   }
-}
 ]
 }
