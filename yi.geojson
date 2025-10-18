@@ -1803,15 +1803,63 @@
   },
   {
     "type": "Feature",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [3.0516208, 50.6231504]
-    },
+    "geometry": { "type": "Point", "coordinates": [3.0932834, 50.6339257] },
     "properties": {
-      "name": "Artisan Boulanger",
-      "type": "boulangerie, pâtisserie",
-      "address": "18 Rue d'Iéna, 59000 Lille",
-      "opening_hours": "lundi, 07:00–19:00\nmardi, 07:00–19:00\nmercredi, 07:00–19:00\njeudi, 07:00–19:00\nvendredi, 07:00–19:00\nsamedi, 07:00–19:00\ndimanche, 07:00–20:00"
+      "name": "SNACK 61",
+      "type": "restaurant halal",
+      "address": "61 Rue de Lannoy, 59800 Lille",
+      "site": "https://snack-61-restaurant-lille.eatbu.com/?lang=fr",
+      "phone": "09 53 65 29 12",
+      "opening_hours": "lundi, 17:00–00:00\nmardi, 17:00–00:00\nmercredi, 17:00–00:00\njeudi, 17:00–00:00\nvendredi, 15:00–01:00\nsamedi, 14:00–01:00\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0522351, 50.6325706] },
+    "properties": {
+      "name": "LE BEAULIEU RESTAURANT HALAL",
+      "type": "restaurant halal",
+      "address": "112 Rue Solférino, 59800 Lille",
+      "site": "https://restaurant-lebeaulieu.com/carte-menu/",
+      "phone": "03 20 23 03 53",
+      "price_range": "30–40 € par personne (majoritairement)",
+      "opening_hours": "lundi, 18:30–23:00\nmardi, 18:30–23:00\nmercredi, 18:30–23:00\njeudi, 18:30–23:00\nvendredi, 18:30–23:30\nsamedi, 18:30–23:30\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1744, 50.6922] },
+    "properties": {
+      "name": "Le Grand Café",
+      "type": "café / restaurant",
+      "address": "4 Av. Jean Lebas, 59100 Roubaix",
+      "phone": "09 83 63 31 75",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 09:00–20:00\nmardi, 09:00–20:00\nmercredi, 09:00–20:00\njeudi, 09:00–20:00\nvendredi, 09:00–23:00\nsamedi, 10:00–23:00\ndimanche, 10:00–20:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.08065, 50.6814211] },
+    "properties": {
+      "name": "Trampoline Park Lille Marquette",
+      "type": "loisir / parc",
+      "address": "Innovation Park, 187 Rue de Menin, 59520 Marquette-lez-Lille",
+      "site": "https://www.trampolinepark.fr/lille/?utm_source=google&utm_medium=gmb&utm_campaign=gmb_website_lille_marquette",
+      "phone": "09 74 32 60 41",
+      "opening_hours": "lundi, 10:00–20:00\nmardi, 10:00–20:00\nmercredi, 10:00–20:00\njeudi, 10:00–20:00\nvendredi, 10:00–20:00\nsamedi, 10:00–20:00\ndimanche, 10:00–20:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0726063, 50.6167294] },
+    "properties": {
+      "name": "US Lille-Moulins Carrel",
+      "type": "sport / club",
+      "address": "2 Av. Louise Michel, 59000 Lille",
+      "site": "https://us-lille-moulin-carrel.footeo.com/",
+      "phone": "03 20 85 99 24",
+      "opening_hours": "lundi, 08:29–00:00\nmardi, Ouvert 24h/24\nmercredi, Ouvert 24h/24\njeudi, Ouvert 24h/24\nvendredi, Ouvert 24h/24\nsamedi, Ouvert 24h/24\ndimanche, Fermé"
     }
   }
 ]
