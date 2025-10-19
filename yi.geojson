@@ -1851,16 +1851,79 @@
     }
   },
   {
-    "type": "Feature",
-    "geometry": { "type": "Point", "coordinates": [3.0726063, 50.6167294] },
-    "properties": {
-      "name": "US Lille-Moulins Carrel",
-      "type": "sport / club",
-      "address": "2 Av. Louise Michel, 59000 Lille",
-      "site": "https://us-lille-moulin-carrel.footeo.com/",
-      "phone": "03 20 85 99 24",
-      "opening_hours": "lundi, 08:29–00:00\nmardi, Ouvert 24h/24\nmercredi, Ouvert 24h/24\njeudi, Ouvert 24h/24\nvendredi, Ouvert 24h/24\nsamedi, Ouvert 24h/24\ndimanche, Fermé"
-    }
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.0726063, 50.6167294] },
+  "properties": {
+    "name": "US Lille-Moulins Carrel",
+    "type": "sport, club, foot",
+    "address": "2 Av. Louise Michel, 59000 Lille",
+    "site": "https://us-lille-moulin-carrel.footeo.com/",
+    "phone": "03 20 85 99 24",
+    "opening_hours": "lundi, 08:29–00:00\nmardi, Ouvert 24h/24\nmercredi, Ouvert 24h/24\njeudi, Ouvert 24h/24\nvendredi, Ouvert 24h/24\nsamedi, Ouvert 24h/24\ndimanche, Fermé"
   }
+},
+{
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.052425, 50.6213099] },
+  "properties": {
+    "name": "Original Burger Grill",
+    "type": "restaurant, burger, halal",
+    "address": "195 Rue des Postes, 59000 Lille",
+    "site": "http://www.obglille.com/",
+    "phone": "03 62 23 57 26",
+    "price_range": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, 11:30–00:00\nmardi, 11:30–00:00\nmercredi, 11:30–00:00\njeudi, 11:30–00:00\nvendredi, 15:00–01:00\nsamedi, 11:30–01:00\ndimanche, 11:30–00:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.0556731, 50.6253105] },
+  "properties": {
+    "name": "Le 85 - The Halal Kitchen",
+    "type": "restaurant, halal, cuisine maison",
+    "address": "85 Rue des Postes, 59000 Lille",
+    "phone": "06 63 52 37 65",
+    "opening_hours": "lundi, Fermé\nmardi, 12:00–13:30, 19:30–22:30\nmercredi, 12:00–13:30, 19:30–22:30\njeudi, 12:00–13:30, 19:30–22:30\nvendredi, 12:00–13:30, 19:30–22:30\nsamedi, 12:00–13:30, 19:30–22:30\ndimanche, Fermé"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.0553439, 50.6249016] },
+  "properties": {
+    "name": "Fabrik Burger",
+    "type": "restaurant, burger, halal",
+    "address": "110 Rue des Postes, 59000 Lille",
+    "site": "https://fabrikburger.vercel.app/",
+    "phone": "03 74 45 54 27",
+    "price_range": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, 18:30–23:30\nmardi, 18:30–23:30\nmercredi, 18:30–23:30\njeudi, 18:30–23:30\nvendredi, 18:30–01:00\nsamedi, 18:30–01:00\ndimanche, 18:30–00:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.0679184, 50.6372553] },
+  "properties": {
+    "name": "El Riadh",
+    "type": "restaurant, oriental, halal",
+    "address": "4 Pl. des Reignaux, 59000 Lille",
+    "site": "https://elriadh-lille.fr/fr",
+    "phone": "03 20 51 03 37",
+    "price_range": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, 11:00–00:00\nmardi, 11:00–00:00\nmercredi, 11:00–00:00\njeudi, 11:00–00:00\nvendredi, 11:00–01:00\nsamedi, 11:00–01:00\ndimanche, 11:00–01:00"
+  }
+},
+{
+  "type": "Feature",
+  "geometry": { "type": "Point", "coordinates": [3.0592831, 50.6313449] },
+  "properties": {
+    "name": "Royal Burger",
+    "type": "restaurant, burger, halal",
+    "address": "17 Rue Léon Gambetta, 59000 Lille",
+    "site": "https://royal-burger-lille-commande.tastycloud.menu/6ede8881551284887361d4fafa94b7af72a170ada575f59a6c39f8bd42c9b5ef/menu/0",
+    "phone": "07 44 95 43 35",
+    "price_range": "10–20 € par personne (majoritairement)",
+    "opening_hours": "lundi, 00:00–07:00, 11:30–00:00\nmardi, 00:00–06:00, 11:30–00:00\nmercredi, 00:00–06:00, 11:30–00:00\njeudi, 00:00–06:30, 11:30–00:00\nvendredi, 00:00–07:00, 11:30–00:00\nsamedi, 00:00–07:00, 11:30–00:00\ndimanche, 00:00–07:00, 11:30–00:00"
+  }
+}
 ]
 }
