@@ -24,7 +24,7 @@
         "coordinates": [3.0522351, 50.6325706]
       },
       "properties": {
-        "name": "LE BEAULIEU RESTAURANT HALAL",
+        "name": "LE BEAULIEU",
         "type": "restaurant",
         "address": "112 Rue Solférino, 59800 Lille",
         "phone": "0320230353",
@@ -1863,17 +1863,7 @@
     "opening_hours": "lundi, 11:30–00:00\nmardi, 11:30–00:00\nmercredi, 11:30–00:00\njeudi, 11:30–00:00\nvendredi, 15:00–01:00\nsamedi, 11:30–01:00\ndimanche, 11:30–00:00"
   }
 },
-{
-  "type": "Feature",
-  "geometry": { "type": "Point", "coordinates": [3.0556731, 50.6253105] },
-  "properties": {
-    "name": "Le 85 - The Halal Kitchen",
-    "type": "restaurant, halal, cuisine maison",
-    "address": "85 Rue des Postes, 59000 Lille",
-    "phone": "06 63 52 37 65",
-    "opening_hours": "lundi, Fermé\nmardi, 12:00–13:30, 19:30–22:30\nmercredi, 12:00–13:30, 19:30–22:30\njeudi, 12:00–13:30, 19:30–22:30\nvendredi, 12:00–13:30, 19:30–22:30\nsamedi, 12:00–13:30, 19:30–22:30\ndimanche, Fermé"
-  }
-},
+
 {
   "type": "Feature",
   "geometry": { "type": "Point", "coordinates": [3.0553439, 50.6249016] },
@@ -1901,17 +1891,173 @@
   }
 },
 {
-  "type": "Feature",
-  "geometry": { "type": "Point", "coordinates": [3.0592831, 50.6313449] },
-  "properties": {
-    "name": "Royal Burger",
-    "type": "restaurant, burger, halal",
-    "address": "17 Rue Léon Gambetta, 59000 Lille",
-    "site": "https://royal-burger-lille-commande.tastycloud.menu/6ede8881551284887361d4fafa94b7af72a170ada575f59a6c39f8bd42c9b5ef/menu/0",
-    "phone": "07 44 95 43 35",
-    "price_range": "10–20 € par personne (majoritairement)",
-    "opening_hours": "lundi, 00:00–07:00, 11:30–00:00\nmardi, 00:00–06:00, 11:30–00:00\nmercredi, 00:00–06:00, 11:30–00:00\njeudi, 00:00–06:30, 11:30–00:00\nvendredi, 00:00–07:00, 11:30–00:00\nsamedi, 00:00–07:00, 11:30–00:00\ndimanche, 00:00–07:00, 11:30–00:00"
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0592831, 50.6313449] },
+    "properties": {
+      "name": "Royal Burger",
+      "type": "restaurant, burger, halal",
+      "address": "17 Rue Léon Gambetta, 59000 Lille",
+      "site": "https://royal-burger-lille-commande.tastycloud.menu/6ede8881551284887361d4fafa94b7af72a170ada575f59a6c39f8bd42c9b5ef/menu/0",
+      "phone": "07 44 95 43 35",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 00:00–07:00, 11:30–00:00\nmardi, 00:00–06:00, 11:30–00:00\nmercredi, 00:00–06:00, 11:30–00:00\njeudi, 00:00–06:30, 11:30–00:00\nvendredi, 00:00–07:00, 11:30–00:00\nsamedi, 00:00–07:00, 11:30–00:00\ndimanche, 00:00–07:00, 11:30–00:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1371239, 50.6134923] },
+    "properties": {
+      "name": "Sandwicherie CROUS O'Kiosk",
+      "type": "restaurant, sandwicherie",
+      "address": "IUT de Lille, 59650 Villeneuve-d'Ascq",
+      "site": "https://www.crous-lille.fr/restaurant/sandwicherie-o-kiosk-lille-i/",
+      "phone": "0374091254",
+      "price_range": "",
+      "opening_hours": "lundi, 11:30–12:30\nmardi, 11:30–12:30\nmercredi, 11:30–12:30\njeudi, 11:30–12:30\nvendredi, 11:30–12:30\nsamedi, Fermé\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1433508, 50.611922] },
+    "properties": {
+      "name": "Restaurant Universitaire Charles Barrois",
+      "type": "restaurant universitaire",
+      "address": "Av. Paul Langevin, 59650 Villeneuve-d'Ascq",
+      "site": "https://www.crous-lille.fr/restaurant/r-u-barrois-cite-sicentifique/",
+      "phone": "0374091227",
+      "price_range": "1–10 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:15–13:45\nmardi, 11:15–13:45\nmercredi, 11:15–13:45\njeudi, 11:15–13:45\nvendredi, 11:15–13:45\nsamedi, Fermé\ndimanche, Fermé"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1408829, 50.6169088] },
+    "properties": {
+      "name": "Poulet braisé Triolo",
+      "type": "restaurant, poulet braisé",
+      "address": "11 Rue Traversière 1er étage, 59650 Villeneuve-d'Ascq",
+      "site": "",
+      "phone": "0752513704",
+      "price_range": "1–10 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:00–00:00\ntuesday, 11:00–00:00\nmercredi, 11:00–00:00\njeudi, 11:00–00:00\nvendredi, 11:00–00:00\nsamedi, 11:00–00:00\ndimanche, 00:00–00:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1411526, 50.6162836] },
+    "properties": {
+      "name": "Triolo Pizza",
+      "type": "restaurant, pizza",
+      "address": "11 Rue Traversière, 59650 Villeneuve-d'Ascq",
+      "site": "http://www.triolopizza.com/",
+      "phone": "0320342020",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:30–23:30\ntuesday, 11:30–23:30\nmercredi, 11:30–23:30\njeudi, 11:30–23:30\nvendredi, 14:00–23:30\nsamedi, 11:30–00:00\ndimanche, 11:30–23:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.140885, 50.6168177] },
+    "properties": {
+      "name": "L'Escapade",
+      "type": "restaurant",
+      "address": "11 Rue Traversière, 59650 Villeneuve-d’Ascq",
+      "site": "http://www.lescapade-triolo.fr/",
+      "phone": "",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:45–13:45, 18:30–22:00\ntuesday, 11:45–13:45, 18:30–22:30\nmercredi, 11:45–13:45, 18:30–22:30\njeudi, 11:45–13:45, 18:30–22:30\nvendredi, 18:30–23:00\nsamedi, 18:30–23:00\ndimanche, 18:30–22:30"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1408829, 50.6169088] },
+    "properties": {
+      "name": "Triolo Food",
+      "type": "restaurant",
+      "address": "11 Rue Traversière, 59650 Villeneuve-d’Ascq",
+      "site": "https://www.facebook.com/TrioloFood/?locale=fr_FR",
+      "phone": "0374450250",
+      "price_range": "1–10 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:00–00:00\ntuesday, 11:00–00:00\nmercredi, 11:00–00:00\njeudi, 11:00–00:00\nvendredi, 11:00–00:00\nsamedi, 11:00–00:00\ndimanche, 11:00–00:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1419104, 50.6167278] },
+    "properties": {
+      "name": "Burger City",
+      "type": "restaurant, burger",
+      "address": "11 Rue Traversière, 59650 Villeneuve-d’Ascq",
+      "site": "https://burgercity-triolo.fr/",
+      "phone": "0320612677",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 10:00–02:00\ntuesday, 10:00–02:00\nmercredi, 10:00–02:00\njeudi, 10:00–02:00\nvendredi, 10:00–03:00\nsamedi, 10:00–03:00\ndimanche, 10:00–02:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1799431, 50.6927081] },
+    "properties": {
+      "name": "Naan Street Roubaix",
+      "type": "restaurant, naan",
+      "address": "81 Grande Rue, 59100 Roubaix",
+      "site": "https://linktr.ee/naanstreetofficiel",
+      "phone": "0954025722",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 12:00–01:00\ntuesday, 12:00–01:00\nmercredi, 12:00–01:00\njeudi, 12:00–01:00\nvendredi, 17:00–02:00\nsamedi, 12:00–02:00\ndimanche, 12:00–01:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.1767126, 50.6921872] },
+    "properties": {
+      "name": "Chick'n Beef Roubaix",
+      "type": "restaurant, poulet, beef",
+      "address": "32 Grande Rue, 59100 Roubaix",
+      "site": "https://chicknbeef.com/",
+      "phone": "0374682088",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:00–00:00\ntuesday, 11:00–00:00\nmercredi, 11:00–00:00\njeudi, 11:00–00:00\nvendredi, 11:00–13:45, 14:45–01:00\nsamedi, 11:00–01:00\ndimanche, 11:00–00:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.091384, 50.6327295] },
+    "properties": {
+      "name": "Afri Call Food (Lille Fives)",
+      "type": "restaurant africain",
+      "address": "180 Rue Pierre Legrand, 59800 Lille",
+      "site": "http://www.africallfood.com/",
+      "phone": "0753660297",
+      "price_range": "10–20 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:30–23:30\ntuesday, 11:30–23:30\nmercredi, 11:30–23:30\njeudi, 11:30–23:30\nvendredi, 15:00–01:00\nsamedi, 11:30–01:00\ndimanche, 11:30–23:30"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0907774, 50.6329588] },
+    "properties": {
+      "name": "Snack Center",
+      "type": "restaurant, snack",
+      "address": "162 Rue Pierre Legrand, 59800 Lille",
+      "site": "",
+      "phone": "0982553689",
+      "price_range": "1–10 € par personne (majoritairement)",
+      "opening_hours": "lundi, 11:00–00:00\ntuesday, 11:00–00:00\nmercredi, 11:00–00:00\njeudi, 11:00–00:00\nvendredi, 11:00–00:30\nsamedi, 11:00–00:30\ndimanche, 11:00–00:00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": { "type": "Point", "coordinates": [3.0579251, 50.628085] },
+    "properties": {
+      "name": "Mada-st",
+      "type": "restaurant",
+      "address": "14 Rue des Postes, 59000 Lille",
+      "site": "",
+      "phone": "0647935194",
+      "price_range": "20–30 € par personne (majoritairement)",
+      "opening_hours": "lundi, Fermé\ntuesday, 12:00–23:30\nmercredi, 12:00–23:30\njeudi, 12:00–23:30\nvendredi, 12:00–23:30\nsamedi, 12:00–23:30\ndimanche, 12:00–23:30"
+    }
   }
-}
 ]
 }
