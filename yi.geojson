@@ -1813,19 +1813,7 @@
       "opening_hours": "lundi, 17:00–00:00\nmardi, 17:00–00:00\nmercredi, 17:00–00:00\njeudi, 17:00–00:00\nvendredi, 15:00–01:00\nsamedi, 14:00–01:00\ndimanche, Fermé"
     }
   },
-  {
-    "type": "Feature",
-    "geometry": { "type": "Point", "coordinates": [3.0522351, 50.6325706] },
-    "properties": {
-      "name": "LE BEAULIEU RESTAURANT HALAL",
-      "type": "restaurant halal",
-      "address": "112 Rue Solférino, 59800 Lille",
-      "site": "https://restaurant-lebeaulieu.com/carte-menu/",
-      "phone": "03 20 23 03 53",
-      "price_range": "30–40 € par personne (majoritairement)",
-      "opening_hours": "lundi, 18:30–23:00\nmardi, 18:30–23:00\nmercredi, 18:30–23:00\njeudi, 18:30–23:00\nvendredi, 18:30–23:30\nsamedi, 18:30–23:30\ndimanche, Fermé"
-    }
-  },
+  
   {
     "type": "Feature",
     "geometry": { "type": "Point", "coordinates": [3.1744, 50.6922] },
