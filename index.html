@@ -75,7 +75,13 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <!-- Dans la section Firebase de Manimap, ajoutez Firestore -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
   <script>
+
+
 
     // Initialisation immédiate d'EmailJS
     (function() {
@@ -1625,9 +1631,150 @@ body {
     margin: 5px 0;
   }
 }
+
+/* Bouton Classement Snacks */
+#snack-ranking-btn {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: #ff4444;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 10000;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+#snack-ranking-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.05);
+}
+
+/* Modal Classement Snacks */
+#snack-ranking-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+
+#snack-ranking-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Styles pour la liste de classement */
+.snack-ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border-left: 4px solid #ff4444;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.snack-ranking-item:hover {
+  background: #e9ecef;
+  transform: translateX(5px);
+}
+
+.ranking-position {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff4444;
+  min-width: 40px;
+  text-align: center;
+}
+
+.snack-info {
+  flex: 1;
+}
+
+.snack-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.snack-details {
+  font-size: 12px;
+  color: #666;
+}
+
+.snack-score {
+  background: #ff4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #snack-ranking-btn {
+    top: 70px;
+    right: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  #snack-ranking-content {
+    margin: 10% auto;
+    width: 95%;
+  }
+  
+  .snack-ranking-item {
+    padding: 12px;
+  }
+  
+  .ranking-position {
+    font-size: 20px;
+    min-width: 35px;
+  }
+}
+
   </style>
 </head>
 <body>
+  <!-- Bouton Classement Snacks -->
+<button id="snack-ranking-btn" onclick="afficherClassementSnacks()">🏆 Classement Food Clash</button>
+
+<!-- Modal Classement Snacks -->
+<div id="snack-ranking-modal" class="modal">
+  <div id="snack-ranking-content">
+    <span class="close-btn" onclick="fermerClassementSnacks()">&times;</span>
+    <h2 style="text-align: center; color: #ff4444; margin-bottom: 20px;">🏆 Classement des restos et snacks </h2>
+    <div id="snack-ranking-list">
+      <!-- La liste sera générée dynamiquement -->
+    </div>
+    <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+      Cliquez sur un endroit pour le localiser sur la carte
+    </div>
+  </div>
+</div>
+
+
   <!-- Navigation cachée pour SEO -->
   <nav class="seo-links" aria-label="Liens rapides">
     <a href="#services-lille">Services à Lille</a>
@@ -2078,6 +2225,151 @@ function normaliserNomPourFirebase(nom) {
     
   // NE PAS remplacer les apostrophes, espaces et caractères accentués
 }
+
+// Variables globales pour le classement
+let snackRankingData = [];
+
+// Fonction pour afficher le classement des snacks
+async function afficherClassementSnacks() {
+  document.getElementById('snack-ranking-modal').style.display = 'block';
+  
+  // Afficher un indicateur de chargement
+  document.getElementById('snack-ranking-list').innerHTML = `
+    <div style="text-align: center; padding: 40px;">
+      <div class="loading-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <p>Chargement du classement Snack Clash...</p>
+    </div>
+  `;
+  
+  try {
+    // Charger les données depuis Firestore (collection 'snacks' de Snack Clash)
+    await chargerDonneesSnacksFirestore();
+    
+    // Afficher le classement
+    afficherListeClassement();
+    
+  } catch (error) {
+    console.error("Erreur lors du chargement du classement:", error);
+    document.getElementById('snack-ranking-list').innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #ff4444;">
+        <p>Erreur lors du chargement du classement</p>
+        <p style="font-size: 12px; margin-top: 10px;">${error.message}</p>
+        <button onclick="afficherClassementSnacks()" style="padding: 10px 20px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">
+          Réessayer
+        </button>
+      </div>
+    `;
+  }
+}
+
+// Fonction pour charger les données depuis Firestore
+async function chargerDonneesSnacksFirestore() {
+  try {
+    console.log("📡 Chargement des snacks depuis Firestore...");
+    
+    // Utiliser Firestore au lieu de Realtime Database
+    const snapshot = await firebase.firestore().collection('snacks').get();
+    
+    snackRankingData = [];
+    
+    if (snapshot.empty) {
+      console.log("❌ Aucun snack trouvé dans Firestore");
+      throw new Error("Aucun snack trouvé dans la base de données Snack Clash");
+    }
+    
+    // Récupérer tous les snacks avec leurs scores ELO
+    snapshot.forEach(doc => {
+      const snackData = doc.data();
+      console.log("📊 Snack trouvé:", snackData.name, "ELO:", snackData.eloRating);
+      
+      snackRankingData.push({
+        id: doc.id,
+        name: snackData.name || 'Snack sans nom',
+        score: snackData.eloRating || 1400, // Score ELO de Snack Clash
+        adresse: snackData.address || snackData.adresse || 'Adresse inconnue',
+        specialite: snackData.type || 'Snack',
+        votes: snackData.totalComparisons || 0,
+        wins: snackData.wins || 0,
+        losses: snackData.losses || 0
+      });
+    });
+    
+    // Trier par score ELO décroissant (les meilleurs en premier)
+    snackRankingData.sort((a, b) => b.score - a.score);
+    
+    console.log(`✅ ${snackRankingData.length} snacks chargés depuis Snack Clash`);
+    
+  } catch (error) {
+    console.error("❌ Erreur Firestore:", error);
+    throw new Error("Impossible de charger les données Snack Clash");
+  }
+}
+
+// Fonction pour afficher la liste de classement
+function afficherListeClassement() {
+  const rankingList = document.getElementById('snack-ranking-list');
+  
+  if (snackRankingData.length === 0) {
+    rankingList.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #666;">
+        <p>Aucun snack trouvé dans le classement Snack Clash</p>
+        <p style="font-size: 12px; margin-top: 10px;">Les snacks apparaîtront après les premiers votes sur Snack Clash</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  
+  snackRankingData.forEach((snack, index) => {
+    const position = index + 1;
+    const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `${position}.`;
+    
+    // Calculer le pourcentage de victoires
+    const winRate = snack.votes > 0 ? Math.round((snack.wins / snack.votes) * 100) : 0;
+    
+    html += `
+      <div class="snack-ranking-item" onclick="localiserSnack('${snack.name.replace(/'/g, "\\'")}')">
+        <div class="ranking-position">${medal}</div>
+        <div class="snack-info">
+          <div class="snack-name">${snack.name}</div>
+          <div class="snack-details">
+            ${snack.specialite} • ${snack.adresse}
+            <br>
+            <small>${snack.votes} combats • ${winRate}% de victoires • ELO: ${snack.score}</small>
+          </div>
+        </div>
+        <div class="snack-score">${snack.score}</div>
+      </div>
+    `;
+  });
+  
+  rankingList.innerHTML = html;
+}
+
+// Fonction pour localiser un snack sur la carte
+function localiserSnack(nomSnack) {
+  // Fermer la modal
+  fermerClassementSnacks();
+  
+  // Utiliser votre fonction existante pour centrer sur le service
+  centrerSurService(nomSnack);
+  
+  // Afficher une notification discrète
+  setTimeout(() => {
+    console.log(`📍 Snack "${nomSnack}" localisé sur la carte !`);
+  }, 500);
+}
+
+// Fonction pour fermer le classement
+function fermerClassementSnacks() {
+  document.getElementById('snack-ranking-modal').style.display = 'none';
+}
+
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
     nomServiceActuel = nom;
