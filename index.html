@@ -1730,18 +1730,13 @@ body {
   font-size: 14px;
 }
 
-//* Responsive */
+/* Responsive */
 @media (max-width: 768px) {
   #snack-ranking-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 10px;
-    padding: 10px 16px;
-    font-size: 14px;
-    width: auto;         /* Ne pas prendre toute la largeur */
-    height: auto;        /* Épaisseur normale */
-    max-width: 200px;    /* Limite la taille si le texte est long */
-    border-radius: 8px;  /* (optionnel) joli arrondi */
+    bottom: 70px;  /* en bas */
+    right: 10px;   /* à droite */
+    left: auto;
+    top: auto;     /* très important : empêche qu’il soit collé en haut */
   }
   
   #snack-ranking-content {
