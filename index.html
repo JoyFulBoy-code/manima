@@ -2062,11 +2062,21 @@ body {
         tracerItineraire([center.lat, center.lng]);
       }).addTo(map);
   
-  function normaliserNomPourFirebase(nom) {
-  return nom.toLowerCase()
-    .replace(/'/g, '')   // Supprimer les apostrophes
-    .replace(/\s+/g, '_') // Remplacer les espaces par _
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Supprimer les accents
+  // REMPLACEZ la fonction normaliserNomPourFirebase par cette version améliorée
+function normaliserNomPourFirebase(nom) {
+  if (!nom) return "";
+  
+  // Garder le nom original autant que possible
+  // Seulement échapper les caractères vraiment interdits par Firebase
+  return nom
+    .replace(/\./g, '_')
+    .replace(/\$/g, '_')
+    .replace(/#/g, '_')
+    .replace(/\[/g, '_')
+    .replace(/\]/g, '_')
+    .replace(/\//g, '_');
+    
+  // NE PAS remplacer les apostrophes, espaces et caractères accentués
 }
   // Afficher le formulaire d'avis
   function afficherFormulaireAvis(nom) {
@@ -3117,9 +3127,9 @@ document.getElementById("avis-form").addEventListener("submit", async function(e
         // 1. VÉRIFIER si c'est le premier avis AVANT la sauvegarde
         const estPremierAvis = await verifierSiPremierAvis(utilisateurConnecte.uid);
         
-        // 2. Sauvegarder l'avis dans Firebase
-        const nomNormalise = normaliserNomPourFirebase(nomServiceActuel);
-        const avisRef = db.ref('avis/' + nomNormalise).push();
+        // Utiliser le nom original autant que possible
+        const nomPourSauvegarde = nomServiceActuel; // Utiliser le nom original
+        const avisRef = db.ref('avis/' + nomPourSauvegarde).push();
         await avisRef.set(nouvelAvis);
 
         // 3. Envoyer l'email seulement si c'est le premier avis
@@ -3169,7 +3179,7 @@ async function verifierSiPremierAvis(uid) {
     return true;
 }
 
-// Fonction pour supprimer un avis
+// Fonction pour supprimer un avis - VERSION CORRIGÉE
 async function supprimerAvis(nomService, avisId) {
     if (!utilisateurConnecte) return;
     
@@ -3178,18 +3188,52 @@ async function supprimerAvis(nomService, avisId) {
     }
 
     try {
-        // Utiliser le nom normalisé
-        const nomNormalise = normaliserNomPourFirebase(nomService);
-        await db.ref(`avis/${nomNormalise}/${avisId}`).remove();
-        
-        // Recharger les avis
-        afficherAvis(nomService);
-        
-        alert("Avis supprimé avec succès.");
+        console.log("🗑️ Tentative de suppression:", { nomService, avisId });
+
+        // Chercher l'avis avec différentes variantes du nom
+        const variantes = [
+            nomService, // Nom original
+            nomService.replace(/'/g, "_"), // Apostrophes remplacées
+            normaliserNomPourFirebase(nomService) // Version normalisée
+        ];
+
+        let avisSupprime = false;
+
+        for (const variante of variantes) {
+            try {
+                const avisRef = db.ref(`avis/${variante}/${avisId}`);
+                const snapshot = await avisRef.once('value');
+                
+                if (snapshot.exists()) {
+                    await avisRef.remove();
+                    console.log("✅ Avis supprimé avec la variante:", variante);
+                    avisSupprime = true;
+                    break;
+                }
+            } catch (error) {
+                console.log(`❌ Échec avec la variante ${variante}:`, error);
+            }
+        }
+
+        if (avisSupprime) {
+            // Recharger les avis avec le nom original
+            afficherAvis(nomService);
+            alert("Avis supprimé avec succès.");
+        } else {
+            alert("Impossible de trouver l'avis à supprimer.");
+        }
     } catch (error) {
         console.error("Erreur lors de la suppression:", error);
         alert("Erreur lors de la suppression de l'avis.");
     }
+}
+// Fonction helper pour éviter les problèmes de syntaxe
+function supprimerAvisSafe(nomService, avisId) {
+    // Nettoyer les échappements excessifs
+    const nomServicePropre = nomService.replace(/\\'/g, "'");
+    const avisIdPropre = avisId.replace(/\\'/g, "'");
+    
+    supprimerAvis(nomServicePropre, avisIdPropre);
 }
     function afficherAvis(nom) {
     document.getElementById("liste-avis-modal").style.display = "block";
@@ -3207,39 +3251,55 @@ async function supprimerAvis(nomService, avisId) {
         }
     }, 100);
 
-    // Le reste de votre code existant...
-    const nomOriginal = nom;
-    const nomNormalise = normaliserNomPourFirebase(nom);
-    
-    // Votre code de chargement des avis...
-    db.ref('avis/' + nomOriginal).once('value')
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          console.log("✅ Avis trouvés avec le nom original");
-          traiterAvis(snapshot.val(), nomOriginal);
-        } else {
-          db.ref('avis/' + nomNormalise).once('value')
-            .then(snapshotNormalise => {
-              if (snapshotNormalise.exists()) {
-                console.log("✅ Avis trouvés avec le nom normalisé");
-                traiterAvis(snapshotNormalise.val(), nomOriginal);
-              } else {
-                console.log("❌ Aucun avis trouvé");
-                contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #666;'><i>Aucun avis pour ce lieu pour le moment</i></div>";
-              }
-            });
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors du chargement des avis:", error);
-        contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #ff4444;'><i>Impossible de charger les avis</i></div>";
-      });
+    // NOUVELLE APPROCHE : Chercher avec plusieurs variantes du nom
+    const variantes = [
+        nom, // Nom original
+        normaliserNomPourFirebase(nom), // Version normalisée
+        nom.replace(/'/g, "_"), // Juste les apostrophes remplacées
+        nom.replace(/[´'`’]/g, "_") // Tous types d'apostrophes
+    ];
 
-    function traiterAvis(avisList, nomAffichage) {
-        // Votre code existant de traitement des avis...
+    // Supprimer les doublons
+    const variantesUniques = [...new Set(variantes.filter(v => v))];
+
+    console.log("🔍 Recherche des avis avec variantes:", variantesUniques);
+
+    chercherAvisAvecVariantes(variantesUniques, nom, 0);
+
+    function chercherAvisAvecVariantes(variantes, nomAffichage, index) {
+        if (index >= variantes.length) {
+            console.log("❌ Aucun avis trouvé avec aucune variante");
+            contenuAvis.innerHTML = "<div style='text-align:center; padding:20px; color: #666;'><i>Aucun avis pour ce lieu pour le moment</i></div>";
+            return;
+        }
+
+        const varianteActuelle = variantes[index];
+        console.log(`🔍 Tentative avec variante ${index + 1}/${variantes.length}: "${varianteActuelle}"`);
+
+        db.ref('avis/' + varianteActuelle).once('value')
+            .then(snapshot => {
+                if (snapshot.exists()) {
+                    console.log(`✅ Avis trouvés avec la variante: "${varianteActuelle}"`);
+                    traiterAvis(snapshot.val(), nomAffichage, varianteActuelle);
+                } else {
+                    console.log(`❌ Aucun avis avec la variante: "${varianteActuelle}"`);
+                    // Essayer la variante suivante
+                    chercherAvisAvecVariantes(variantes, nomAffichage, index + 1);
+                }
+            })
+            .catch(error => {
+                console.error(`Erreur avec la variante ${varianteActuelle}:`, error);
+                // Essayer la variante suivante en cas d'erreur
+                chercherAvisAvecVariantes(variantes, nomAffichage, index + 1);
+            });
+    }
+
+    function traiterAvis(avisList, nomAffichage, varianteUtilisee) {
+        console.log(`✅ Affichage des avis trouvés avec la variante: "${varianteUtilisee}"`);
+        
         const avisArray = Object.entries(avisList).map(([avisId, avis]) => ({ avisId, ...avis }));
 
-        // Récupérer les informations des utilisateurs pour les badges
+        // Le reste du code de traitement des avis reste identique...
         const promises = avisArray.map(avis => {
             return db.ref(`utilisateurs/${avis.uid}`).once('value')
                 .then(userSnapshot => {
@@ -3277,17 +3337,18 @@ async function supprimerAvis(nomService, avisId) {
                 const isOwnAvis = currentUserId && avis.uid === currentUserId;
                 const userVoteType = currentUserId && avis.voteurs?.[currentUserId];
 
-                const nomEchappe = nomAffichage.replace(/'/g, "\\'");
+                // UTILISER LA VARIANTE CORRECTE pour les actions
+                const nomPourActions = varianteUtilisee;
                 const avisIdEchappe = avisId.replace(/'/g, "\\'");
 
                 const voteButtons = `
                     <div style="margin-top:10px; display:flex; gap:15px; font-size:18px;">
-                        <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'vert')` : 'void(0)'}" 
+                        <span onclick="${!isOwnAvis ? `voterAvis('${nomPourActions}', '${avisIdEchappe}', 'vert')` : 'void(0)'}" 
                               style="cursor:${isOwnAvis ? 'default' : 'pointer'};
                                      ${userVoteType === 'vert' ? 'font-weight:bold; color: green;' : ''}">
                             🟢 ${avis.pointsVerts || 0}
                         </span>
-                        <span onclick="${!isOwnAvis ? `voterAvis('${nomEchappe}', '${avisIdEchappe}', 'rouge')` : 'void(0)'}" 
+                        <span onclick="${!isOwnAvis ? `voterAvis('${nomPourActions}', '${avisIdEchappe}', 'rouge')` : 'void(0)'}" 
                               style="cursor:${isOwnAvis ? 'default' : 'pointer'};
                                      ${userVoteType === 'rouge' ? 'font-weight:bold; color: red;' : ''}">
                             🔴 ${avis.pointsRouges || 0}
@@ -3296,7 +3357,7 @@ async function supprimerAvis(nomService, avisId) {
 
                 let deleteButton = '';
                 if (isOwnAvis) {
-                    deleteButton = `<button onclick="supprimerAvis('${nomEchappe}', '${avisIdEchappe}')" style="padding:5px 10px; font-size:12px; background: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer;">🗑️ Supprimer</button>`;
+                    deleteButton = `<button onclick="supprimerAvis('${nomPourActions.replace(/'/g, "\\'")}', '${avisId}')" style="padding:5px 10px; font-size:12px; background: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer;">🗑️ Supprimer</button>`;
                 }
 
                 let badgeHtml = '';
