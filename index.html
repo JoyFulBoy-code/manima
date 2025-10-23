@@ -2240,6 +2240,7 @@ function normaliserNomPourFirebase(nom) {
 
 
 
+// DANS MANIMAP - REMPLACEZ TOUT LE CODE DU CLASSEMENT PAR CECI :
 
 // Variables globales pour le classement
 let snackRankingData = [];
@@ -2261,7 +2262,7 @@ async function afficherClassementSnacks() {
   `;
   
   try {
-    // Charger les données depuis Firestore (collection 'snacks' de Snack Clash)
+    // Charger les données depuis Firestore
     await chargerDonneesSnacksFirestore();
     
     // Afficher le classement
@@ -2281,12 +2282,11 @@ async function afficherClassementSnacks() {
   }
 }
 
-// Fonction pour charger les données depuis Firestore
+// DANS MANIMAP - CORRECTION FINALE
 async function chargerDonneesSnacksFirestore() {
   try {
     console.log("📡 Chargement des snacks depuis Firestore...");
     
-    // Utiliser Firestore au lieu de Realtime Database
     const snapshot = await firebase.firestore().collection('snacks').get();
     
     snackRankingData = [];
@@ -2296,27 +2296,41 @@ async function chargerDonneesSnacksFirestore() {
       throw new Error("Aucun snack trouvé dans la base de données Snack Clash");
     }
     
-    // Récupérer tous les snacks avec leurs scores ELO
+    // Récupérer tous les snacks
     snapshot.forEach(doc => {
       const snackData = doc.data();
-      console.log("📊 Snack trouvé:", snackData.name, "ELO:", snackData.eloRating);
       
       snackRankingData.push({
         id: doc.id,
         name: snackData.name || 'Snack sans nom',
-        score: snackData.eloRating || 1400, // Score ELO de Snack Clash
-        adresse: snackData.address || snackData.adresse || 'Adresse inconnue',
-        specialite: snackData.type || 'Snack',
-        votes: snackData.totalComparisons || 0,
-        wins: snackData.wins || 0,
-        losses: snackData.losses || 0
+        // 🔥 CES DEUX CHAMPS SONT CRITIQUES :
+        globalScore: snackData.globalScore || 0,      // Score cumulé de tous les tournois
+        tournamentPosition: snackData.lastTournamentPosition || 999,  // Dernière position seulement
+        totalTournaments: snackData.totalTournaments || 0,
+        adresse: snackData.address || 'Adresse inconnue',
+        specialite: snackData.type || 'Snack'
       });
     });
+
+    // 🔥🔥🔥 CORRECTION : AFFICHER LES SCORES AVANT LE TRI
+    console.log("🔍 SCORES GLOBAUX AVANT TRI:");
+    snackRankingData.forEach(snack => {
+      console.log(`   ${snack.name}: ${snack.globalScore} points (dernière position: ${snack.tournamentPosition})`);
+    });
+
+    // 🔥🔥🔥 TRI PAR GLOBALSCORE (DÉCROISSANT)
+    snackRankingData.sort((a, b) => {
+      const scoreA = a.globalScore || 0;
+      const scoreB = b.globalScore || 0;
+      return scoreB - scoreA; // Décroissant : le plus haut score en premier
+    });
+
+    console.log("🏆 CLASSEMENT PAR SCORE GLOBAL:");
+    snackRankingData.forEach((snack, index) => {
+      console.log(`${index + 1}. ${snack.name} - ${snack.globalScore} points`);
+    });
     
-    // Trier par score ELO décroissant (les meilleurs en premier)
-    snackRankingData.sort((a, b) => b.score - a.score);
-    
-    console.log(`✅ ${snackRankingData.length} snacks chargés depuis Snack Clash`);
+    console.log(`✅ ${snackRankingData.length} snacks triés par SCORE GLOBAL`);
     
   } catch (error) {
     console.error("❌ Erreur Firestore:", error);
@@ -2324,7 +2338,49 @@ async function chargerDonneesSnacksFirestore() {
   }
 }
 
-// Fonction pour afficher la liste de classement
+// ET AUSSI CORRIGEZ L'AFFICHAGE HTML
+function afficherListeClassement() {
+  const rankingList = document.getElementById('snack-ranking-list');
+  
+  if (snackRankingData.length === 0) {
+    rankingList.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #666;">
+        <p>Aucun snack trouvé dans le classement Snack Clash</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  
+  snackRankingData.forEach((snack, index) => {
+    const position = index + 1;
+    const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `${position}.`;
+    
+    html += `
+      <div class="snack-ranking-item" onclick="localiserSnack('${snack.name}')">
+        <div class="ranking-position">${medal}</div>
+        <div class="snack-info">
+          <div class="snack-name">${snack.name}</div>
+          <div class="snack-details">
+            ${snack.specialite} • ${snack.adresse}
+            <br>
+            <small>🏆 ${snack.globalScore} points globaux • 📊 ${snack.totalTournaments} tournois</small>
+          </div>
+        </div>
+        <div class="snack-score" style="color: #d32f2f; font-weight: bold; font-size: 18px;">
+          ${snack.globalScore}
+        </div>
+      </div>
+    `;
+  });
+  
+  rankingList.innerHTML = html;
+}
+
+// DANS MANIMAP - CORRECTION POUR LES APOSTROPHES
+
+// 🔥 CORRECTION DE LA FONCTION AFFICHERLISTECLASSEMENT
 function afficherListeClassement() {
   const rankingList = document.getElementById('snack-ranking-list');
   
@@ -2344,21 +2400,23 @@ function afficherListeClassement() {
     const position = index + 1;
     const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `${position}.`;
     
-    // Calculer le pourcentage de victoires
-    const winRate = snack.votes > 0 ? Math.round((snack.wins / snack.votes) * 100) : 0;
+    // 🔥 CORRECTION : ÉCHAPPER LES APOSTROPHES DANS LE NOM
+    const nomEscaped = snack.name.replace(/'/g, "\\'");
     
     html += `
-  <div class="snack-ranking-item" onclick="localiserSnack(\`${snack.name}\`)">
+      <div class="snack-ranking-item" onclick="localiserSnack('${nomEscaped}')">
         <div class="ranking-position">${medal}</div>
         <div class="snack-info">
           <div class="snack-name">${snack.name}</div>
           <div class="snack-details">
             ${snack.specialite} • ${snack.adresse}
             <br>
-            <small>${snack.votes} combats • ${winRate}% de victoires • ELO: ${snack.score}</small>
+            <small>🏆 ${snack.globalScore} points globaux • 📊 ${snack.totalTournaments} tournois</small>
           </div>
         </div>
-        <div class="snack-score">${snack.score}</div>
+        <div class="snack-score" style="color: #d32f2f; font-weight: bold; font-size: 18px;">
+          ${snack.globalScore}
+        </div>
       </div>
     `;
   });
@@ -2366,27 +2424,27 @@ function afficherListeClassement() {
   rankingList.innerHTML = html;
 }
 
-// FONCTION LOCALISER SNACK ROBUSTE
+// 🔥 AMÉLIORATION DE LA FONCTION LOCALISERSNACK
 function localiserSnack(nomSnack) {
     fermerClassementSnacks();
     
     console.log("📍 Recherche du snack:", nomSnack);
     
-    // Essayer les deux types d'apostrophes
+    // 🔥 CORRECTION : DÉSÉCHAPPER LE NOM SI NÉCESSAIRE
+    const nomDesescape = nomSnack.replace(/\\'/g, "'");
+    
     const nomsAlternatifs = [
-        nomSnack.trim(), // Version originale
-        nomSnack.replace(/'/g, '’'), // Apostrophe courbe
-        nomSnack.replace(/’/g, "'"), // Apostrophe droite
-        "L'Artiste", // Forcer les deux versions
+        nomDesescape.trim(),
+        nomDesescape.replace(/'/g, '’'),
+        nomDesescape.replace(/’/g, "'"),
+        "L'Artiste",
         "L’Artiste"
     ];
     
-    // Supprimer les doublons
     const nomsUniques = [...new Set(nomsAlternatifs)];
     
     console.log("Noms à tester:", nomsUniques);
     
-    // Essayer chaque version
     for (const nom of nomsUniques) {
         const service = trouverServiceParNom(nom);
         if (service) {
@@ -2398,19 +2456,30 @@ function localiserSnack(nomSnack) {
     
     console.log("❌ Aucune version du nom n'a fonctionné");
     
-    // Fallback: recherche manuelle
-    const found = allFeatures.find(f => 
-        f.properties.name && 
-        (f.properties.name.includes("Artiste") || f.properties.name.includes("artiste"))
-    );
+    // 🔥 RECHERCHE PLUS LARGE
+    const found = allFeatures.find(f => {
+      if (!f.properties.name) return false;
+      
+      const nomRecherche = nomDesescape.toLowerCase();
+      const nomCarte = f.properties.name.toLowerCase();
+      
+      // Recherche par correspondance partielle
+      return nomCarte.includes(nomRecherche) || 
+             nomRecherche.includes(nomCarte) ||
+             f.properties.name.includes("Artiste") || 
+             f.properties.name.includes("artiste");
+    });
     
     if (found) {
         console.log("✅ Trouvé par recherche partielle:", found.properties.name);
         centrerSurService(found.properties.name);
+        return;
     }
+    
+    // 🔥 SI TOUT ÉCHOUE, AFFICHER UN MESSAGE
+    alert(`Snack "${nomDesescape}" non trouvé sur la carte. Essayez de le rechercher manuellement.`);
 }
 
-// Fonction pour fermer le classement
 function fermerClassementSnacks() {
   document.getElementById('snack-ranking-modal').style.display = 'none';
 }
