@@ -1798,6 +1798,7 @@ header {
   right: 40px;
   top: 70%;
   transform: translateY(-50%);
+  z-index: 99998; /* Ajouté - juste en dessous des résultats */
 }
 
 .avis-search-input {
@@ -1831,7 +1832,7 @@ header {
   max-height: 400px;
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 10000;
+  z-index: 99999 !important; /* Priorité maximale */
   display: none;
 }
 
@@ -1896,24 +1897,24 @@ header {
   border-left: 4px solid #4CAF50;
 }
 
-/* Version mobile pour la barre de recherche - Encore plus petit */
+/* Version mobile */
 @media (max-width: 768px) {
   .avis-search-container {
     right: 10px;
     top: 70%;
     transform: translateY(-50%);
+    z-index: 99998; /* Même sur mobile */
   }
   
   .avis-search-input {
-    width: 120px; /* Plus court */
+    width: 120px;
     padding: 5px 8px;
     font-size: 10px;
   }
   
   .user-search-results {
-    width: 140px; /* Plus court aussi */
-    right: 0;
-    left: auto;
+    width: 140px;
+    z-index: 99999 !important;
   }
   
   .user-result-item {
@@ -1929,34 +1930,6 @@ header {
   
   .user-name {
     font-size: 10px;
-  }
-}
-
-.user-search-results {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: 300px;
-  max-height: 400px;
-  overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 10000; /* Déjà élevé */
-  display: none;
-}
-
-/* Pour tous les écrans - FORCER au-dessus de tout */
-.user-search-results {
-  z-index: 99999 !important; /* Priorité maximale */
-}
-
-/* Version mobile */
-@media (max-width: 768px) {
-  .user-search-results {
-    width: 140px;
-    z-index: 99999 !important; /* Même priorité sur mobile */
   }
 }
   </style>
