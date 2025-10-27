@@ -1806,18 +1806,20 @@ header {
   font-size: 14px;
   border: 2px solid white;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
+  background: transparent; /* Changé de rgba(255,255,255,0.9) à transparent */
+  color: white; /* Changé la couleur du texte en blanc */
   width: 250px;
   outline: none;
+}utline: none;
 }
 
 .avis-search-input::placeholder {
-  color: #666;
+  color: rgba(255, 255, 255, 0.8); /* Placeholder en blanc transparent */
 }
 
 .avis-search-input:focus {
-  background: white;
+  background: rgba(255, 255, 255, 0.2); /* Léger fond blanc au focus */
+  color: white; /* Garder le texte en blanc */
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
@@ -1901,7 +1903,7 @@ header {
 @media (max-width: 768px) {
   .avis-search-container {
     right: 10px;
-    top: 70%;
+    top: 80%;
     transform: translateY(-50%);
     z-index: 99998; /* Même sur mobile */
   }
@@ -1910,6 +1912,8 @@ header {
     width: 120px;
     padding: 5px 8px;
     font-size: 10px;
+    background: transparent; /* Transparent sur mobile aussi */
+    color: white; /* Texte en blanc */
   }
   
   .user-search-results {
@@ -1930,6 +1934,13 @@ header {
   
   .user-name {
     font-size: 10px;
+  }
+   .avis-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.8); /* Placeholder en blanc transparent */
+  }
+  
+  .avis-search-input:focus {
+    background: rgba(255, 255, 255, 0.2); /* Léger fond au focus */
   }
 }
   </style>
