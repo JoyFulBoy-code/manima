@@ -1895,6 +1895,38 @@ header {
   border-radius: 8px;
   border-left: 4px solid #4CAF50;
 }
+
+/* Version mobile pour la barre de recherche */
+@media (max-width: 768px) {
+  .avis-search-container {
+    right: 10px; /* Collé à droite */
+    top: 70%; /* Même position en Y */
+    transform: translateY(-50%);
+  }
+  
+  .avis-search-input {
+    width: 180px; /* Plus petit */
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .user-search-results {
+    width: 200px; /* Plus petit aussi */
+    right: 0;
+    left: auto;
+  }
+  
+  .user-result-item {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .user-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+}
   </style>
 </head>
 <body>
