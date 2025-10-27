@@ -1766,6 +1766,135 @@ body {
     padding: 4px 8px;
   }
 }
+
+/*barre de recherche de l'avis de quelqu'un*/
+header {
+  text-align: center;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+}
+
+.avis-search-container {
+  position: absolute;
+  right: 40px;
+  top: 70%;
+  transform: translateY(-50%);
+}
+
+.avis-search-input {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 2px solid white;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  width: 250px;
+  outline: none;
+}
+
+.avis-search-input::placeholder {
+  color: #666;
+}
+
+.avis-search-input:focus {
+  background: white;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.user-search-results {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 10000;
+  display: none;
+}
+
+.user-result-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-result-item:hover {
+  background: #f5f5f5;
+}
+
+.user-result-item:last-child {
+  border-bottom: none;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.user-badge {
+  width: 20px;
+  height: 20px;
+}
+
+.user-avis-modal {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.user-avis-list {
+  margin-top: 15px;
+}
+
+.user-avis-item {
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+}
   </style>
 </head>
 <body>
@@ -1794,7 +1923,18 @@ body {
     <a href="#chauffeurs-lille">Chauffeurs Lille</a>
     <a href="#carte-interactive">Carte interactive</a>
   </nav>
-  <header><h1>Manimap</h1></header>
+
+  <header>
+  <div class="header-content">
+    <div class="header-title">
+      <h1>Manimap</h1>
+    </div>
+    <div class="avis-search-container">
+      <input type="text" class="avis-search-input" placeholder="Rechercher les avis" id="search-user-avis">
+  <div id="user-search-results" class="user-search-results"></div>
+    </div>
+  </div>
+</header>
 
   <div class="search-bar">
     <input type="text" id="search-bar" placeholder="Rechercher un service (garage, hôpital, etc.)">
@@ -1986,6 +2126,265 @@ body {
   <button id="stop-itineraire-btn" onclick="arreterItineraire()">⏹️ Stop Itinéraire</button>
   <footer><p>&copy; 2025 Manimap™ - Tous droits réservés</p></footer>
   <script>
+    // Recherche d'utilisateurs
+document.getElementById('search-user-avis').addEventListener('input', function(e) {
+  const searchTerm = e.target.value.trim();
+  const resultsContainer = document.getElementById('user-search-results');
+  
+  if (searchTerm.length < 2) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  rechercherUtilisateurs(searchTerm);
+});
+
+async function rechercherUtilisateurs(searchTerm) {
+  const resultsContainer = document.getElementById('user-search-results');
+  
+  try {
+    const usersSnapshot = await db.ref('utilisateurs').once('value');
+    const users = usersSnapshot.val();
+    
+    if (!users) {
+      resultsContainer.innerHTML = '<div class="user-result-item">Aucun utilisateur trouvé</div>';
+      resultsContainer.style.display = 'block';
+      return;
+    }
+    
+    const filteredUsers = [];
+    
+    // Filtrer les utilisateurs par nom/email
+    for (const [userId, userData] of Object.entries(users)) {
+      const nomComplet = userData.nom || userData.displayName || '';
+      const email = userData.email || '';
+      
+      if (nomComplet.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          email.toLowerCase().includes(searchTerm.toLowerCase())) {
+        filteredUsers.push({
+          id: userId,
+          ...userData
+        });
+      }
+    }
+    
+    if (filteredUsers.length === 0) {
+      resultsContainer.innerHTML = '<div class="user-result-item">Aucun utilisateur trouvé</div>';
+    } else {
+      resultsContainer.innerHTML = filteredUsers.map(user => `
+        <div class="user-result-item" onclick="afficherAvisUtilisateur('${user.id}')">
+          <div class="user-avatar">
+            ${(user.nom || user.displayName || 'U').charAt(0).toUpperCase()}
+          </div>
+          <div class="user-info">
+            <div class="user-name">${user.nom || user.displayName || 'Utilisateur'}</div>
+            <div style="font-size: 12px; color: #666;">${user.email || ''}</div>
+          </div>
+          ${user.badgeCommandant ? '<img src="commandant.png" class="user-badge" title="Commandant">' : ''}
+          ${user.badgeMoussaillon && !user.badgeCommandant ? '<img src="moussaillon2.png" class="user-badge" title="Moussaillon">' : ''}
+        </div>
+      `).join('');
+    }
+    
+    resultsContainer.style.display = 'block';
+    
+  } catch (error) {
+    console.error('Erreur recherche utilisateurs:', error);
+    resultsContainer.innerHTML = '<div class="user-result-item">Erreur de recherche</div>';
+    resultsContainer.style.display = 'block';
+  }
+}
+
+// Afficher tous les avis d'un utilisateur
+async function afficherAvisUtilisateur(userId) {
+  // Fermer les résultats de recherche
+  document.getElementById('user-search-results').style.display = 'none';
+  
+  try {
+    // Récupérer les infos utilisateur
+    const userSnapshot = await db.ref(`utilisateurs/${userId}`).once('value');
+    const userData = userSnapshot.val();
+    
+    // Récupérer tous les avis
+    const avisSnapshot = await db.ref('avis').once('value');
+    const allAvis = avisSnapshot.val();
+    
+    const userAvis = [];
+    
+    // Parcourir tous les avis pour trouver ceux de cet utilisateur
+    if (allAvis) {
+      for (const [serviceName, serviceAvis] of Object.entries(allAvis)) {
+        for (const [avisId, avis] of Object.entries(serviceAvis)) {
+          if (avis.uid === userId) {
+            userAvis.push({
+              serviceName: serviceName,
+              avisId: avisId,
+              ...avis
+            });
+          }
+        }
+      }
+    }
+    
+    // Afficher la modal avec les résultats
+const modalContent = `
+  <h2>Avis de ${userData.nom || userData.displayName || 'Utilisateur'}</h2>
+  <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+    <div class="user-avatar" style="width: 60px; height: 60px; font-size: 24px;">
+      ${(userData.nom || userData.displayName || 'U').charAt(0).toUpperCase()}
+    </div>
+    <div>
+      <h3 style="margin: 0;">${userData.nom || userData.displayName || 'Utilisateur'}</h3>
+      <p style="margin: 5px 0; color: #666;">${userData.email || ''}</p>
+      <div style="display: flex; gap: 10px;">
+        ${userData.badgeCommandant ? '<img src="commandant.png" class="badge-moussaillon" title="Commandant">' : ''}
+        ${userData.badgeMoussaillon && !userData.badgeCommandant ? '<img src="moussaillon2.png" class="badge-moussaillon" title="Moussaillon">' : ''}
+      </div>
+    </div>
+  </div>
+  
+  <h3>${userAvis.length} avis publiés</h3>
+  
+  <div class="user-avis-list">
+    ${userAvis.length === 0 ? 
+      '<p style="text-align: center; color: #666; padding: 20px;">Aucun avis publié</p>' : 
+      userAvis.map(avis => {
+        // Définir userVoteType pour chaque avis
+        const userVoteType = utilisateurConnecte && avis.voteurs?.[utilisateurConnecte.uid];
+        return `
+        <div class="user-avis-item">
+          <div style="display: flex; justify-content: space-between; align-items: start;">
+            <h4 style="margin: 0; color: #4CAF50; cursor: pointer;" onclick="fermerEtOuvrirPopup('${avis.serviceName.replace(/'/g, "\\'")}')">${avis.serviceName}</h4>
+            <small style="color: #666;">${avis.date || 'Date inconnue'}</small>
+          </div>
+          <p style="margin: 10px 0;">${avis.text || 'Aucun commentaire'}</p>
+          <div style="display: flex; gap: 15px; font-size: 14px;">
+            <span style="cursor: pointer; ${userVoteType === 'vert' ? 'font-weight:bold; color: green;' : ''}" 
+                  onclick="voterAvisDirect('${avis.serviceName.replace(/'/g, "\\'")}', '${avis.avisId}', 'vert', '${userId}')">
+              🟢 ${avis.pointsVerts || 0}
+            </span>
+            <span style="cursor: pointer; ${userVoteType === 'rouge' ? 'font-weight:bold; color: red;' : ''}" 
+                  onclick="voterAvisDirect('${avis.serviceName.replace(/'/g, "\\'")}', '${avis.avisId}', 'rouge', '${userId}')">
+              🔴 ${avis.pointsRouges || 0}
+            </span>
+          </div>
+          ${avis.photoUrl ? `<img src="${avis.photoUrl}" style="max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 8px;" />` : ''}
+        </div>
+        `;
+      }).join('')
+    }
+  </div>
+`;
+
+    // Créer et afficher la modal
+    const modal = document.createElement('div');
+    modal.className = 'modal user-avis-modal';
+    modal.style.display = 'block';
+    modal.innerHTML = `
+      <div class="modal-content user-avis-modal">
+        <span class="close-btn" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        ${modalContent}
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+  } catch (error) {
+    console.error('Erreur affichage avis utilisateur:', error);
+    alert('Erreur lors du chargement des avis');
+  }
+}
+
+// Fermer les résultats si on clique ailleurs
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.avis-search-container')) {
+    document.getElementById('user-search-results').style.display = 'none';
+  }
+});
+function fermerEtOuvrirPopup(serviceName) {
+  // Fermer toutes les modals
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    if (modal.style.display === 'block') {
+      modal.remove();
+    }
+  });
+  
+  // Centrer sur le service et ouvrir le popup
+  centrerSurService(serviceName);
+}
+
+async function voterAvisDirect(serviceName, avisId, typeVote, userIdAuteur) {
+  if (!utilisateurConnecte) {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then((result) => {
+        utilisateurConnecte = result.user;
+        voterAvisDirect(serviceName, avisId, typeVote, userIdAuteur);
+      })
+      .catch((error) => {
+        alert("Connexion requise pour voter.");
+        console.error(error);
+      });
+    return;
+  }
+
+  // Empêcher de voter pour soi-même
+  if (utilisateurConnecte.uid === userIdAuteur) {
+    alert("Vous ne pouvez pas voter pour votre propre avis");
+    return;
+  }
+
+  const uidVotant = utilisateurConnecte.uid;
+  const avisRef = db.ref(`avis/${serviceName}/${avisId}`);
+
+  try {
+    const avisSnapshot = await avisRef.once('value');
+    const avis = avisSnapshot.val();
+  
+    if (!avis) {
+      alert("Cet avis n'existe plus");
+      return;
+    }
+
+    const currentVote = avis.voteurs?.[uidVotant];
+    const updates = {};
+
+    if (currentVote === typeVote) {
+      // Annuler le vote
+      updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+      updates[`voteurs/${uidVotant}`] = null;
+    } else {
+      // Nouveau vote ou changement
+      if (currentVote) {
+        updates[`points${currentVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(-1);
+      }
+      updates[`points${typeVote === 'vert' ? 'Verts' : 'Rouges'}`] = firebase.database.ServerValue.increment(1);
+      updates[`voteurs/${uidVotant}`] = typeVote;
+    }
+
+    await avisRef.update(updates);
+    
+    // Vérifier les badges si vote vert
+    if (typeVote === 'vert') {
+      await verifierBadges(userIdAuteur);
+    }
+
+    // ⭐⭐ CORRECTION : Fermer d'abord l'ancienne modal avant d'en créer une nouvelle
+    const existingModal = document.querySelector('.modal.user-avis-modal');
+    if (existingModal) {
+      existingModal.remove();
+    }
+    
+    // Recharger la page des avis pour voir les nouveaux points
+    afficherAvisUtilisateur(userIdAuteur);
+    
+  } catch (error) {
+    console.error("Erreur lors du vote:", error);
+    alert("Erreur lors du vote: " + error.message);
+  }
+}
+
 
     // Ajoutez cet objet de mapping des mots-clés au début de votre script, après les constantes
     const keywordToTypes = {
